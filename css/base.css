@@ -49,53 +49,39 @@ table, td, tr, th, form, fieldset, em, button, a {
 
 :root {
     /* CSS variables that will be used across the page */
-    --page-background-color: rgb(31, 31, 33);
-    --page-font-color: white;
-    --inactive-font-color: #d0d0d0;
-    --inactive-background-color: rgb(31,31,33);
-    --standout-background: #fafafa;
-
+    --page-background-color: #ffffff;
+    --page-font-color: #111111;
+    --inactive-font-color: #6b6b6b;
+    --inactive-background-color: #f5f5f5;
+    --standout-background: #2A435A;
     --happy-toast-background-color: #5D7E61;
     --happy-toast-font-color: rgb(255, 255, 255);
-
-    --info-toast-background-color: #2f2f2f;
-    --info-toast-font-color: white;
-
+    --info-toast-background-color: #e8e8e8;
+    --info-toast-font-color: #111111;
     --error-toast-background-color: #A66654;
     --error-toast-font-color: rgb(255, 255, 255);
-
-
-    --shadow-and-border-color: #e8e8e8;
-
+    --shadow-and-border-color: #d0d0d0;
     --main-color: #2A435A; 
-
     --accent-color: rgb(201, 171, 129);
  
     --secondary-accent-color: rgb(175, 141, 92);
-
     /* Accessibility / WV theme variables */
     --wv-accent-color: #C9AB81; /* gold */
     --wv-accent-foreground: #111111;
     --wv-bg-light: #ffffff;
     --wv-text-dark: #111111;
     --wv-muted-text: #6b6b6b;
-
     --calendar-event-color: #808080;
     --calendar-event-color-hover: var(--accent-color);
     --calendar-today-border: 2px solid var(--secondary-accent-color);
-
     --button-font-color: rgb(255, 255, 255);
     --button-padding: 0.5rem 1.5rem;
     --button-border-radius: 0.25rem;
-
-    --standard-border: 1px solid #333333;
+    --standard-border: 1px solid #d0d0d0;
     --light-border: 1px solid var(--shadow-and-border-color);
-    --text-field-border: 2px solid #e8e8e8;
-
+    --text-field-border: 2px solid #d0d0d0;
     --cancel-button-background-color: #A66654;
-
     --error-color: #A66654;
-
     /* Global rules */
     font-size: 18px;
     font-family: Montserrat;
@@ -559,7 +545,7 @@ main.calendar-view th {
 
 h1.calendar-header {
     background-color: var(--accent-color);
-    color: white;
+    color: red;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
