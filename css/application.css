@@ -1,5 +1,5 @@
 .application-view-container {
-    background-color: rgb(41, 253, 3);
+    background-color: rgba(0,0,0,0.2);
     border-radius: 15px;
     display: flex;
     flex-wrap: wrap;
