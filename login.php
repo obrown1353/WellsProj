@@ -85,15 +85,12 @@
 	</style>
         <title>Seacobeck Library | Log In</title>
     </head>
-    <body>
-<div class="h-screen flex">
+   
+   <body class="min-h-screen flex flex-col justify-between bg-cover bg-center"
+      style="background-image: url('images/library.jpg');">
 
-  <!-- Left: Image Section (Hidden on small screens) -->
-  <div class="hidden md:block md:w-1/2 bg-center rounded-r-[50px] bg-[#1F1F21]">
-      <img src="images/bookstock.jpg"
-            alt="Books"
-            style="height: 100%;">
-  </div>
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-[#1e12c9d5]"></div>
 
   <!-- Main Content (Centered) -->
   <div class="relative z-10 w-2/3 max-w-md flex flex-col items-center text-white mx-auto mt-auto mb-auto">
@@ -104,16 +101,16 @@
     </div>
 
     <h2 class="text-3xl font-bold mb-6 text-center" 
-      style="text-shadow: 2px 2px 0 black, -1px -1px 0 black, 2px -1px 0 black, -1px 1px 0 black;">
+    style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;">
       Welcome
-    </h2>
+  </h2>
 
     <!-- Buttons -->
     <div class="w-full flex flex-col items-center gap-4">
-      <button class="w-full bg-[#8d0e0e] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+      <button class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
         Staff Login
       </button>
-      <button class="w-full bg-[#8d0e0e] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+      <button class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
         Continue as Guest
       </button>
     </div>
