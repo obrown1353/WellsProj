@@ -77,60 +77,56 @@
 <html>
     <head>
 	<script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/login.css">
     	<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
 	<style>
-/* Found this on codepen :D */
-.wave {
-  animation-name: wave-animation;  /* Refers to the name of your @keyframes element below */
-  animation-duration: 2.5s;        /* Change to speed up or slow down */
-  animation-iteration-count: infinite;  /* Never stop waving :) */
-  transform-origin: 70% 70%;       /* Pivot around the bottom-left palm */
-  display: inline-block;
-}
 
-@keyframes wave-animation {
-    0% { transform: rotate( 0.0deg) }
-   10% { transform: rotate(14.0deg) }  /* The following five values can be played with to make the waving more or less extreme */
-   20% { transform: rotate(-8.0deg) }
-   30% { transform: rotate(14.0deg) }
-   40% { transform: rotate(-4.0deg) }
-   50% { transform: rotate(10.0deg) }
-   60% { transform: rotate( 0.0deg) }  /* Reset for the last half to pause */
-  100% { transform: rotate( 0.0deg) }
-}
-* { font-family: Quicksand, sans-serif; }
+* { font-family: StromaBold, 'Lucida Sans'; }
 	</style>
-        <title>Whiskey Valor Foundation | Log In</title>
+        <title>Seacobeck Library | Log In</title>
     </head>
-    <body>
-<div class="h-screen flex">
+   
+   <body class="min-h-screen flex flex-col justify-between bg-cover bg-center"
+      style="background-image: url('images/library.jpg');">
 
-  <!-- Left: Image Section (Hidden on small screens) -->
-  <div class="hidden md:block md:w-1/2 bg-center rounded-r-[50px] bg-[#1F1F21]">
-      <img src="images/whiskeyBarrels.png"
-            alt="Barrels"
-            style="height: 100%;">
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-[#1e12c9d5]"></div>
+
+  <!-- Main Content (Centered) -->
+  <div class="relative z-10 w-2/3 max-w-md flex flex-col items-center text-white mx-auto mt-auto mb-auto">
+
+    <!-- Logo -->
+    <div class="w-full flex justify-center mb-6">
+      <img src="images/umw.jpg" alt="Logo" class="w-40 mx-auto">
+    </div>
+
+    <h2 class="text-3xl font-bold mb-6 text-center" 
+      style="text-shadow: 2px 2px 0 black, -1px -1px 0 black, 2px -1px 0 black, -1px 1px 0 black;">
+      Welcome
+    </h2>
+
+    <!-- Buttons -->
+    <div class="w-full flex flex-col items-center gap-4">
+      <button class="w-full bg-[#8d0e0e] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+        Staff Login
+      </button>
+      <button class="w-full bg-[#8d0e0e] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+        Continue as Guest
+      </button>
+    </div>
+
   </div>
 
-  <!-- Right: Form Section -->
+  <!-- Footer -->
+  <footer class="relative z-10 w-full text-center text-white bg-black bg-opacity-50 py-4 mt-4">
+    Questions? Contact Dr. Mellisa Wells <a href="mailto:mwells@umw.edu" class="underline hover:text-blue-400">mwells@umw.edu</a>
+  </footer>
 
-  <div class="w-full md:w-1/2 flex flex-col justify-center items-center bg-white relative ">
+</body>
 
+ 
 
-    <div class="w-2/3 max-w-md flex flex-col items-center">
-
-      <!-- Logo Placeholder (Now the same width as inputs and centered) -->
-      <div class="w-full flex justify-center mb-6">
-        <img src="images/whiskeyLogo.png"
-             alt="Logo"
-             class="w-full max-w-xs">
-      </div>
-
-      <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">
-	<span class="wave">👋</span> Nice to see you again.
-      </h2>
-
-      <form class="w-full" method="post">
+<!-- What used to be used to verify username and password, not needed right now but may be useful for staff login-->
                 <?php
                     if ($badLogin) {
                         echo '<span class="text-white bg-red-700 text-center block p-2 rounded-lg mb-2">No login with that username and password combination currently exists.</span>';
@@ -142,38 +138,7 @@
                         echo '<span class="text-white text-center bg-green-700 block p-2 rounded-lg mb-2">Registration Successful! Please login below.</span>';
 		    } 
                 ?>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2" for="username">Login</label>
-          <input class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" name="username" placeholder="Enter your username" required>
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2" for="password">Password</label>
-          <input class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400" type="password" name="password" placeholder="Enter your password" required>
-        </div>
-        <div class="flex justify-between items-center mb-4">
-          <a href="#" class="text-[#22654D] text-sm hover:underline">Forgot password?</a>
-          <a href="https://whiskeyvalor.org" class="text-[#22654D] text-sm hover:underline">Whiskey Valor Website</a>
-        </div>
-        <button class="cursor-pointer w-full bg-[#C9AB81] hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-300">Login</button>
-      </form>
 
-      <!-- Divider -->
-      <div class="flex items-center my-6 w-full">
-        <div class="flex-grow border-t border-gray-300"></div>
-        <span class="mx-4 text-gray-500">or</span>
-        <div class="flex-grow border-t border-gray-300"></div>
-      </div>
 
-      <!-- Sign Up Section -->
-      <p class="text-center text-gray-700">
-        Don’t have an account?
-        <a href="VolunteerRegister.php" class="text-[#22654D] font-semibold hover:underline">Sign Up Now</a>
-      </p>
-
-    </div>
-  </div>
-
-</div>
-
-    </body>
+  
 </html>
