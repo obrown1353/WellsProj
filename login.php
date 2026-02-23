@@ -85,12 +85,15 @@
 	</style>
         <title>Seacobeck Library | Log In</title>
     </head>
-   
-   <body class="min-h-screen flex flex-col justify-between bg-cover bg-center"
-      style="background-image: url('images/library.jpg');">
+    <body>
+<div class="h-screen flex">
 
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-[#1e12c9d5]"></div>
+  <!-- Left: Image Section (Hidden on small screens) -->
+  <div class="hidden md:block md:w-1/2 bg-center rounded-r-[50px] bg-[#1F1F21]">
+      <img src="images/bookstock.jpg"
+            alt="Books"
+            style="height: 100%;">
+  </div>
 
   <!-- Main Content (Centered) -->
   <div class="relative z-10 w-2/3 max-w-md flex flex-col items-center text-white mx-auto mt-auto mb-auto">
