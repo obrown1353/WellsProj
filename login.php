@@ -107,10 +107,12 @@
 
     <!-- Buttons -->
     <div class="w-full flex flex-col items-center gap-4">
-      <button class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+      <button 
+        class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-[#7a1905] active:scale-95 transition duration-300">
         Staff Login
       </button>
-      <button class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+    <button 
+        class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-[#7a1905] active:scale-95 transition duration-300">
         Continue as Guest
       </button>
     </div>
@@ -127,17 +129,17 @@
  
 
 <!-- What used to be used to verify username and password, not needed right now but may be useful for staff login-->
-                <?php
-                    if ($badLogin) {
-                        echo '<span class="text-white bg-red-700 text-center block p-2 rounded-lg mb-2">No login with that username and password combination currently exists.</span>';
-                    }
-                    if ($archivedAccount) {
-                        echo '<span class="text-white bg-red-700 block p-2 rounded-lg mb-2">This account has either been archived or not yet approved by managment. For help, notify <a href="mailto:volunteer@fredspca.org">volunteer@fredspca.org</a>.</span>';
-                    }
+ <?php
+    if ($badLogin) {
+         echo '<span class="text-white bg-red-700 text-center block p-2 rounded-lg mb-2">No login with that username and password combination currently exists.</span>';
+      }
+     if ($archivedAccount) {
+          echo '<span class="text-white bg-red-700 block p-2 rounded-lg mb-2">This account has either been archived or not yet approved by managment. For help, notify <a href="mailto:volunteer@fredspca.org">volunteer@fredspca.org</a>.</span>';
+            }
 		    if (isset($_GET['registerSuccess'])) {
                         echo '<span class="text-white text-center bg-green-700 block p-2 rounded-lg mb-2">Registration Successful! Please login below.</span>';
 		    } 
-                ?>
+ ?>
 
 
   
