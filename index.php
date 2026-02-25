@@ -8,6 +8,7 @@
 
     date_default_timezone_set("America/New_York");
     
+    
     if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 1) {
         if (isset($_SESSION['change-password'])) {
             header('Location: changePassword.php');
@@ -15,8 +16,12 @@
             header('Location: login.php');
         }
         die();
-    }
-        
+    } 
+
+    // temp fix to access home page -> disables required log-in
+    //$_SESSION['access_level'] = 2;
+    //$_SESSION['_id'] = 'vmsroot';
+
     include_once('database/dbPersons.php');
     include_once('domain/Person.php');
     // Get date?
@@ -43,7 +48,7 @@
 
         body {
             font-family: Quicksand, sans-serif;
-            background-color: #1F1F21;
+            background-color: #002D61;
         }
 
         h2 {
@@ -53,7 +58,7 @@
 
         .full-width-bar {
             width: 100%;
-            background: #C9AB81;
+            background: #8DC9F7;
             padding: 17px 5%;
             display: flex;
             flex-wrap: wrap;
@@ -62,7 +67,7 @@
         }
         .full-width-bar-sub {
             width: 100%;
-            background: #1F1F21;
+            background: #002D61;
             padding: 17px 5%;
             display: flex;
             flex-wrap: wrap;
@@ -146,7 +151,7 @@
             left: 10%;
             font-size: 14px;
             font-weight: 700;
-            color: #C9AB81;
+            color: #8DC9F7;
             max-width: 90%;
         }
 
@@ -157,7 +162,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            background: #C9AB81;
+            background: #8DC9F7;
             box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
             display: flex;
             align-items: center;
@@ -174,7 +179,7 @@
 
         /* Logo */
         .logo-container {
-            background: #C9AB81;
+            background: #8DC9F7;
             padding: 10px 20px;
             border-radius: 50px;
             box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) inset;
@@ -208,7 +213,7 @@
         }
 
         .date-box {
-            background: #C9AB81;
+            background: #8DC9F7;
             padding: 10px 30px;
             border-radius: 50px;
             box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.25) inset;
@@ -263,7 +268,7 @@
         width: 30px;
         height: 30px;
         /*background-color:; /* Blue color */
-        background-color: #C9AB81;
+        background-color: #8DC9F7;
         color: white;
         border-radius: 50%;
         display: flex;
@@ -282,7 +287,7 @@
     }
 .colored-box {
     display: inline-block; /* Ensures it wraps tightly around the text */
-    background-color: #C9AB81; /* Change to any color */
+    background-color: #8DC9F7; /* Change to any color */
     color: white; /* Text color */
     padding: 1px 5px; /* Adds space inside the box */
     border-radius: 5px; /* Optional: Rounds the corners */
@@ -293,7 +298,7 @@
         /* Footer */
         .footer {
             width: 100%;
-            background: #C9AB81;
+            background: #8DC9F7;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -342,7 +347,7 @@
             flex-direction: column;
             justify-content: center;
             gap: 10px;
-            color: #C9AB81;
+            color: #8DC9F7;
             font-family: Inter, sans-serif;
             font-size: 16px;
             font-weight: 500;
@@ -402,7 +407,7 @@
     
         .content-box-test {
             position: relative;
-            background-color: #C9AB81;   /* tan background */
+            background-color: #8DC9F7;   /* light blue background */
             border-radius: 12px;
             padding: 20px;
             color: black;                 /* default text color */
@@ -424,7 +429,7 @@
 
         
         .full-width-bar-sub{
-            background-color: #1F1F21 !important;
+            background-color: #002D61 !important;
             }
 
 
@@ -546,7 +551,7 @@
     ?>
 
     <!-- Calendar -->
-    <div class="content-box-test" onclick="window.location.href='calendar.php'" style="background-color: #C9AB81; border-radius: 12px; padding: 20px; color: black;">
+    <div class="content-box-test" onclick="window.location.href='calendar.php'" style="background-color: #8DC9F7; border-radius: 12px; padding: 20px; color: black;">
         <div class="icon-overlay">
             <img style="border-radius: 5px;" src="images/view-calendar.svg" alt="Calendar Icon">
         </div>
@@ -557,7 +562,7 @@
     </div>
 
     <!-- Manage Documents -->
-    <div class="content-box-test" onclick="window.location.href='view_encrypted_gallery.php'" style="background-color: #C9AB81; border-radius: 12px; padding: 20px; color: black; position: relative;">
+    <div class="content-box-test" onclick="window.location.href='view_encrypted_gallery.php'" style="background-color: #8DC9F7; border-radius: 12px; padding: 20px; color: black; position: relative;">
         <div class="icon-overlay">
             <img style="border-radius: 5px;" src="images/file-regular.svg" alt="Document Icon">
         </div>
@@ -568,7 +573,7 @@
     </div>
 
     <!-- System Notifications -->
-    <div class="content-box-test" onclick="window.location.href='inbox.php'" style="background-color: #C9AB81; border-radius: 12px; padding: 20px; color: black;">
+    <div class="content-box-test" onclick="window.location.href='inbox.php'" style="background-color: #8DC9F7; border-radius: 12px; padding: 20px; color: black;">
         <div class="icon-overlay">
             <img style="border-radius: 5px;" src="images/<?php echo $inboxIcon ?>" alt="Notification Icon">
         </div>
@@ -585,7 +590,7 @@
     </div>
 
     <!-- Generate Report -->
-    <div class="content-box-test" onclick="window.location.href='generateReport.php'" style="background-color: #C9AB81; border-radius: 12px; padding: 20px; color: black;">
+    <div class="content-box-test" onclick="window.location.href='generateReport.php'" style="background-color: #8DC9F7; border-radius: 12px; padding: 20px; color: black;">
         <div class="icon-overlay">
             <img style="border-radius: 5px;" src="images/create-report.svg" alt="Report Icon">
         </div>
@@ -596,7 +601,7 @@
     </div>
 
     <!-- Create Email -->
-    <div class="content-box-test" onclick="window.location.href='createEmail.php'" style="background-color: #C9AB81; border-radius: 12px; padding: 20px; color: black;">
+    <div class="content-box-test" onclick="window.location.href='createEmail.php'" style="background-color: #8DC9F7; border-radius: 12px; padding: 20px; color: black;">
         <div class="icon-overlay">
             <img style="border-radius: 5px;" src="images/inbox.svg" alt="Email Icon">
         </div>
@@ -607,7 +612,7 @@
     </div>
 
     <!-- View Drafts -->
-    <div class="content-box-test" onclick="window.location.href='viewDrafts.php'" style="background-color: #C9AB81; border-radius: 12px; padding: 20px; color: black;">
+    <div class="content-box-test" onclick="window.location.href='viewDrafts.php'" style="background-color: #8DC9F7; border-radius: 12px; padding: 20px; color: black;">
         <div class="icon-overlay">
             <img style="border-radius: 5px;" src="images/search.svg" alt="Drafts Icon">
         </div>
@@ -618,7 +623,7 @@
     </div>
 
     <!-- Generate Email List -->
-    <div class="content-box-test" onclick="window.location.href='generateEmailList.php'" style="background-color: #C9AB81; border-radius: 12px; padding: 20px; color: black;">
+    <div class="content-box-test" onclick="window.location.href='generateEmailList.php'" style="background-color: #8DC9F7; border-radius: 12px; padding: 20px; color: black;">
         <div class="icon-overlay">
             <img style="border-radius: 5px;" src="images/send.png" alt="Email List Icon">
         </div>
@@ -629,7 +634,7 @@
     </div>
 
     <!-- Discussions -->
-    <div class="content-box-test" onclick="window.location.href='viewSuggestions.php'" style="background-color: #C9AB81; border-radius: 12px; padding: 20px; color: black;">
+    <div class="content-box-test" onclick="window.location.href='viewSuggestions.php'" style="background-color: #8DC9F7; border-radius: 12px; padding: 20px; color: black;">
         <div class="icon-overlay">
             <img style="border-radius: 5px;" src="images/clipboard-regular.svg" alt="Discussions Icon">
         </div>

@@ -62,9 +62,9 @@ table, td, tr, th, form, fieldset, em, button, a {
     --error-toast-font-color: rgb(255, 255, 255);
     --shadow-and-border-color: #d0d0d0;
     --main-color: #002D61; 
-    --accent-color: rgb(201, 171, 129);
+    --accent-color: #8DC9F7;
  
-    --secondary-accent-color: rgb(175, 141, 92);
+    --secondary-accent-color: #8DC9F7;
     /* Accessibility / WV theme variables */
     --wv-accent-color: #8DC9F7; /* light blue */
     --wv-accent-foreground: #111111;
@@ -77,7 +77,7 @@ table, td, tr, th, form, fieldset, em, button, a {
     --button-font-color: rgb(255, 255, 255);
     --button-padding: 0.5rem 1.5rem;
     --button-border-radius: 0.25rem;
-    --standard-border: 1px solid #d0d0d0;
+    --standard-border: 1px solid #002D61;
     --light-border: 1px solid var(--shadow-and-border-color);
     --text-field-border: 2px solid #d0d0d0;
     --cancel-button-background-color: #A66654;
