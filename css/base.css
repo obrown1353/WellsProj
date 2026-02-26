@@ -58,7 +58,7 @@ table, td, tr, th, form, fieldset, em, button, a {
     --happy-toast-font-color: rgb(255, 255, 255);
     --info-toast-background-color: #e8e8e8;
     --info-toast-font-color: #111111;
-    --error-toast-background-color: #A66654;
+    --error-toast-background-color: #0067A2;
     --error-toast-font-color: rgb(255, 255, 255);
     --shadow-and-border-color: #d0d0d0;
     --main-color: #002D61; 
@@ -80,8 +80,8 @@ table, td, tr, th, form, fieldset, em, button, a {
     --standard-border: 1px solid #002D61;
     --light-border: 1px solid var(--shadow-and-border-color);
     --text-field-border: 2px solid #d0d0d0;
-    --cancel-button-background-color: #A66654;
-    --error-color: #A66654;
+    --cancel-button-background-color: #0067A2;
+    --error-color: #0067A2;
     /* Global rules */
     font-size: 18px;
     font-family: Montserrat;
