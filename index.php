@@ -9,18 +9,18 @@
     date_default_timezone_set("America/New_York");
     
     
-    if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 1) {
+    /*if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 1) {
         if (isset($_SESSION['change-password'])) {
             header('Location: changePassword.php');
         } else {
             header('Location: login.php');
         }
         die();
-    } 
+    } */
 
     // temp fix to access home page -> disables required log-in
-    //$_SESSION['access_level'] = 2;
-    //$_SESSION['_id'] = 'vmsroot';
+    $_SESSION['access_level'] = 2;
+    $_SESSION['_id'] = 'vmsroot';
 
     include_once('database/dbPersons.php');
     include_once('domain/Person.php');
