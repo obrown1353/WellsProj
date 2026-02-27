@@ -458,8 +458,41 @@
 
     <!-- Dummy content to enable scrolling -->
     <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
+        <h2><b>Welcome to Seacobeck Library, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
     </div>
+
+<!-- Center Search Bar -->
+<div style="display: flex; justify-content: center; margin: 40px 0;">
+
+	<div style="width:100%; 
+		    max-width: 900px;
+		    border: 3px solid #0067A2;
+		    border-radius: 16px;
+		    padding: 30px;
+		    background-color: #8DC9F7;">
+
+    <form action="calendar.php" method="GET" style="width: 50%; max-width: 900px; display: flex;">
+        <input
+            type="text"
+            name="query"
+            placeholder="Search..."
+	    style="width: 100%;
+		   max-width: 900px;
+		   padding: 12px 16px;
+		   font-size: 16px;
+		   border: 1px solid #ccc;
+		   border-radius: 20px; 
+		   outline: none;"
+            required
+        >
+        <!--<button
+            type="submit"
+            style="padding: 8px 14px; font-size: 14px; border: none; background-color: #8DC9F7; color: white; border-radius: 0 6px 6px 0; cursor: pointer;">
+            Search
+	</button> -->
+    </form>
+</div>
+</div>
 
             <?php if (isset($_GET['pcSuccess'])): ?>
                 <div class="happy-toast">Password changed successfully!</div>
@@ -493,7 +526,7 @@
 
 <div style="width: 90%; /* Stops before page ends */
             height: 100%;
-            outline: 1px #828282 solid;
+            outline: 1px #8DC9F7 solid;
             outline-offset: -0.5px;
             margin: 70px auto; /* Adds vertical space and centers */
             padding: 1px 0;"> <!-- Adds spacing inside the div -->
@@ -503,7 +536,7 @@
     <footer class="footer" style="margin-top: 100px;">
         <!-- Left Side: Logo & Socials -->
         <div class="footer-left">
-            <img src="images/whiskeyLogoBlack.png" alt="Logo" class="footer-logo">
+            <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
             <div class="social-icons">
                 <a href="#"><i class="fab fa-facebook"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
@@ -540,8 +573,6 @@
 <body>
 <?php require 'header.php';?>
 
-  
-
   <!-- Icon Container -->
 <div style="position: absolute; top: 110px; right: 30px; z-index: 999; display: flex; flex-direction: row; gap: 30px; align-items: center; text-align: center;">
 
@@ -552,6 +583,104 @@
 </div>
 
 
+
+    <!-- Dummy content to enable scrolling -->
+    <div style="margin-top: 0px; padding: 30px 20px;">
+        <h2><b>Welcome <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
+    </div>
+
+    <div class="full-width-bar">
+    <div class="content-box">
+    <img src="images/VolM.png" />
+        <div class="small-text">Make a difference.</div>
+        <div class="large-text">My Profile</div>
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="window.location.href='viewProfile.php'">
+                <span class="arrow"><img src="images/view-profile.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 20px;"></span>
+                <span class="text">View</span>
+            </button>
+            <button class="nav-button" onclick="window.location.href='editProfile.php'">
+                <span class="arrow"><img src="images/manage-account.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 20px;"></span>
+                <span class="text">Edit</span>
+            </button>
+
+        </div>
+    </div>
+
+    <div class="content-box">
+        <img src="images/EvM.png" />
+        <div class="small-text">Let’s have some fun!</div>
+        <div class="large-text">My Events</div>
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="window.location.href='viewAllEvents.php'">
+                <span class="arrow"><img src="images/new-event.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 10px;"></span>
+                <span class="text">Sign-Up</span>
+            </button>
+            <button class="nav-button" onclick="window.location.href='viewMyUpcomingEvents.php'">
+                <span class="arrow"><img src="images/list-solid.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 10px;"></span>
+                <span class="text">Upcoming</span>
+            </button>
+
+        </div>
+    </div>
+
+
+    </div>
+
+    <div style="margin-top: 50px; padding: 0px 80px;">
+        <h2><b>Your Dashboard</h2>
+    </div>
+    <div class="full-width-bar-sub">
+        <div class="content-box-test" onclick="window.location.href='calendar.php'">
+            <div class="icon-overlay">
+                <img style="border-radius: 5px;" src="images/view-calendar.svg" alt="Calendar Icon">
+            </div>
+            <img class="background-image" src="images/blank-white-background.jpg" />
+            <div class="large-text-sub">Calendar</div>
+            <div class="graph-text">See upcoming events/trainings.</div>
+            <button class="arrow-button">→</button>
+        </div>
+
+               <?php
+                    require_once('database/dbMessages.php');
+                    $unreadMessageCount = get_user_unread_count($person->get_id());
+                    $inboxIcon = 'inbox.svg';
+                    if ($unreadMessageCount) {
+                        $inboxIcon = 'inbox-unread.svg';
+                    }
+                ?>
+
+        <div class="content-box-test" onclick="window.location.href='upload_encrypted_image.php'">
+            <div class="icon-overlay">
+                <img style="border-radius: 5px;" src="images/file-regular.svg" alt="Calendar Icon">
+            </div>
+            <img class="background-image" src="images/blank-white-background.jpg" />
+            <div class="large-text-sub">Documentation Upload</div>
+            <div class="graph-text">Upload an ID for verification.</div>
+            <button class="arrow-button">→</button>
+        </div>
+
+        <div class="content-box-test" onclick="window.location.href='createSuggestion.php'">
+            <div class="icon-overlay">
+                <img style="border-radius: 5px;" src="images/clipboard-regular.svg" alt="Report Icon">
+            </div>
+            <img class="background-image" src="images/blank-white-background.jpg" />
+            <div class="large-text-sub">Suggestions</div>
+            <div class="graph-text">Suggest opportunities for charity events.</div>
+            <button class="arrow-button">→</button>
+        </div>
+
+        <div class="content-box-test" onclick="window.location.href='inbox.php'">
+            <div class="icon-overlay">
+                <img style="border-radius: 5px;" src="images/<?php echo $inboxIcon ?>" alt="Notification Icon">
+            </div>
+            <img class="background-image" src="images/blank-white-background.jpg" />
+            <div class="large-text-sub">Notifications</div>
+            <div class="graph-text">Stay up to date.</div>
+            <button class="arrow-button">→</button>
+        </div>
+
+    </div>
 
 <div style="width: 90%; /* Stops before page ends */
             height: 100%;
@@ -596,3 +725,4 @@
 </body>
 <?php endif ?>
 </html>
+

@@ -259,8 +259,8 @@ if (date("H:i:s") > "18:19:59") {
         }
 
         .nav-item:hover, .nav-item.active {
-            color: #f5ce7aff;
-            outline: 1px solid #f5d07aff;
+            color: #8DC9F7;
+            outline: 1px solid #8DC9F7;
             outline-offset: 7px;
         }
 
@@ -365,7 +365,7 @@ if (date("H:i:s") > "18:19:59") {
         /* Footer */
         .footer {
             width: 100%;
-            background: #C9AB81;
+            background: #8DC9F7;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -646,8 +646,17 @@ if (date("H:i:s") > "18:19:59") {
                     <a href="index.php" class="nav-link">Home</a>
                 </div>
                 <div class="nav-item">
-                    <a href="calendar.php" class="nav-link">Events Calendar</a>
-                </div>
+                    <a href="calendar.php" class="nav-link">Full Catalog</a>
+		</div>
+		<div class="nav-item">
+		    <a href="calendar.php" class="nav-link">Return Form</a>
+		</div>
+		<div class="nav-item">
+		    <a href="calendar.php" class="nav-link">Student Worker</a>
+		</div>
+		<div class="nav-item">
+		    <a href="calendar.php" class="nav-link">Admin</a>
+		</div>
             </div>
         </div>
 
