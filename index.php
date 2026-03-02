@@ -1,4 +1,6 @@
+
 <?php
+
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
@@ -8,8 +10,7 @@
 
     date_default_timezone_set("America/New_York");
     
-    
-    /*if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 1) {
+    if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 1) {
         if (isset($_SESSION['change-password'])) {
             header('Location: changePassword.php');
         } else {
@@ -29,7 +30,9 @@
         $person = retrieve_person($_SESSION['_id']);
     }
     $notRoot = $person->get_id() != 'vmsroot';
+    
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -454,8 +457,8 @@
 <!-- ONLY SUPER ADMIN WILL SEE THIS -->
 <?php if ($_SESSION['access_level'] >= 2): ?>
 <body>
-<?php require 'header.php';?>
 
+<?php require 'header.php';?>
     <!-- Dummy content to enable scrolling -->
     <div style="margin-top: 0px; padding: 30px 20px;">
         <h2><b>Welcome to Seacobeck Library, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
