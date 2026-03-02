@@ -17,7 +17,7 @@
             header('Location: login.php');
         }
         die();
-    } */
+    } 
 
     // temp fix to access home page -> disables required log-in
     $_SESSION['access_level'] = 2;
