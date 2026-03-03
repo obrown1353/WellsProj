@@ -121,7 +121,7 @@
 
   <!-- Footer -->
   <footer class="relative z-10 w-full text-center text-white bg-black bg-opacity-50 py-4 mt-4">
-    Questions? Contact Dr. Mellisa Wells <a href="mailto:mwells@umw.edu" class="underline hover:text-blue-400">mwells@umw.edu</a>
+    Questions? Contact Dr. Melissa Wells <a href="mailto:mwells@umw.edu" class="underline hover:text-blue-400">mwells@umw.edu</a>
   </footer>
 
 </body>
