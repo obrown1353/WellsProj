@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Feb 09, 2026 at 11:09 AM
--- Server version: 8.4.5-5
--- PHP Version: 8.2.30
+-- Host: 127.0.0.1
+-- Generation Time: Mar 05, 2026 at 11:06 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,10 +18,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `dbkxnmd1xwle9j`
+-- Database: `wellsdb`
 --
-CREATE DATABASE IF NOT EXISTS `wellsdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
-USE `wellsdb`;
 
 -- --------------------------------------------------------
 
@@ -30,12 +28,12 @@ USE `wellsdb`;
 --
 
 CREATE TABLE `dbapplications` (
-  `id` int NOT NULL,
-  `user_id` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `event_id` int NOT NULL,
-  `status` enum('Approved','Denied','Pending') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Pending',
-  `flagged` tinyint(1) NOT NULL DEFAULT '0',
-  `note` text COLLATE utf8mb4_general_ci NOT NULL
+  `id` int(11) NOT NULL,
+  `user_id` varchar(256) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `status` enum('Approved','Denied','Pending') NOT NULL DEFAULT 'Pending',
+  `flagged` tinyint(1) NOT NULL DEFAULT 0,
+  `note` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -58,10 +56,10 @@ INSERT INTO `dbapplications` (`id`, `user_id`, `event_id`, `status`, `flagged`, 
 --
 
 CREATE TABLE `dbapplication_comments` (
-  `id` int NOT NULL,
-  `application_id` int NOT NULL,
-  `user_id` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `comment` text COLLATE utf8mb4_general_ci NOT NULL
+  `id` int(11) NOT NULL,
+  `application_id` int(11) NOT NULL,
+  `user_id` varchar(256) NOT NULL,
+  `comment` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -72,35 +70,35 @@ CREATE TABLE `dbapplication_comments` (
 
 CREATE TABLE `dbarchived_volunteers` (
   `id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `start_date` text,
+  `start_date` text DEFAULT NULL,
   `first_name` text NOT NULL,
-  `last_name` text,
-  `street_address` text,
-  `city` text,
-  `state` text,
-  `zip_code` text,
+  `last_name` text DEFAULT NULL,
+  `street_address` text DEFAULT NULL,
+  `city` text DEFAULT NULL,
+  `state` text DEFAULT NULL,
+  `zip_code` text DEFAULT NULL,
   `phone1` varchar(12) NOT NULL,
-  `phone1type` text,
+  `phone1type` text DEFAULT NULL,
   `emergency_contact_phone` varchar(12) DEFAULT NULL,
-  `emergency_contact_phone_type` text,
-  `birthday` text,
-  `email` text,
+  `emergency_contact_phone_type` text DEFAULT NULL,
+  `birthday` text DEFAULT NULL,
+  `email` text DEFAULT NULL,
   `emergency_contact_first_name` text NOT NULL,
   `contact_num` varchar(12) NOT NULL,
   `emergency_contact_relation` text NOT NULL,
-  `contact_method` text,
-  `type` text,
-  `status` text,
-  `notes` text,
-  `password` text,
+  `contact_method` text DEFAULT NULL,
+  `type` text DEFAULT NULL,
+  `status` text DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `password` text DEFAULT NULL,
   `skills` text NOT NULL,
   `interests` text NOT NULL,
-  `archived_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `archived_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `emergency_contact_last_name` text NOT NULL,
-  `is_new_volunteer` tinyint(1) NOT NULL DEFAULT '1',
-  `is_community_service_volunteer` tinyint(1) NOT NULL DEFAULT '0',
-  `total_hours_volunteered` decimal(5,2) DEFAULT '0.00'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `is_new_volunteer` tinyint(1) NOT NULL DEFAULT 1,
+  `is_community_service_volunteer` tinyint(1) NOT NULL DEFAULT 0,
+  `total_hours_volunteered` decimal(5,2) DEFAULT 0.00
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `dbarchived_volunteers`
@@ -116,12 +114,28 @@ INSERT INTO `dbarchived_volunteers` (`id`, `start_date`, `first_name`, `last_nam
 --
 
 CREATE TABLE `dbattendance` (
-  `id` int NOT NULL,
-  `eventId` int NOT NULL,
-  `userId` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `loggedById` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `attended` tinyint(1) NOT NULL DEFAULT '0',
-  `attendanceNote` text COLLATE utf8mb4_general_ci
+  `id` int(11) NOT NULL,
+  `eventId` int(11) NOT NULL,
+  `userId` varchar(256) NOT NULL,
+  `loggedById` varchar(256) DEFAULT NULL,
+  `attended` tinyint(1) NOT NULL DEFAULT 0,
+  `attendanceNote` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dbcheckout`
+--
+
+CREATE TABLE `dbcheckout` (
+  `checkout_id` int(11) NOT NULL,
+  `material_id` int(11) NOT NULL,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `email` text NOT NULL,
+  `checkout_date` date NOT NULL,
+  `due_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -151,11 +165,11 @@ INSERT INTO `dbdiscussions` (`author_id`, `title`, `body`, `time`) VALUES
 --
 
 CREATE TABLE `dbdrafts` (
-  `draftID` int NOT NULL,
-  `userID` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `recipientID` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `subject` text COLLATE utf8mb4_general_ci NOT NULL,
-  `body` text COLLATE utf8mb4_general_ci NOT NULL,
+  `draftID` int(11) NOT NULL,
+  `userID` varchar(256) NOT NULL,
+  `recipientID` varchar(256) NOT NULL,
+  `subject` text NOT NULL,
+  `body` text NOT NULL,
   `scheduledSend` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -166,14 +180,14 @@ CREATE TABLE `dbdrafts` (
 --
 
 CREATE TABLE `dbeventmedia` (
-  `id` int NOT NULL,
-  `eventID` int NOT NULL,
-  `file_name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `file_format` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `altername_name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `id` int(11) NOT NULL,
+  `eventID` int(11) NOT NULL,
+  `file_name` text NOT NULL,
+  `type` text NOT NULL,
+  `file_format` text NOT NULL,
+  `description` text NOT NULL,
+  `altername_name` text NOT NULL,
+  `time_created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -183,11 +197,11 @@ CREATE TABLE `dbeventmedia` (
 --
 
 CREATE TABLE `dbeventpersons` (
-  `id` int NOT NULL,
-  `eventID` int NOT NULL,
-  `userID` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `attended` tinyint(1) NOT NULL DEFAULT '0'
+  `id` int(11) NOT NULL,
+  `eventID` int(11) NOT NULL,
+  `userID` varchar(256) NOT NULL,
+  `notes` text DEFAULT NULL,
+  `attended` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -232,21 +246,21 @@ INSERT INTO `dbeventpersons` (`id`, `eventID`, `userID`, `notes`, `attended`) VA
 --
 
 CREATE TABLE `dbevents` (
-  `id` int NOT NULL,
-  `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` enum('Retreat','Normal') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Normal',
-  `startDate` char(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `startTime` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `endTime` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `endDate` char(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `capacity` int NOT NULL,
-  `location` text COLLATE utf8mb4_unicode_ci,
-  `affiliation` int DEFAULT NULL,
-  `branch` int DEFAULT NULL,
-  `access` enum('Public','Private') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Public',
-  `completed` enum('Y','N') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'N',
-  `series_id` int DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `name` text NOT NULL,
+  `type` enum('Retreat','Normal') NOT NULL DEFAULT 'Normal',
+  `startDate` char(10) NOT NULL,
+  `startTime` char(5) NOT NULL,
+  `endTime` char(5) NOT NULL,
+  `endDate` char(10) NOT NULL,
+  `description` text NOT NULL,
+  `capacity` int(11) NOT NULL,
+  `location` text DEFAULT NULL,
+  `affiliation` int(11) DEFAULT NULL,
+  `branch` int(11) DEFAULT NULL,
+  `access` enum('Public','Private') NOT NULL DEFAULT 'Public',
+  `completed` enum('Y','N') NOT NULL DEFAULT 'N',
+  `series_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -300,8 +314,8 @@ INSERT INTO `dbevents` (`id`, `name`, `type`, `startDate`, `startTime`, `endTime
 --
 
 CREATE TABLE `dbgroups` (
-  `group_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `color_level` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
+  `group_name` varchar(255) NOT NULL,
+  `color_level` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -315,18 +329,36 @@ INSERT INTO `dbgroups` (`group_name`, `color_level`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `dbmaterials`
+--
+
+CREATE TABLE `dbmaterials` (
+  `material_id` int(11) NOT NULL,
+  `name` text NOT NULL,
+  `location` text NOT NULL,
+  `resource_type` text NOT NULL,
+  `isbn` varchar(20) DEFAULT NULL,
+  `author` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `copy_capacity` int(11) NOT NULL,
+  `copy_instock` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `dbmessages`
 --
 
 CREATE TABLE `dbmessages` (
-  `id` int NOT NULL,
-  `senderID` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `recipientID` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `time` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `wasRead` tinyint(1) NOT NULL DEFAULT '0',
-  `prioritylevel` tinyint NOT NULL DEFAULT '0'
+  `id` int(11) NOT NULL,
+  `senderID` varchar(256) NOT NULL,
+  `recipientID` varchar(256) NOT NULL,
+  `title` varchar(256) NOT NULL,
+  `body` text NOT NULL,
+  `time` varchar(16) NOT NULL,
+  `wasRead` tinyint(1) NOT NULL DEFAULT 0,
+  `prioritylevel` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -646,11 +678,11 @@ INSERT INTO `dbmessages` (`id`, `senderID`, `recipientID`, `title`, `body`, `tim
 --
 
 CREATE TABLE `dbpendingsignups` (
-  `username` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `eventname` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `notes` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attended` tinyint(1) NOT NULL DEFAULT '0',
-  `role` text COLLATE utf8mb4_unicode_ci NOT NULL
+  `username` varchar(25) NOT NULL,
+  `eventname` varchar(100) NOT NULL,
+  `notes` varchar(100) NOT NULL,
+  `attended` tinyint(1) NOT NULL DEFAULT 0,
+  `role` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -679,9 +711,9 @@ INSERT INTO `dbpendingsignups` (`username`, `eventname`, `notes`, `attended`, `r
 --
 
 CREATE TABLE `dbpersonhours` (
-  `personID` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `eventID` int NOT NULL,
-  `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `personID` varchar(256) NOT NULL,
+  `eventID` int(11) NOT NULL,
+  `start_time` timestamp NOT NULL DEFAULT current_timestamp(),
   `end_time` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -703,67 +735,66 @@ INSERT INTO `dbpersonhours` (`personID`, `eventID`, `start_time`, `end_time`) VA
 
 CREATE TABLE `dbpersons` (
   `id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `start_date` text,
+  `start_date` text DEFAULT NULL,
   `first_name` text NOT NULL,
-  `last_name` text,
-  `street_address` text,
-  `city` text,
+  `last_name` text DEFAULT NULL,
+  `street_address` text DEFAULT NULL,
+  `city` text DEFAULT NULL,
   `state` varchar(2) DEFAULT NULL,
-  `zip_code` text,
+  `zip_code` text DEFAULT NULL,
   `phone1` varchar(12) DEFAULT NULL,
-  `over21` enum('true','false') DEFAULT NULL,
-  `phone1type` text,
+  `phone1type` text DEFAULT NULL,
   `emergency_contact_phone` varchar(12) DEFAULT NULL,
-  `emergency_contact_phone_type` text,
-  `birthday` text,
-  `email` text,
+  `emergency_contact_phone_type` text DEFAULT NULL,
+  `birthday` text DEFAULT NULL,
+  `email` text DEFAULT NULL,
   `email_prefs` enum('true','false') DEFAULT NULL,
-  `emergency_contact_first_name` text,
+  `emergency_contact_first_name` text DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT 'n/a',
-  `emergency_contact_relation` text,
-  `contact_method` text,
-  `type` text,
-  `status` text,
-  `notes` text,
-  `password` text,
+  `emergency_contact_relation` text DEFAULT NULL,
+  `contact_method` text DEFAULT NULL,
+  `type` text DEFAULT NULL,
+  `status` text DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `password` text DEFAULT NULL,
   `affiliation` varchar(100) DEFAULT NULL,
   `branch` varchar(100) DEFAULT NULL,
   `archived` tinyint(1) DEFAULT NULL,
-  `emergency_contact_last_name` text
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `emergency_contact_last_name` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `dbpersons`
 --
 
-INSERT INTO `dbpersons` (`id`, `start_date`, `first_name`, `last_name`, `street_address`, `city`, `state`, `zip_code`, `phone1`, `over21`, `phone1type`, `emergency_contact_phone`, `emergency_contact_phone_type`, `birthday`, `email`, `email_prefs`, `emergency_contact_first_name`, `contact_num`, `emergency_contact_relation`, `contact_method`, `type`, `status`, `notes`, `password`, `affiliation`, `branch`, `archived`, `emergency_contact_last_name`) VALUES
-('acarmich@mail.umw.edu', '2025-12-01', 'John', 'Doe', NULL, 'Fredericksburg', 'VA', NULL, '5555555555', 'true', '', '', '', '', 'acarmich@mail.umw.edu', 'false', '', '', '', '', 'volunteer', '', '', '$2y$10$1CDYmdifcx5rfR80Ui8WLuM2ldqc4DTJiFbK1JMSLycE/0lLKPJUS', 'Family', 'Air Force', NULL, ''),
-('ameyer3', '2025-03-26', 'Aidan', 'Meyer', '1541 Surry Hill Court', 'Charlottesville', 'VA', '22901', '4344222910', NULL, 'home', '4344222910', 'home', '2003-08-17', 'aidanmeyer32@gmail.com', NULL, 'Aidan', 'n/a', 'Father', NULL, 'volunteer', 'Active', NULL, '$2y$10$0R5pX4uTxS0JZ4rc7dGprOK4c/d1NEs0rnnaEmnW4sz8JIQVyNdBC', NULL, NULL, 0, 'Meyer'),
-('armyuser', '2025-11-30', 'Army', 'Active Duty', NULL, 'FXBG', 'VA', NULL, '3243242342', 'true', '', '', '', '', 'example@example.com', 'false', '', '', '', '', '', '', '', '$2y$10$kdxwMq.xaGsYvl8gY/8l3.xwu9ABEhWernkR6kmro9QtNvvEjqPFi', 'Active duty', 'Army', NULL, ''),
-('BobVolunteer', '2025-04-29', 'Bob', 'SPCA', '123 Dog Ave', 'Dogville', 'VA', '54321', '9806761234', NULL, 'home', '1234567788', 'home', '2020-03-03', 'fred54321@gmail.com', NULL, 'Luke', 'n/a', 'Bff', NULL, 'volunteer', 'Active', NULL, '$2y$10$4wUwAW0yoizxi5UFy1/OZu.yfYY7rzUsuYcZCdvfplLj95r7OknvG', NULL, NULL, 0, 'Blair'),
-('Britorsk', '2026-02-05', 'Brian', 'Prelle', NULL, 'KING GEORGE', 'VA', NULL, '5402076085', 'true', '', '', '', '', 'brian2@prelle.net', 'false', '', '', '', '', '', '', '', '$2y$10$q9wFQJ/guFjlUnR7IfJt/.MRf5bDfK8FxebznfRt644twzYepM/bC', 'Family', 'Air Force', NULL, ''),
-('exampleuser', '2025-10-20', 'example', 'user', '', 'test', 'VA', '', '2344564645', NULL, '', '', '', '', 'example@test.com', NULL, '', 'n/a', '', NULL, 'v', 'Active', NULL, '$2y$10$J0NgBjoyg9F6YMyy/qQpv.f94OLM2r19sY80BZMhMdcl38SN5vdre', NULL, NULL, 0, ''),
-('fakename', '2025-12-10', 'fake', 'name', NULL, 'realtown', 'VA', NULL, '5555555555', 'true', '', '', '', '', 'fakeemail@email.email.com', 'true', '', '', '', '', '', '', '', '$2y$10$4h8ImkaTyMprwU3SzWrWx./NBI7yClMoqCkEbYJuA1/9cb0tSlUI.', 'Civilian', 'Marine Corp', NULL, ''),
-('firstName', '2025-12-10', 'firstName', 'lastName', NULL, 'homeTown', 'TX', NULL, '5555555555', 'true', '', '', '', '', 'realemail@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$og/aLBzrg195Qph9d2M/DuX2DIPhP.0sVT3vtu/WUpGCse8B.k71m', 'Civilian', 'Navy', NULL, ''),
-('gabriel', '2026-02-02', 'Gabriel', 'Courtney', NULL, 'King George', 'VA', NULL, '5404295285', 'true', '', '', '', '', 'gabrielcourtney04@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$4uvfLFyFy9Ui1i8Q1r0MWuFRGYfgvVh4.iUtvXksfVJm4pZpxxtSq', 'Active duty', 'Space Force', NULL, ''),
-('japper', '2026-02-02', 'Jennifer', 'Polack', NULL, 'Fredericksburg', 'VA', NULL, '5406541318', 'true', '', '', '', '', 'jenniferpolack@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$mJzI.UGPGUmYgo7HxTamkeKlsmajzLwXM6su4NdxuHYHZXIGnb0xm', 'Family', 'Marine Corp', NULL, ''),
-('Jlipinsk', '2025-12-03', 'Jake', 'Lipinski', NULL, 'Williamsburg', 'VA', NULL, '7577903325', 'true', '', '', '', '', 'jlipinsk@mail.umw.edu', 'true', '', '', '', '', '', '', '', '$2y$10$qz33T0Sq760IITyYajCYOeWlHR/7sRJH.U609EUkF3R5zRiWWddkG', 'Civilian', 'Army', NULL, ''),
-('johnDoe123', '2026-02-07', 'John', 'Doe', NULL, 'Fredericksburg', 'VA', NULL, '2345678910', 'true', '', '', '', '', 'test@email.com', 'false', '', '', '', '', '', '', '', '$2y$10$LTVIuLeSZ4ferdNOe0JdTedaFHqFuEOAz7HDCQuZ4PG9kZrRJc7xS', 'Active duty', 'Navy', NULL, ''),
-('lukeg', '2025-04-29', 'Luke', 'Gibson', '22 N Ave', 'Fredericksburg', 'VA', '22401', '1234567890', NULL, 'cellphone', '1234567890', 'cellphone', '2025-04-28', 'volunteer@volunteer.com', NULL, 'NoName', 'n/a', 'Brother', NULL, 'volunteer', 'Active', NULL, '$2y$10$KsNVJYhvO5D287GpKYsIPuci9FnL.Eng9R6lBpaetu2Y0yVJ7Uuiq', NULL, NULL, 0, 'YesName'),
-('maddiev', '2025-04-28', 'maddie', 'van buren', '123 Blue st', 'fred', 'VA', '12343', '1234567890', NULL, 'cellphone', '1234567819', 'cellphone', '2003-05-17', 'mvanbure@mail.umw.edu', NULL, 'mommy', 'n/a', 'mom', NULL, 'volunteer', 'Active', NULL, '$2y$10$0mv3.e6gjqoIg.HfT5qVXOsI.Ca5E93DAy8BnT124W1PvMDxpfoxy', NULL, NULL, 0, 'van buren'),
-('michael_smith', '2025-03-16', 'Michael', 'Smith', '789 Pine Street', 'Charlottesville', 'VA', '22903', '4345559876', NULL, 'mobile', '4345553322', 'work', '1995-08-22', 'michaelsmith@email.com', NULL, 'Sarah', '4345553322', 'Sister', 'email', 'volunteer', 'Active', '', '$2y$10$XYZ789xyz456LMN123DEF', NULL, NULL, 0, 'Smith'),
-('michellevb', '2025-04-29', 'Michelle', 'Van Buren', '1234 Red St', 'Freddy', 'VA', '22401', '1234567890', NULL, 'cellphone', '0987654321', 'cellphone', '1980-08-18', 'michelle.vb@gmail.com', NULL, 'Madison', 'n/a', 'daughter', NULL, 'volunteer', 'Active', NULL, '$2y$10$bkqOWUdIJoSa6kZoRo5KH.cerZkBQf74RYsponUUgefJxNc8ExppK', NULL, NULL, 0, 'Van Buren'),
-('navyspouse', '2025-11-30', 'Navy', 'Spouse', NULL, 'FXBG', 'VA', NULL, '3543534543', 'true', '', '', '', '', 'example@example.com', 'false', '', '', '', '', '', '', '', '$2y$10$nqoIFq4ru0k1wLkg0E/rfupwez.x1Gg6ldEuKgC.jIQemgCEuDzkG', 'Family', 'Navy', NULL, ''),
-('olivia', '2026-02-04', 'Olivia', 'Blue', NULL, 'Fredericksburg', 'VA', NULL, '1112223333', 'false', '', '', '', '', 'oliviablue@gmail.com', 'false', '', '', '', '', '', '', '', '$2y$10$ew4nuUYBtx6.CbNBezMTYuAQGaxMJgxIs4I3uIx05Sb7SqxKHJO2S', 'Family', 'Marine Corp', NULL, ''),
-('test_acc', '2025-04-29', 'test', 'test', 'test', 'test', 'VA', '22405', '5555555555', NULL, 'cellphone', '5555555555', 'cellphone', '2003-03-03', 'test@gmail.com', NULL, 'test', 'n/a', 't', NULL, 'volunteer', 'Active', NULL, '$2y$10$kpVA41EXvoJyv896uDBEF.fHCPmSlkVSaXjHojBl7DqbRnEm//kxy', NULL, NULL, 0, 'test'),
-('test_person', '2025-10-26', 'Testina', 'Tester', NULL, 'Testville', 'VA', NULL, '5555555555', 'true', 'mobile', NULL, NULL, '1980-08-18', 'testing@gmail.com', 'false', NULL, 'n/a', NULL, NULL, NULL, NULL, NULL, '$2y$10$blAQaBgCChBv5qRtBFVVAe1m6gIfwPf/wJ8HxzLFTYiY3aWpvaW8e', 'civilian', 'Army', NULL, NULL),
-('test_persona', '2025-10-28', 'Testana', 'Tester', NULL, 'Testinaville', 'VA', NULL, '5555555555', 'true', NULL, NULL, NULL, NULL, 'testerana@gmail.com', 'true', NULL, 'n/a', NULL, NULL, NULL, NULL, NULL, '$2y$10$s90qlNAJE9EbgLhZbhG5vO4IGSM.PIbK3Ve9IvpfoicMwXbFEXQFi', 'active', 'air_force', NULL, NULL),
-('tester4', '2025-12-01', 'tester', 'testing', NULL, 'Fredericksburg', 'VA', NULL, '5405405405', 'true', '', '', '', '', 'tester@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$nILE/qxdpSvIgROc1uQEV.MyflEdG0IuNLQQ1c1u54MSEYKlg2LC2', 'Active duty', 'Space Force', NULL, ''),
-('testing123', '2025-10-26', 'Test', 'User', NULL, 'City', 'VA', NULL, '', 'true', NULL, NULL, NULL, NULL, 'example@email.com', 'true', NULL, 'n/a', NULL, NULL, NULL, NULL, NULL, '$2y$10$XbXkJUMSAGo9m1/GZQ3faebtJWbPMZYm/AeTA3jpDCaxZBNnMclxC', 'civ', 'marine_corp', NULL, NULL),
-('toaster', '2025-12-08', 'toast', 'er', NULL, 'Fredericksburg', 'VA', NULL, '5405405405', 'true', '', '', '', '', 'toaster@gmail.com', 'false', '', '', '', '', '', '', '', '$2y$10$VzLJcSjn/WFh0jeI9iFAw.McczukN4ovZuzg9vgtKFlXL3i/O9oOq', 'Civilian', 'Navy', NULL, ''),
-('vmsroot', NULL, 'vmsroot', '', 'N/A', 'N/A', 'VA', 'N/A', '', NULL, 'N/A', 'N/A', 'N/A', NULL, '', NULL, 'vmsroot', 'N/A', 'N/A', 'email', 'superadmin', 'Active', 'System root user account', '$2y$10$.3p8xvmUqmxNztEzMJQRBesLDwdiRU3xnt/HOcJtsglwsbUk88VTO', NULL, NULL, 0, 'vmsroot'),
-('Volunteer25', '2025-04-30', 'Volley', 'McTear', '123 Dog St', 'Dogville', 'VA', '56748', '9887765543', NULL, 'home', '6565651122', 'home', '2025-04-29', 'volly@gmail.com', NULL, 'Holly', 'n/a', 'Besty', NULL, 'volunteer', 'Active', NULL, '$2y$10$45gKdbjW78pNKX/5ROtb7eU9OykSCsP/QCyTAvqBtord4J7V3Ywga', NULL, NULL, 0, 'McTear'),
-('Welp', '2025-12-04', 'Jake', 'Lipinski', NULL, 'Apple', 'VA', NULL, '7577903325', 'true', '', '', '', '', 'mcdonalds@happymeal.com', 'true', '', '', '', '', '', '', '', '$2y$10$LvWD62DJ6pwlVGnWenQkneWCFINzgbHgzyvaBdiLn72/WwM4wo7Iy', 'Active duty', 'Air Force', NULL, '');
+INSERT INTO `dbpersons` (`id`, `start_date`, `first_name`, `last_name`, `street_address`, `city`, `state`, `zip_code`, `phone1`, `phone1type`, `emergency_contact_phone`, `emergency_contact_phone_type`, `birthday`, `email`, `email_prefs`, `emergency_contact_first_name`, `contact_num`, `emergency_contact_relation`, `contact_method`, `type`, `status`, `notes`, `password`, `affiliation`, `branch`, `archived`, `emergency_contact_last_name`) VALUES
+('acarmich@mail.umw.edu', '2025-12-01', 'John', 'Doe', NULL, 'Fredericksburg', 'VA', NULL, '5555555555', '', '', '', '', 'acarmich@mail.umw.edu', 'false', '', '', '', '', 'volunteer', '', '', '$2y$10$1CDYmdifcx5rfR80Ui8WLuM2ldqc4DTJiFbK1JMSLycE/0lLKPJUS', 'Family', 'Air Force', NULL, ''),
+('ameyer3', '2025-03-26', 'Aidan', 'Meyer', '1541 Surry Hill Court', 'Charlottesville', 'VA', '22901', '4344222910', 'home', '4344222910', 'home', '2003-08-17', 'aidanmeyer32@gmail.com', NULL, 'Aidan', 'n/a', 'Father', NULL, 'volunteer', 'Active', NULL, '$2y$10$0R5pX4uTxS0JZ4rc7dGprOK4c/d1NEs0rnnaEmnW4sz8JIQVyNdBC', NULL, NULL, 0, 'Meyer'),
+('armyuser', '2025-11-30', 'Army', 'Active Duty', NULL, 'FXBG', 'VA', NULL, '3243242342', '', '', '', '', 'example@example.com', 'false', '', '', '', '', '', '', '', '$2y$10$kdxwMq.xaGsYvl8gY/8l3.xwu9ABEhWernkR6kmro9QtNvvEjqPFi', 'Active duty', 'Army', NULL, ''),
+('BobVolunteer', '2025-04-29', 'Bob', 'SPCA', '123 Dog Ave', 'Dogville', 'VA', '54321', '9806761234', 'home', '1234567788', 'home', '2020-03-03', 'fred54321@gmail.com', NULL, 'Luke', 'n/a', 'Bff', NULL, 'volunteer', 'Active', NULL, '$2y$10$4wUwAW0yoizxi5UFy1/OZu.yfYY7rzUsuYcZCdvfplLj95r7OknvG', NULL, NULL, 0, 'Blair'),
+('Britorsk', '2026-02-05', 'Brian', 'Prelle', NULL, 'KING GEORGE', 'VA', NULL, '5402076085', '', '', '', '', 'brian2@prelle.net', 'false', '', '', '', '', '', '', '', '$2y$10$q9wFQJ/guFjlUnR7IfJt/.MRf5bDfK8FxebznfRt644twzYepM/bC', 'Family', 'Air Force', NULL, ''),
+('exampleuser', '2025-10-20', 'example', 'user', '', 'test', 'VA', '', '2344564645', '', '', '', '', 'example@test.com', NULL, '', 'n/a', '', NULL, 'v', 'Active', NULL, '$2y$10$J0NgBjoyg9F6YMyy/qQpv.f94OLM2r19sY80BZMhMdcl38SN5vdre', NULL, NULL, 0, ''),
+('fakename', '2025-12-10', 'fake', 'name', NULL, 'realtown', 'VA', NULL, '5555555555', '', '', '', '', 'fakeemail@email.email.com', 'true', '', '', '', '', '', '', '', '$2y$10$4h8ImkaTyMprwU3SzWrWx./NBI7yClMoqCkEbYJuA1/9cb0tSlUI.', 'Civilian', 'Marine Corp', NULL, ''),
+('firstName', '2025-12-10', 'firstName', 'lastName', NULL, 'homeTown', 'TX', NULL, '5555555555', '', '', '', '', 'realemail@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$og/aLBzrg195Qph9d2M/DuX2DIPhP.0sVT3vtu/WUpGCse8B.k71m', 'Civilian', 'Navy', NULL, ''),
+('gabriel', '2026-02-02', 'Gabriel', 'Courtney', NULL, 'King George', 'VA', NULL, '5404295285', '', '', '', '', 'gabrielcourtney04@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$4uvfLFyFy9Ui1i8Q1r0MWuFRGYfgvVh4.iUtvXksfVJm4pZpxxtSq', 'Active duty', 'Space Force', NULL, ''),
+('japper', '2026-02-02', 'Jennifer', 'Polack', NULL, 'Fredericksburg', 'VA', NULL, '5406541318', '', '', '', '', 'jenniferpolack@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$mJzI.UGPGUmYgo7HxTamkeKlsmajzLwXM6su4NdxuHYHZXIGnb0xm', 'Family', 'Marine Corp', NULL, ''),
+('Jlipinsk', '2025-12-03', 'Jake', 'Lipinski', NULL, 'Williamsburg', 'VA', NULL, '7577903325', '', '', '', '', 'jlipinsk@mail.umw.edu', 'true', '', '', '', '', '', '', '', '$2y$10$qz33T0Sq760IITyYajCYOeWlHR/7sRJH.U609EUkF3R5zRiWWddkG', 'Civilian', 'Army', NULL, ''),
+('johnDoe123', '2026-02-07', 'John', 'Doe', NULL, 'Fredericksburg', 'VA', NULL, '2345678910', '', '', '', '', 'test@email.com', 'false', '', '', '', '', '', '', '', '$2y$10$LTVIuLeSZ4ferdNOe0JdTedaFHqFuEOAz7HDCQuZ4PG9kZrRJc7xS', 'Active duty', 'Navy', NULL, ''),
+('lukeg', '2025-04-29', 'Luke', 'Gibson', '22 N Ave', 'Fredericksburg', 'VA', '22401', '1234567890', 'cellphone', '1234567890', 'cellphone', '2025-04-28', 'volunteer@volunteer.com', NULL, 'NoName', 'n/a', 'Brother', NULL, 'volunteer', 'Active', NULL, '$2y$10$KsNVJYhvO5D287GpKYsIPuci9FnL.Eng9R6lBpaetu2Y0yVJ7Uuiq', NULL, NULL, 0, 'YesName'),
+('maddiev', '2025-04-28', 'maddie', 'van buren', '123 Blue st', 'fred', 'VA', '12343', '1234567890', 'cellphone', '1234567819', 'cellphone', '2003-05-17', 'mvanbure@mail.umw.edu', NULL, 'mommy', 'n/a', 'mom', NULL, 'volunteer', 'Active', NULL, '$2y$10$0mv3.e6gjqoIg.HfT5qVXOsI.Ca5E93DAy8BnT124W1PvMDxpfoxy', NULL, NULL, 0, 'van buren'),
+('michael_smith', '2025-03-16', 'Michael', 'Smith', '789 Pine Street', 'Charlottesville', 'VA', '22903', '4345559876', 'mobile', '4345553322', 'work', '1995-08-22', 'michaelsmith@email.com', NULL, 'Sarah', '4345553322', 'Sister', 'email', 'volunteer', 'Active', '', '$2y$10$XYZ789xyz456LMN123DEF', NULL, NULL, 0, 'Smith'),
+('michellevb', '2025-04-29', 'Michelle', 'Van Buren', '1234 Red St', 'Freddy', 'VA', '22401', '1234567890', 'cellphone', '0987654321', 'cellphone', '1980-08-18', 'michelle.vb@gmail.com', NULL, 'Madison', 'n/a', 'daughter', NULL, 'volunteer', 'Active', NULL, '$2y$10$bkqOWUdIJoSa6kZoRo5KH.cerZkBQf74RYsponUUgefJxNc8ExppK', NULL, NULL, 0, 'Van Buren'),
+('navyspouse', '2025-11-30', 'Navy', 'Spouse', NULL, 'FXBG', 'VA', NULL, '3543534543', '', '', '', '', 'example@example.com', 'false', '', '', '', '', '', '', '', '$2y$10$nqoIFq4ru0k1wLkg0E/rfupwez.x1Gg6ldEuKgC.jIQemgCEuDzkG', 'Family', 'Navy', NULL, ''),
+('olivia', '2026-02-04', 'Olivia', 'Blue', NULL, 'Fredericksburg', 'VA', NULL, '1112223333', '', '', '', '', 'oliviablue@gmail.com', 'false', '', '', '', '', '', '', '', '$2y$10$ew4nuUYBtx6.CbNBezMTYuAQGaxMJgxIs4I3uIx05Sb7SqxKHJO2S', 'Family', 'Marine Corp', NULL, ''),
+('test_acc', '2025-04-29', 'test', 'test', 'test', 'test', 'VA', '22405', '5555555555', 'cellphone', '5555555555', 'cellphone', '2003-03-03', 'test@gmail.com', NULL, 'test', 'n/a', 't', NULL, 'volunteer', 'Active', NULL, '$2y$10$kpVA41EXvoJyv896uDBEF.fHCPmSlkVSaXjHojBl7DqbRnEm//kxy', NULL, NULL, 0, 'test'),
+('test_person', '2025-10-26', 'Testina', 'Tester', NULL, 'Testville', 'VA', NULL, '5555555555', 'mobile', NULL, NULL, '1980-08-18', 'testing@gmail.com', 'false', NULL, 'n/a', NULL, NULL, NULL, NULL, NULL, '$2y$10$blAQaBgCChBv5qRtBFVVAe1m6gIfwPf/wJ8HxzLFTYiY3aWpvaW8e', 'civilian', 'Army', NULL, NULL),
+('test_persona', '2025-10-28', 'Testana', 'Tester', NULL, 'Testinaville', 'VA', NULL, '5555555555', NULL, NULL, NULL, NULL, 'testerana@gmail.com', 'true', NULL, 'n/a', NULL, NULL, NULL, NULL, NULL, '$2y$10$s90qlNAJE9EbgLhZbhG5vO4IGSM.PIbK3Ve9IvpfoicMwXbFEXQFi', 'active', 'air_force', NULL, NULL),
+('tester4', '2025-12-01', 'tester', 'testing', NULL, 'Fredericksburg', 'VA', NULL, '5405405405', '', '', '', '', 'tester@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$nILE/qxdpSvIgROc1uQEV.MyflEdG0IuNLQQ1c1u54MSEYKlg2LC2', 'Active duty', 'Space Force', NULL, ''),
+('testing123', '2025-10-26', 'Test', 'User', NULL, 'City', 'VA', NULL, '', NULL, NULL, NULL, NULL, 'example@email.com', 'true', NULL, 'n/a', NULL, NULL, NULL, NULL, NULL, '$2y$10$XbXkJUMSAGo9m1/GZQ3faebtJWbPMZYm/AeTA3jpDCaxZBNnMclxC', 'civ', 'marine_corp', NULL, NULL),
+('toaster', '2025-12-08', 'toast', 'er', NULL, 'Fredericksburg', 'VA', NULL, '5405405405', '', '', '', '', 'toaster@gmail.com', 'false', '', '', '', '', '', '', '', '$2y$10$VzLJcSjn/WFh0jeI9iFAw.McczukN4ovZuzg9vgtKFlXL3i/O9oOq', 'Civilian', 'Navy', NULL, ''),
+('vmsroot', NULL, 'vmsroot', '', 'N/A', 'N/A', 'VA', 'N/A', '', 'N/A', 'N/A', 'N/A', NULL, '', NULL, 'vmsroot', 'N/A', 'N/A', 'email', 'superadmin', 'Active', 'System root user account', '$2y$10$.3p8xvmUqmxNztEzMJQRBesLDwdiRU3xnt/HOcJtsglwsbUk88VTO', NULL, NULL, 0, 'vmsroot'),
+('Volunteer25', '2025-04-30', 'Volley', 'McTear', '123 Dog St', 'Dogville', 'VA', '56748', '9887765543', 'home', '6565651122', 'home', '2025-04-29', 'volly@gmail.com', NULL, 'Holly', 'n/a', 'Besty', NULL, 'volunteer', 'Active', NULL, '$2y$10$45gKdbjW78pNKX/5ROtb7eU9OykSCsP/QCyTAvqBtord4J7V3Ywga', NULL, NULL, 0, 'McTear'),
+('Welp', '2025-12-04', 'Jake', 'Lipinski', NULL, 'Apple', 'VA', NULL, '7577903325', '', '', '', '', 'mcdonalds@happymeal.com', 'true', '', '', '', '', '', '', '', '$2y$10$LvWD62DJ6pwlVGnWenQkneWCFINzgbHgzyvaBdiLn72/WwM4wo7Iy', 'Active duty', 'Air Force', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -772,14 +803,14 @@ INSERT INTO `dbpersons` (`id`, `start_date`, `first_name`, `last_name`, `street_
 --
 
 CREATE TABLE `dbscheduledemails` (
-  `id` int NOT NULL,
-  `userID` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `recipientID` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `subject` text COLLATE utf8mb4_general_ci NOT NULL,
-  `body` text COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `userID` varchar(256) NOT NULL,
+  `recipientID` varchar(256) NOT NULL,
+  `subject` text NOT NULL,
+  `body` text NOT NULL,
   `scheduledSend` date NOT NULL,
-  `sent` tinyint(1) DEFAULT '0',
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `sent` tinyint(1) DEFAULT 0,
+  `created` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -846,13 +877,13 @@ INSERT INTO `dbscheduledemails` (`id`, `userID`, `recipientID`, `subject`, `body
 --
 
 CREATE TABLE `dbshifts` (
-  `shift_id` int NOT NULL,
+  `shift_id` int(11) NOT NULL,
   `person_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `date` date NOT NULL,
   `startTime` time NOT NULL,
   `endTime` time DEFAULT NULL,
   `totalHours` decimal(5,2) DEFAULT NULL,
-  `description` text COLLATE utf8mb4_general_ci
+  `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -885,15 +916,30 @@ INSERT INTO `dbshifts` (`shift_id`, `person_id`, `date`, `startTime`, `endTime`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `dbstaff`
+--
+
+CREATE TABLE `dbstaff` (
+  `staff_id` int(11) NOT NULL,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `email` text NOT NULL,
+  `password` text NOT NULL,
+  `is_admin` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `dbsuggestions`
 --
 
 CREATE TABLE `dbsuggestions` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `user_id` varchar(256) NOT NULL,
   `title` varchar(256) NOT NULL,
   `body` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 --
@@ -919,7 +965,7 @@ INSERT INTO `dbsuggestions` (`id`, `user_id`, `title`, `body`, `created_at`) VAL
 --
 
 CREATE TABLE `discussion_replies` (
-  `reply_id` int NOT NULL,
+  `reply_id` int(11) NOT NULL,
   `user_reply_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `author_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `discussion_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -946,7 +992,7 @@ INSERT INTO `discussion_replies` (`reply_id`, `user_reply_id`, `author_id`, `dis
 --
 
 CREATE TABLE `monthly_hours_snapshot` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `person_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `month_year` date DEFAULT NULL,
   `hours` float DEFAULT NULL
@@ -975,8 +1021,8 @@ INSERT INTO `monthly_hours_snapshot` (`id`, `person_id`, `month_year`, `hours`) 
 --
 
 CREATE TABLE `user_groups` (
-  `user_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `group_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `user_id` varchar(255) NOT NULL,
+  `group_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -995,10 +1041,10 @@ INSERT INTO `user_groups` (`user_id`, `group_name`) VALUES
 --
 
 CREATE TABLE `user_verified_ids` (
-  `record_id` int NOT NULL,
+  `record_id` int(11) NOT NULL,
   `user_id` varchar(100) NOT NULL,
   `id_type` varchar(50) NOT NULL,
-  `approved_at` datetime DEFAULT CURRENT_TIMESTAMP
+  `approved_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 --
@@ -1036,6 +1082,12 @@ ALTER TABLE `dbattendance`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `dbcheckout`
+--
+ALTER TABLE `dbcheckout`
+  ADD PRIMARY KEY (`checkout_id`);
+
+--
 -- Indexes for table `dbdiscussions`
 --
 ALTER TABLE `dbdiscussions`
@@ -1068,6 +1120,12 @@ ALTER TABLE `dbgroups`
   ADD PRIMARY KEY (`group_name`);
 
 --
+-- Indexes for table `dbmaterials`
+--
+ALTER TABLE `dbmaterials`
+  ADD PRIMARY KEY (`material_id`);
+
+--
 -- Indexes for table `dbmessages`
 --
 ALTER TABLE `dbmessages`
@@ -1097,6 +1155,12 @@ ALTER TABLE `dbscheduledemails`
 --
 ALTER TABLE `dbshifts`
   ADD PRIMARY KEY (`shift_id`);
+
+--
+-- Indexes for table `dbstaff`
+--
+ALTER TABLE `dbstaff`
+  ADD PRIMARY KEY (`staff_id`);
 
 --
 -- Indexes for table `dbsuggestions`
@@ -1140,73 +1204,91 @@ ALTER TABLE `user_verified_ids`
 -- AUTO_INCREMENT for table `dbapplications`
 --
 ALTER TABLE `dbapplications`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `dbattendance`
 --
 ALTER TABLE `dbattendance`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `dbcheckout`
+--
+ALTER TABLE `dbcheckout`
+  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `dbdrafts`
 --
 ALTER TABLE `dbdrafts`
-  MODIFY `draftID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `draftID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `dbeventpersons`
 --
 ALTER TABLE `dbeventpersons`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `dbevents`
 --
 ALTER TABLE `dbevents`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
+
+--
+-- AUTO_INCREMENT for table `dbmaterials`
+--
+ALTER TABLE `dbmaterials`
+  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `dbmessages`
 --
 ALTER TABLE `dbmessages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=473;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=473;
 
 --
 -- AUTO_INCREMENT for table `dbscheduledemails`
 --
 ALTER TABLE `dbscheduledemails`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT for table `dbshifts`
 --
 ALTER TABLE `dbshifts`
-  MODIFY `shift_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `shift_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+
+--
+-- AUTO_INCREMENT for table `dbstaff`
+--
+ALTER TABLE `dbstaff`
+  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `dbsuggestions`
 --
 ALTER TABLE `dbsuggestions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `discussion_replies`
 --
 ALTER TABLE `discussion_replies`
-  MODIFY `reply_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `reply_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `monthly_hours_snapshot`
 --
 ALTER TABLE `monthly_hours_snapshot`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `user_verified_ids`
 --
 ALTER TABLE `user_verified_ids`
-  MODIFY `record_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `record_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
