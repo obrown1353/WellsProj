@@ -18,7 +18,7 @@
   <!-- Blue Overlay -->
   <div class="absolute inset-0 bg-[#1e12c9d5]"></div>
 
-  <!-- Main Content (Centered) -->
+
   <!-- Main Content Wrapper -->
 <div class="flex-grow flex items-center justify-center relative z-10">
 
@@ -30,7 +30,7 @@
     </h2>
 
     <form action="/action_page.php" method="POST" class="w-full space-y-5">
-
+    <!-- name -->
       <input 
         type="text" 
         id="name" 
@@ -39,7 +39,7 @@
         class="w-full bg-white/90 text-black border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#9C2007] placeholder-gray-500"
         required
       >
-
+ <!-- material name -->
       <input 
         type="text" 
         id="materialName" 
@@ -48,7 +48,7 @@
         class="w-full bg-white/90 text-black border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#9C2007] placeholder-gray-500"
         required
       >
-
+ <!-- email -->
       <input 
         type="email" 
         id="email" 
