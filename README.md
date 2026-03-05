@@ -1,9 +1,11 @@
 # Student Names
-Michael Glanzmann  
-Blue Shojinaga
-Jake Lipinski
-Kassandra Williams
-Alia Carmicheal 
+Oliver Brown
+Fernando Ortega
+Madison Hinston 
+Crook Campbell
+Hugo Manrique-Pinell
+Hannah Lydell
+
 
 # Fredericksburg SPCA Volunteer Management Web Application 
 
