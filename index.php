@@ -167,8 +167,10 @@
             left: 0;
             background: #8DC9F7;
             box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
-            display: flex;
-            align-items: center;
+	    display: flex;
+	    /* justify-content: space-between; */
+	    align-items: center;
+	    /* flex-wrap: wrap; */
             padding: 0 20px;
             z-index: 1000;
         }
@@ -196,16 +198,30 @@
 
         /* Navigation Links */
         .nav-links {
-            display: flex;
+	    display: flex;
+	    /* flex-wrap: wrap; */
             gap: 20px;
         }
 
         .nav-links div {
-            font-size: 24px;
-            font-weight: 700;
+	    font-size: 24px;
+	    font-weight: 700;
             color: black;
-            cursor: pointer;
-        }
+	    cursor: pointer;
+	    /* white-space: nowrap; */
+	}
+
+	@media (max-width: 900px) {
+	    .nav-links div {
+		font-size: 18px;
+	    }
+	}
+
+	@media (max-width: 600px) {
+	    .nav-links div {
+	         font-size: 16px;
+	    }
+	}
 
         /* Right Section: Date & Icon */
         .right-section {
@@ -428,7 +444,7 @@
 
         .background-image {
         display: none;
-        }
+
 
         
         .full-width-bar-sub{
@@ -474,8 +490,8 @@
 		    padding: 30px;
 		    background-color: #8DC9F7;">
 
-    <form action="calendar.php" method="GET" style="width: 50%; max-width: 900px; display: flex;">
-        <input
+    <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+	<input
             type="text"
             name="query"
             placeholder="Search..."
@@ -487,12 +503,23 @@
 		   border-radius: 20px; 
 		   outline: none;"
             required
-        >
-        <!--<button
+	>
+
+        <!-- <button
             type="submit"
-            style="padding: 8px 14px; font-size: 14px; border: none; background-color: #8DC9F7; color: white; border-radius: 0 6px 6px 0; cursor: pointer;">
-            Search
+            style="padding: 0 14px;
+                   font-size: 14px;
+                   border: none;
+                   background-color: #002D61;
+		   color: white;
+                   border-radius: 0 20px 20px 0;
+                   cursor: pointer;
+		   outline: none;
+		   width: 10%;">
+            Go
 	</button> -->
+
+
     </form>
 </div>
 </div>
