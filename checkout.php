@@ -61,7 +61,7 @@
   style="background-image: url('images/library.jpg');">
 
   <!-- Blue Overlay -->
-  <div class="absolute inset-0 bg-[#1e12c9d5]"></div>
+  <div class="absolute inset-0 bg-[#0d2b8d]/90"></div>
 
   <!-- Toast -->
   <div id="toast"></div>
@@ -84,7 +84,7 @@
         <input type="email"  id="email"        placeholder="Email"             class="input-field" />
 
         <button id="submitBtn" onclick="handleCheckout()"
-          class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-[#7a1905] active:scale-95 transition duration-300">
+          class="w-full bg-[#7b95e9] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
           Check Out
         </button>
       </div>
