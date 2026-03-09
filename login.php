@@ -93,11 +93,6 @@ style="background-image: url('images/library.jpg');">
 <img src="images/umw.jpg" alt="Logo" class="w-40 mx-auto">
 </div>
 
-  <!-- Footer -->
-  <footer class="relative z-10 w-full text-center text-white bg-black bg-opacity-50 py-4 mt-4">
-    Questions? Contact Dr. Melissa Wells <a href="mailto:mwells@umw.edu" class="underline hover:text-blue-400">mwells@umw.edu</a>
-  </footer>
-=======
 <h2 class="text-3xl font-bold mb-6 text-center"
 style="text-shadow: 1px 1px 0 black,-1px -1px 0 black,1px -1px 0 black,-1px 1px 0 black;">
 Welcome
