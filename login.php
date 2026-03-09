@@ -128,7 +128,7 @@ Staff Login
 
 </form>
 
-<a href="checkout.php"
+<a href="index.php"
 class="block w-full text-center bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-[#7a1905] active:scale-95 transition duration-300 mt-3">
 Continue as Guest
 </a>
