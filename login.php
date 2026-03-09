@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 style="background-image: url('images/library.jpg');">
 
 <!-- overlay -->
-<div class="absolute inset-0 bg-[#1e12c9d5]"></div>
+<div class="absolute inset-0 bg-[#0d2b8d]/90"></div>
 
 <!-- main content -->
 <div class="relative z-10 w-2/3 max-w-md flex flex-col items-center text-white mx-auto mt-auto mb-auto">
@@ -122,14 +122,14 @@ Registration Successful! Please login below.
 
 <button
 type="submit"
-class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-[#7a1905] active:scale-95 transition duration-300">
+class="w-full bg-[#7b95e9] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
 Staff Login
 </button>
 
 </form>
 
 <a href="index.php"
-class="block w-full text-center bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-[#7a1905] active:scale-95 transition duration-300 mt-3">
+class="block w-full text-center bg-[#7b95e9] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300 mt-3">
 Continue as Guest
 </a>
 
