@@ -182,7 +182,7 @@ if (date("H:i:s") > "18:19:59") {
             display: flex;
             align-items: center;
             padding: 0 20px;
-            z-index: 1000;
+	    z-index: 1000;
         }
 
         /* Left Section: Logo & Nav Links */
@@ -202,22 +202,33 @@ if (date("H:i:s") > "18:19:59") {
 
         .logo-container img {
             width: 52px;
-            height: 60px;
-            display: block;
+            height: auto;
         }
 
         /* Navigation Links */
         .nav-links {
             display: flex;
-            gap: 20px;
+	    gap: 2vw;
         }
 
         .nav-links div {
-            font-size: 24px;
+            font-size: 2.5vw;
             font-weight: 700;
             color: white;
             cursor: pointer;
-        }
+	}
+
+	/* @media (max-width: 900px) {
+	    .nav-links div {
+		font-size: 18px;
+	    }
+	}
+
+	@media (max-width: 600px) {
+	    .nav-links div {
+		font-size: 16px;
+	    }
+	} */
 
         /* Right Section: Date & Icon */
         .right-section {
@@ -646,13 +657,13 @@ if (date("H:i:s") > "18:19:59") {
                     <a href="index.php" class="nav-link">Home</a>
                 </div>
                 <div class="nav-item">
-                    <a href="calendar.php" class="nav-link">Full Catalog</a>
+                    <a href="calendar.php" class="nav-link">Catalog</a>
 		</div>
 		<div class="nav-item">
-		    <a href="calendar.php" class="nav-link">Return Form</a>
+		    <a href="calendar.php" class="nav-link">Return</a>
 		</div>
 		<div class="nav-item">
-		    <a href="calendar.php" class="nav-link">Student Worker</a>
+		    <a href="calendar.php" class="nav-link">Worker</a>
 		</div>
 		<div class="nav-item">
 		    <a href="calendar.php" class="nav-link">Admin</a>

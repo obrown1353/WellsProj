@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2026 at 11:06 PM
+-- Generation Time: Mar 06, 2026 at 07:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -343,6 +343,13 @@ CREATE TABLE `dbmaterials` (
   `copy_capacity` int(11) NOT NULL,
   `copy_instock` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `dbmaterials`
+--
+
+INSERT INTO `dbmaterials` (`material_id`, `name`, `location`, `resource_type`, `isbn`, `author`, `description`, `copy_capacity`, `copy_instock`) VALUES
+(1, 'Hoop Kings', 'General Nonfiction', 'Children\'s Literature', '9780763635602', 'Smith, Charles R., Jr.', NULL, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1240,7 +1247,7 @@ ALTER TABLE `dbevents`
 -- AUTO_INCREMENT for table `dbmaterials`
 --
 ALTER TABLE `dbmaterials`
-  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `dbmessages`
