@@ -1,4 +1,3 @@
-
 <?php
 
     ini_set('display_errors', 1);
@@ -9,30 +8,27 @@
     session_start();
 
     date_default_timezone_set("America/New_York");
-    
-    /*if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 1) {
-        if (isset($_SESSION['change-password'])) {
-            header('Location: changePassword.php');
-        } else {
-            header('Location: login.php');
-        }
-        die();
-    } */
 
-    // temp fix to access home page -> disables required log-in
-    $_SESSION['access_level'] = 2;
-    $_SESSION['_id'] = 'vmsroot';
+    // Redirect to login if no session
+    if (!isset($_SESSION['access_level'])) {
+        header('Location: login.php');
+        die();
+    }
 
     include_once('database/dbPersons.php');
     include_once('domain/Person.php');
-    // Get date?
-    if (isset($_SESSION['_id'])) {
+
+    $accessLevel = (int) $_SESSION['access_level'];
+    $isGuest  = ($accessLevel === 0);
+    $isWorker = ($accessLevel === 1);
+    $isAdmin  = ($accessLevel >= 2);
+
+    if (!$isGuest && isset($_SESSION['_id'])) {
         $person = retrieve_person($_SESSION['_id']);
     }
-    $notRoot = $person->get_id() != 'vmsroot';
-    
-?>
+    $notRoot = !$isAdmin;
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -51,17 +47,17 @@
 
         body {
             font-family: Quicksand, sans-serif;
-            background-color: #002D61;
+            background-color: #002D61 !important;
         }
 
         h2 {
-        	font-weight: normal;
+            font-weight: normal;
             font-size: 30px;
         }
 
         .full-width-bar {
             width: 100%;
-            background: #8DC9F7;
+            background: #8DC9F7 !important;
             padding: 17px 5%;
             display: flex;
             flex-wrap: wrap;
@@ -70,7 +66,7 @@
         }
         .full-width-bar-sub {
             width: 100%;
-            background: #002D61;
+            background: #002D61 !important;
             padding: 17px 5%;
             display: flex;
             flex-wrap: wrap;
@@ -79,9 +75,9 @@
         }
 
         .content-box {
-            flex: 1 1 280px; /* Adjusts width dynamically */
+            flex: 1 1 280px;
             max-width: 375px;
-            padding: 10px 2px; /* Altered padding to make closer */
+            padding: 10px 2px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -90,9 +86,9 @@
         }
 
         .content-box-sub {
-            flex: 1 1 300px; /* Adjusts width dynamically */
+            flex: 1 1 300px;
             max-width: 470px;
-            padding: 10px 10px; /* Altered padding to make closer */
+            padding: 10px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -139,7 +135,6 @@
 
         .large-text-sub {
             position: absolute;
-            /*top: 120px;*/
             top: 60%;
             left: 10%;
             font-size: 22px;
@@ -158,7 +153,6 @@
             max-width: 90%;
         }
 
-        /* Navbar Container */
         .navbar {
             width: 100%;
             height: 95px;
@@ -167,22 +161,18 @@
             left: 0;
             background: #8DC9F7;
             box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
-	    display: flex;
-	    /* justify-content: space-between; */
-	    align-items: center;
-	    /* flex-wrap: wrap; */
+            display: flex;
+            align-items: center;
             padding: 0 20px;
             z-index: 1000;
         }
 
-        /* Left Section: Logo & Nav Links */
         .left-section {
             display: flex;
             align-items: center;
-            gap: 30px; /* Space between logo and links */
+            gap: 30px;
         }
 
-        /* Logo */
         .logo-container {
             background: #8DC9F7;
             padding: 10px 20px;
@@ -196,36 +186,23 @@
             display: block;
         }
 
-        /* Navigation Links */
         .nav-links {
-	    display: flex;
-	    /* flex-wrap: wrap; */
+            display: flex;
             gap: 20px;
         }
 
         .nav-links div {
-	    font-size: 24px;
-	    font-weight: 700;
+            font-size: 24px;
+            font-weight: 700;
             color: black;
-	    cursor: pointer;
-	    /* white-space: nowrap; */
-	}
+            cursor: pointer;
+        }
 
-	@media (max-width: 900px) {
-	    .nav-links div {
-		font-size: 18px;
-	    }
-	}
+        @media (max-width: 900px) { .nav-links div { font-size: 18px; } }
+        @media (max-width: 600px) { .nav-links div { font-size: 16px; } }
 
-	@media (max-width: 600px) {
-	    .nav-links div {
-	         font-size: 16px;
-	    }
-	}
-
-        /* Right Section: Date & Icon */
         .right-section {
-            margin-left: auto; /* Pushes right section to the end */
+            margin-left: auto;
             display: flex;
             align-items: center;
             gap: 20px;
@@ -242,15 +219,8 @@
             text-align: center;
         }
 
-        .icon {
-            width: 47px;
-            height: 47px;
-            /*background: #292D32;*/
-            border-radius: 50%;
+        .icon { width: 47px; height: 47px; border-radius: 50%; }
 
-        }
-
-        /* Button Control */
         .arrow-button {
             position: absolute;
             bottom: 30px;
@@ -260,61 +230,51 @@
             font-size: 20px;
             cursor: pointer;
             transition: transform 0.3s ease;
+        }
+        .arrow-button:hover { transform: translateX(5px); }
 
+        .circle-arrow-button {
+            position: absolute;
+            bottom: 30px;
+            right: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            font-family: Quicksand, sans-serif;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
-        .arrow-button:hover {
-            transform: translateX(5px); /* Moves the arrow slightly on hover */
+        .circle {
+            width: 30px;
+            height: 30px;
+            background-color: #8DC9F7;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            transition: transform 0.3s ease;
         }
-    .circle-arrow-button {
-        position: absolute;
-        bottom: 30px;
-        right: 18px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: transparent;
-        border: none;
-        font-size: 20px;
-        font-family: Quicksand, sans-serif;
-        font-weight: bold;
-        color: black;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-    }
 
-    .circle {
-        width: 30px;
-        height: 30px;
-        /*background-color:; /* Blue color */
-        background-color: #8DC9F7;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        transition: transform 0.3s ease;
-    }
+        .circle-arrow-button:hover { background-color: transparent !important; }
+        .circle-arrow-button:hover .circle { transform: translateX(5px); }
 
-    .circle-arrow-button:hover {
-        background-color:transparent !important;
-    }
+        .colored-box {
+            display: inline-block;
+            background-color: #8DC9F7;
+            color: white;
+            padding: 1px 5px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
 
-    .circle-arrow-button:hover .circle {
-        transform: translateX(5px); /* Moves the circle slightly on hover */
-    }
-.colored-box {
-    display: inline-block; /* Ensures it wraps tightly around the text */
-    background-color: #8DC9F7; /* Change to any color */
-    color: white; /* Text color */
-    padding: 1px 5px; /* Adds space inside the box */
-    border-radius: 5px; /* Optional: Rounds the corners */
-    font-weight: bold; /* Optional: Makes text bold */
-}
-
-
-        /* Footer */
         .footer {
             width: 100%;
             background: #8DC9F7;
@@ -325,83 +285,25 @@
             flex-wrap: wrap;
         }
 
-        /* Left Section */
-        .footer-left {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .footer-left { display: flex; flex-direction: column; align-items: center; }
+        .footer-logo { width: 150px; margin-bottom: 15px; }
+        .social-icons { display: flex; gap: 15px; }
+        .social-icons a { color: white; font-size: 20px; transition: color 0.3s ease; }
+        .social-icons a:hover { color: #dcdcdc; }
+        .footer-right { display: flex; gap: 50px; flex-wrap: wrap; align-items: flex-start; }
+        .footer-section { display: flex; flex-direction: column; justify-content: center; gap: 10px; color: #8DC9F7; font-family: Inter, sans-serif; font-size: 16px; font-weight: 500; }
+        .footer-topic { font-size: 18px; font-weight: bold; }
+        .footer a { color: white; text-decoration: none; transition: background 0.2s ease, color 0.2s ease; padding: 5px 10px; border-radius: 5px; }
+        .footer a:hover { background: rgba(255, 255, 255, 0.1); color: #dcdcdc; }
 
-        .footer-logo {
-            width: 150px; /* Adjust logo size */
-            margin-bottom: 15px;
-        }
-
-        /* Social Media Icons */
-        .social-icons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-icons a {
-            color: white;
-            font-size: 20px;
-            transition: color 0.3s ease;
-        }
-
-        .social-icons a:hover {
-            color: #dcdcdc;
-        }
-
-        /* Right Section */
-        .footer-right {
-            display: flex;
-            gap: 50px;
-            flex-wrap: wrap;
-            align-items: flex-start;
-        }
-
-        .footer-section {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 10px;
-            color: #8DC9F7;
-            font-family: Inter, sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .footer-topic {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .footer a {
-            color: white;
-            text-decoration: none;
-            transition: background 0.2s ease, color 0.2s ease;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .footer a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #dcdcdc;
-        }
-
-        /* Icon Overlay */
-        .background-image {
-            width: 100%;
-            border-radius: 10px;
-        }
+        .background-image { width: 100%; border-radius: 10px; }
 
         .icon-overlay {
             position: absolute;
-            top: 40px; /* Adjust as needed */
+            top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.8); /* Optional background for better visibility */
+            background: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 50%;
             display: flex;
@@ -409,162 +311,81 @@
             align-items: center;
         }
 
-        .icon-overlay img {
-            width: 40px; /* Adjust size as needed */
-            height: 40px;
-            opacity: 0.9;
-        }
+        .icon-overlay img { width: 40px; height: 40px; opacity: 0.9; }
 
         .content-box-test:hover .icon-overlay img {
             transform: scale(1.1) rotate(5deg);
-            transition: transform 0.5s ease, fill 0.5s ease;
+            transition: transform 0.5s ease;
         }
 
-        
-        
-
-    
         .content-box-test {
             position: relative;
-            background-color: #8DC9F7;   /* light blue background */
+            background-color: #8DC9F7 !important;
             border-radius: 12px;
             padding: 20px;
-            color: black;                 /* default text color */
+            color: black;
             flex: 1 1 280px;
             max-width: 375px;
-            min-height: 250px;            /* keeps all boxes same height even without bg image */
-            }
-
+            min-height: 250px;
+        }
 
         .content-box-test .large-text-sub,
-        .content-box-test .graph-text {
-            color: black;
-            }
+        .content-box-test .graph-text { color: black; }
 
+        .background-image { display: none; }
+    </style>
 
-        .background-image {
-        display: none;
-
-
-        
-        .full-width-bar-sub{
-            background-color: #002D61 !important;
-            }
-
-
-        /* Responsive Design */
-   </style>
-<!--BEGIN TEST, UPLOAD AND NOTIFICATIONS CHANGED-->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            document.querySelector(".extra-info").style.maxHeight = "0px"; // Ensure proper initialization
+            const extra = document.querySelector(".extra-info");
+            if (extra) extra.style.maxHeight = "0px";
         });
         function toggleInfo(event) {
-            event.stopPropagation(); // Prevents triggering the main button click
+            event.stopPropagation();
             let info = event.target.nextElementSibling;
             let isVisible = info.style.maxHeight !== "0px";
             info.style.maxHeight = isVisible ? "0px" : "100px";
             event.target.innerText = isVisible ? "↓" : "↑";
         }
     </script>
-<!--END TEST-->
 </head>
 
-<!-- ONLY SUPER ADMIN WILL SEE THIS -->
-<?php if ($_SESSION['access_level'] >= 2): ?>
+<!-- ADMIN VIEW -->
+<?php if ($isAdmin): ?>
 <body>
-
-<?php require 'header.php';?>
-    <!-- Dummy content to enable scrolling -->
+<?php require 'header.php'; ?>
     <div style="margin-top: 0px; padding: 30px 20px;">
         <h2><b>Welcome to Seacobeck Library, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
     </div>
 
-<!-- Center Search Bar -->
-<div style="display: flex; justify-content: center; margin: 40px 0;">
-
-	<div style="width:100%; 
-		    max-width: 900px;
-		    border: 3px solid #0067A2;
-		    border-radius: 16px;
-		    padding: 30px;
-		    background-color: #8DC9F7;">
-
-    <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-	<input
-            type="text"
-            name="query"
-            placeholder="Search..."
-	    style="width: 100%;
-		   max-width: 900px;
-		   padding: 12px 16px;
-		   font-size: 16px;
-		   border: 1px solid #ccc;
-		   border-radius: 20px; 
-		   outline: none;"
-            required
-	>
-
-        <!-- <button
-            type="submit"
-            style="padding: 0 14px;
-                   font-size: 14px;
-                   border: none;
-                   background-color: #002D61;
-		   color: white;
-                   border-radius: 0 20px 20px 0;
-                   cursor: pointer;
-		   outline: none;
-		   width: 10%;">
-            Go
-	</button> -->
-
-
-    </form>
-</div>
-</div>
-
-            <?php if (isset($_GET['pcSuccess'])): ?>
-                <div class="happy-toast">Password changed successfully!</div>
-            <?php elseif (isset($_GET['deleteService'])): ?>
-                <div class="happy-toast">Service successfully removed!</div>
-            <?php elseif (isset($_GET['serviceAdded'])): ?>
-                <div class="happy-toast">Service successfully added!</div>
-            <?php elseif (isset($_GET['animalRemoved'])): ?>
-                <div class="happy-toast">Animal successfully removed!</div>
-            <?php elseif (isset($_GET['locationAdded'])): ?>
-                <div class="happy-toast">Location successfully added!</div>
-            <?php elseif (isset($_GET['deleteLocation'])): ?>
-                <div class="happy-toast">Location successfully removed!</div>
-            <?php elseif (isset($_GET['registerSuccess'])): ?>
-                <div class="happy-toast">Volunteer registered successfully!</div>
-            <?php endif ?>
-
-<!--
-        <div class="nav-buttons">
-            <button class="nav-button" onclick="window.location.href='personSearch.php'">
-                <span>Find</span>
-                <span class="arrow"><img src="images/person-search.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 20px;"></span>
-            </button>
-            <button class="nav-button" onclick="window.location.href='VolunteerRegister.php'">
-                <span>Register</span>
-                <span class="arrow"><img src="images/add-person.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 20px;"></span>
-            </button>
+    <div style="display: flex; justify-content: center; margin: 40px 0;">
+        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+            <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <input type="text" name="query" placeholder="Search..."
+                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;" required>
+            </form>
         </div>
--->
+    </div>
 
+    <?php if (isset($_GET['pcSuccess'])): ?>
+        <div class="happy-toast">Password changed successfully!</div>
+    <?php elseif (isset($_GET['deleteService'])): ?>
+        <div class="happy-toast">Service successfully removed!</div>
+    <?php elseif (isset($_GET['serviceAdded'])): ?>
+        <div class="happy-toast">Service successfully added!</div>
+    <?php elseif (isset($_GET['animalRemoved'])): ?>
+        <div class="happy-toast">Animal successfully removed!</div>
+    <?php elseif (isset($_GET['locationAdded'])): ?>
+        <div class="happy-toast">Location successfully added!</div>
+    <?php elseif (isset($_GET['deleteLocation'])): ?>
+        <div class="happy-toast">Location successfully removed!</div>
+    <?php elseif (isset($_GET['registerSuccess'])): ?>
+        <div class="happy-toast">Volunteer registered successfully!</div>
+    <?php endif ?>
 
-<div style="width: 90%; /* Stops before page ends */
-            height: 100%;
-            outline: 1px #8DC9F7 solid;
-            outline-offset: -0.5px;
-            margin: 70px auto; /* Adds vertical space and centers */
-            padding: 1px 0;"> <!-- Adds spacing inside the div -->
-</div>
-
+    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
     <footer class="footer" style="margin-top: 100px;">
-        <!-- Left Side: Logo & Socials -->
         <div class="footer-left">
             <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
             <div class="social-icons">
@@ -574,8 +395,6 @@
                 <a href="#"><i class="fab fa-linkedin"></i></a>
             </div>
         </div>
-
-        <!-- Right Side: Page Links -->
         <div class="footer-right">
             <div class="footer-section">
                 <div class="footer-topic">Connect</div>
@@ -590,140 +409,33 @@
             </div>
         </div>
     </footer>
-
-    <!-- Font Awesome for Icons -->
     <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
-
-
 </body>
 <?php endif ?>
 
-<!-- ONLY VOLUNTEERS WILL SEE THIS -->
-<?php if ($notRoot) : ?>
+<!-- WORKER VIEW -->
+<?php if ($isWorker): ?>
 <body>
-<?php require 'header.php';?>
+<?php require 'header.php'; ?>
 
-  <!-- Icon Container -->
-<div style="position: absolute; top: 110px; right: 30px; z-index: 999; display: flex; flex-direction: row; gap: 30px; align-items: center; text-align: center;">
-
-
-
-
-
-</div>
-
-
-
-    <!-- Dummy content to enable scrolling -->
     <div style="margin-top: 0px; padding: 30px 20px;">
         <h2><b>Welcome <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
     </div>
 
-    <div class="full-width-bar">
-    <div class="content-box">
-    <img src="images/VolM.png" />
-        <div class="small-text">Make a difference.</div>
-        <div class="large-text">My Profile</div>
-        <div class="nav-buttons">
-            <button class="nav-button" onclick="window.location.href='viewProfile.php'">
-                <span class="arrow"><img src="images/view-profile.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 20px;"></span>
-                <span class="text">View</span>
-            </button>
-            <button class="nav-button" onclick="window.location.href='editProfile.php'">
-                <span class="arrow"><img src="images/manage-account.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 20px;"></span>
-                <span class="text">Edit</span>
-            </button>
-
+    <div style="display: flex; justify-content: center; margin: 40px 0;">
+        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+            <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <input type="text" name="query" placeholder="Search..."
+                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
+            </form>
         </div>
     </div>
 
-    <div class="content-box">
-        <img src="images/EvM.png" />
-        <div class="small-text">Let’s have some fun!</div>
-        <div class="large-text">My Events</div>
-        <div class="nav-buttons">
-            <button class="nav-button" onclick="window.location.href='viewAllEvents.php'">
-                <span class="arrow"><img src="images/new-event.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 10px;"></span>
-                <span class="text">Sign-Up</span>
-            </button>
-            <button class="nav-button" onclick="window.location.href='viewMyUpcomingEvents.php'">
-                <span class="arrow"><img src="images/list-solid.svg" style="width: 40px; border-radius:5px; border-bottom-right-radius: 10px;"></span>
-                <span class="text">Upcoming</span>
-            </button>
-
-        </div>
-    </div>
-
-
-    </div>
-
-    <div style="margin-top: 50px; padding: 0px 80px;">
-        <h2><b>Your Dashboard</h2>
-    </div>
-    <div class="full-width-bar-sub">
-        <div class="content-box-test" onclick="window.location.href='calendar.php'">
-            <div class="icon-overlay">
-                <img style="border-radius: 5px;" src="images/view-calendar.svg" alt="Calendar Icon">
-            </div>
-            <img class="background-image" src="images/blank-white-background.jpg" />
-            <div class="large-text-sub">Calendar</div>
-            <div class="graph-text">See upcoming events/trainings.</div>
-            <button class="arrow-button">→</button>
-        </div>
-
-               <?php
-                    require_once('database/dbMessages.php');
-                    $unreadMessageCount = get_user_unread_count($person->get_id());
-                    $inboxIcon = 'inbox.svg';
-                    if ($unreadMessageCount) {
-                        $inboxIcon = 'inbox-unread.svg';
-                    }
-                ?>
-
-        <div class="content-box-test" onclick="window.location.href='upload_encrypted_image.php'">
-            <div class="icon-overlay">
-                <img style="border-radius: 5px;" src="images/file-regular.svg" alt="Calendar Icon">
-            </div>
-            <img class="background-image" src="images/blank-white-background.jpg" />
-            <div class="large-text-sub">Documentation Upload</div>
-            <div class="graph-text">Upload an ID for verification.</div>
-            <button class="arrow-button">→</button>
-        </div>
-
-        <div class="content-box-test" onclick="window.location.href='createSuggestion.php'">
-            <div class="icon-overlay">
-                <img style="border-radius: 5px;" src="images/clipboard-regular.svg" alt="Report Icon">
-            </div>
-            <img class="background-image" src="images/blank-white-background.jpg" />
-            <div class="large-text-sub">Suggestions</div>
-            <div class="graph-text">Suggest opportunities for charity events.</div>
-            <button class="arrow-button">→</button>
-        </div>
-
-        <div class="content-box-test" onclick="window.location.href='inbox.php'">
-            <div class="icon-overlay">
-                <img style="border-radius: 5px;" src="images/<?php echo $inboxIcon ?>" alt="Notification Icon">
-            </div>
-            <img class="background-image" src="images/blank-white-background.jpg" />
-            <div class="large-text-sub">Notifications</div>
-            <div class="graph-text">Stay up to date.</div>
-            <button class="arrow-button">→</button>
-        </div>
-
-    </div>
-
-<div style="width: 90%; /* Stops before page ends */
-            height: 100%;
-            outline: 1px #828282 solid;
-            outline-offset: -0.5px;
-            margin: 70px auto; /* Adds vertical space and centers */
-            padding: 1px 0;"> <!-- Adds spacing inside the div -->
-</div>
+    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
     <footer class="footer" style="margin-top: 100px;">
-        <!-- Left Side: Logo & Socials -->
         <div class="footer-left">
-            <img src="images/whiskeyLogoBlack.png" alt="Logo" class="footer-logo">
+            <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
             <div class="social-icons">
                 <a href="#"><i class="fab fa-facebook"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
@@ -731,8 +443,6 @@
                 <a href="#"><i class="fab fa-linkedin"></i></a>
             </div>
         </div>
-
-        <!-- Right Side: Page Links -->
         <div class="footer-right">
             <div class="footer-section">
                 <div class="footer-topic">Connect</div>
@@ -743,16 +453,58 @@
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
                 <a href="https://whiskeyvalor.org/pages/contact">Send Us An Email</a>
-                <!-- <a href="tel:5408981500">540-898-1500 (ext 117)</a> -->
             </div>
         </div>
     </footer>
-    <p>_</p>
-
-    <!-- Font Awesome for Icons -->
     <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
-
 </body>
 <?php endif ?>
-</html>
 
+<!-- GUEST VIEW -->
+<?php if ($isGuest): ?>
+<body>
+<?php require 'header.php'; ?>
+
+    <div style="margin-top: 0px; padding: 30px 20px;">
+        <h2><b>Welcome to Seacobeck Library!</b> Let's get started.</h2>
+    </div>
+
+    <div style="display: flex; justify-content: center; margin: 40px 0;">
+        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+            <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <input type="text" name="query" placeholder="Search..."
+                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
+            </form>
+        </div>
+    </div>
+
+    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
+
+    <footer class="footer" style="margin-top: 100px;">
+        <div class="footer-left">
+            <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+        <div class="footer-right">
+            <div class="footer-section">
+                <div class="footer-topic">Connect</div>
+                <a href="https://www.facebook.com/profile.php?id=61566628001672&mibextid=LQQJ4d">Facebook</a>
+                <a href="https://www.instagram.com/whiskeyvalor/#">Instagram</a>
+                <a href="https://whiskeyvalor.org">Main Website</a>
+            </div>
+            <div class="footer-section">
+                <div class="footer-topic">Contact Us</div>
+                <a href="https://whiskeyvalor.org/pages/contact">Send Us An Email</a>
+            </div>
+        </div>
+    </footer>
+    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+</body>
+<?php endif ?>
+
+</html>

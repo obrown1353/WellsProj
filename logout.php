@@ -17,8 +17,8 @@ session_write_close();
         <nav>
             <span id="nav-top">
                 <span class="logo">
-                    <img src="images/whiskeyLogo.png">
-                        <span id="vms-logo"> Whiskey Valor Foundation </span>
+                    <img src="images/UMW_Eagles-logo.png">
+                        <span id="vms-logo"> Seacobeck Library </span>
                         </span>
                     <img id="menu-toggle" src="images/menu.png">
                 </span>
