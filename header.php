@@ -660,7 +660,7 @@ if (date("H:i:s") > "18:19:59") {
                     <a href="calendar.php" class="nav-link">Catalog</a>
 		</div>
 		<div class="nav-item">
-		    <a href="calendar.php" class="nav-link">Return</a>
+		    <a href="checkout.php" class="nav-link">Checkout</a>
 		</div>
 		<div class="nav-item">
 		    <a href="calendar.php" class="nav-link">Worker</a>

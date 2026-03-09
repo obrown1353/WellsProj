@@ -579,14 +579,14 @@
         <div class="footer-right">
             <div class="footer-section">
                 <div class="footer-topic">Connect</div>
-                <a href="https://www.facebook.com/profile.php?id=61566628001672&mibextid=LQQJ4d">Facebook</a>
-                <a href="https://www.instagram.com/whiskeyvalor/#">Instagram</a>
-                <a href="https://whiskeyvalor.org">Main Website</a>
+                <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
+                <a href="https://www.instagram.com/umw_coe/">Instagram</a>
+                <a href="https://education.umw.edu/">Main Website</a>
             </div>
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
-                <a href="https://whiskeyvalor.org/pages/contact">Send Us An Email</a>
-                <!-- <a href="tel:5408981500">540-898-1500 (ext 117)</a> -->
+                <a href="">mwells@umw.edu</a>
+                <a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>
     </footer>
