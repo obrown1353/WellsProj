@@ -29,15 +29,15 @@ h2 { font-weight: normal; font-size: 30px; }
 .logo-container { background: rgb(31,31,33); padding: 10px 20px; border-radius: 50px; box-shadow: 0px 4px 4px rgba(0,0,0,.25) inset; }
 .logo-container img { width: 52px; height: auto; }
 .nav-links { display: flex; gap: 2vw; }
-.nav-links div { font-size: 2.5vw; font-weight: 700; color: white; cursor: pointer; }
+.nav-links div { font-size: 1.75vw; font-weight: 700; color: white; cursor: pointer; }
 .right-section { margin-left: auto; display: flex; align-items: center; gap: 20px; }
 .nav-item { position: relative; cursor: pointer; padding: 0px; transition: color 0.3s, outline 0.3s; }
-.dropdown { display: none; position: absolute; top: 150%; left: -10%; background-color: rgb(31,31,33); border: 1px solid rgb(31,31,33); box-shadow: 0 2px 5px rgba(0,0,0,.1); border-radius: 5px; min-width: 150px; padding: 10px; color: white; }
+.dropdown { display: none; position: absolute; top: calc(100% + 6px); right: 0; background-color: rgb(31,31,33); border: 1px solid rgb(31,31,33); box-shadow: 0 2px 5px rgba(0,0,0,.1); border-radius: 5px; padding: 10px; color: white; font-size: 2vw; width: max-content; max-width: 50vw;}
 .dropdown div { padding: 8px; white-space: nowrap; transition: background 0.3s; }
 .dropdown div:hover { background: rgba(0,0,0,.1); }
 .nav-item:hover, .nav-item.active { color: #8DC9F7; outline: 1px solid #8DC9F7; outline-offset: 7px; }
 .date-box { background: #2B2B2E; padding: 10px 30px; border-radius: 50px; box-shadow: -4px 4px 4px rgba(0,0,0,.25) inset; color: white; font-size: 24px; font-weight: 700; text-align: center; }
-.icon { width: 47px; height: 47px; border-radius: 50%; }
+.icon { width: 47px; height: 47px; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center;}
 .nav-buttons { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; justify-content: center; width: 100%; }
 .nav-button { background: rgb(201,171,129); border: none; color: white; font-size: 20px; font-family: 'Quicksand', sans-serif; font-weight: 600; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.4s ease-in-out; backdrop-filter: blur(8px); padding: 6px 8px; padding-top: 10px; width: 55px; overflow: hidden; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,.1); }
 .nav-button:hover { width: 160px; padding: 6px 8px; padding-top: 10px; }
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
             nav.classList.remove("active");
             if (nav.querySelector(".dropdown")) nav.querySelector(".dropdown").style.display = "none";
         });
-    };
+    });
 });
 </script>
 </head>
