@@ -282,7 +282,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
                 <input type="password" id="password" name="password"
                        placeholder="Enter your password" required>
             </div>
->>>>>>> main
 
             <button type="submit" class="btn-primary">Staff Login</button>
         </form>
