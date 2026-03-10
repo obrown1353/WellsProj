@@ -18,7 +18,7 @@ session_write_close();
             <span id="nav-top">
                 <span class="logo">
                     <img src="images/UMW_Eagles-logo.png">
-                        <span id="vms-logo"> Seacobeck Library </span>
+                        <span id="vms-logo"> Seacobeck Curriculum Lab </span>
                         </span>
                     <img id="menu-toggle" src="images/menu.png">
                 </span>
