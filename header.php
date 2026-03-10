@@ -114,7 +114,6 @@ document.addEventListener("DOMContentLoaded", function() {
             nav.classList.remove("active");
             if (nav.querySelector(".dropdown")) nav.querySelector(".dropdown").style.display = "none";
         });
-<<<<<<< HEAD
     </script>
 </head>
 
@@ -517,8 +516,6 @@ document.addEventListener("DOMContentLoaded", function() {
         el.style.display = "";
         el.textContent = formatted;
       }
-=======
->>>>>>> 1ff0d6738b4d5aa13767d0299eefa9fe55e075b1
     });
 });
 </script>
