@@ -90,7 +90,7 @@ style="background-image: url('images/library.jpg');">
 
 <!-- logo -->
 <div class="w-full flex justify-center mb-6">
-<img src="images/umw.jpg" alt="Logo" class="w-40 mx-auto">
+<img src="images/umw_eagle.png" alt="Logo" class="w-40 mx-auto">
 </div>
 
 <h2 class="text-3xl font-bold mb-6 text-center"

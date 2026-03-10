@@ -84,7 +84,7 @@
         <input type="email"  id="email"        placeholder="Email"             class="input-field" />
 
         <button id="submitBtn" onclick="handleCheckout()"
-          class="w-full bg-[#7b95e9] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
+          class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
           Check Out
         </button>
       </div>
