@@ -43,7 +43,7 @@
         
         function isEventChange():bool
         {
-            if (this->event_Id == NULL)
+            if ($this->event_Id == NULL)
             {
                 return False;
             }
