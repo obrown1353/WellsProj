@@ -257,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
     <div class="overlay"></div>
 
     <div class="main-content">
-        <img src="images/umw.jpg" alt="UMW Logo" class="logo">
+        <img src="images/umw_eagle.png" alt="UMW Logo" class="logo">
         <h2>Welcome</h2>
 
         <form class="login-form" action="login.php" method="POST">
@@ -269,6 +269,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username"
                        placeholder="Enter your username" required>
+            </div>
+            <!-- logo -->
+            <div class="w-full flex justify-center mb-6">
             </div>
 
             <div class="input-group">

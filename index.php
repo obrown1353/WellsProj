@@ -405,7 +405,7 @@
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
                 <a href="">mwells@umw.edu</a>
-                <a href="tel:5406541290">(540) 654-1290</a>
+		        <a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>
     </footer>
@@ -448,11 +448,11 @@
                 <div class="footer-topic">Connect</div>
                 <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
                 <a href="https://www.instagram.com/umw_coe/">Instagram</a>
-                <a href="https://education.umw.edu/">Main Website</a>
+                <a href="https://education.umw.edu/">Main Website</a
             </div>
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
-		<a href="">mwells@umw.edu</a>
+                <a href="">mwells@umw.edu</a>
 		<a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>
@@ -500,7 +500,7 @@
             </div>
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
-                <a href="">mwells@umw.edu</a>
+                 <a href="">mwells@umw.edu</a>
                 <a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>

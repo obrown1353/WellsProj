@@ -526,7 +526,7 @@ document.addEventListener("DOMContentLoaded", function() {
 $common_nav_links = '
       <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
       <div class="nav-item"><a href="calendar.php" class="nav-link">Catalog</a></div>
-      <div class="nav-item"><a href="calendar.php" class="nav-link">Return</a></div>
+      <div class="nav-item"><a href="checkout.php" class="nav-link">Checkout</a></div>
       <div class="nav-item">Worker</div>';
 
 $showing_login = false;
@@ -542,7 +542,7 @@ echo('
     <div class="nav-links">
       <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
       <div class="nav-item"><a href="calendar.php" class="nav-link">Catalog</a></div>
-      <div class="nav-item"><a href="calendar.php" class="nav-link">Return</a></div>
+      <div class="nav-item"><a href="checkout.php" class="nav-link">Checkout</a></div>
     </div>
   </div>
   <div class="right-section">
