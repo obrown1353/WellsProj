@@ -37,7 +37,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="./css/base.css" rel="stylesheet">
-    <title>Seacobeck Library | Dashboard</title>
+    <title>Seacobeck Curriculum Lab | Dashboard</title>
     <style>
         * {
             box-sizing: border-box;
@@ -163,7 +163,7 @@
             box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 30px;
             z-index: 1000;
         }
 
@@ -355,7 +355,7 @@
 <body>
 <?php require 'header.php'; ?>
     <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome to Seacobeck Library, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
+        <h2><b>Welcome to the Seacobeck Curriculum Lab, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
     </div>
 
     <div style="display: flex; justify-content: center; margin: 40px 0;">
@@ -467,7 +467,7 @@
 <?php require 'header.php'; ?>
 
     <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome to Seacobeck Library!</b> Let's get started.</h2>
+        <h2><b>Welcome to the Seacobeck Curriculum Lab!</b> Let's get started.</h2>
     </div>
 
     <div style="display: flex; justify-content: center; margin: 40px 0;">
@@ -500,7 +500,7 @@
             </div>
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
-                 <a href="">mwells@umw.edu</a>
+                 <a href="mailto:mwells@umw.edu">mwells@umw.edu</a>
                 <a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>
