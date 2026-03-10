@@ -271,6 +271,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
                        placeholder="Enter your username" required>
             </div>
 
+<<<<<<< HEAD
+<!-- logo -->
+<div class="w-full flex justify-center mb-6">
+<img src="images/umw_eagle.png" alt="Logo" class="w-40 mx-auto">
+</div>
+=======
             <div class="input-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password"
