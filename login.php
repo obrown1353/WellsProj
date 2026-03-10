@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seacobeck Library | Log In</title>
+    <title>Seacobeck Curriculum Lab | Log In</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
         .overlay {
             position: absolute;
             inset: 0;
-            background: rgba(13, 43, 141, 0.88);
+            background: rgb(0, 45, 97, 0.88);
             z-index: 0;
         }
 
@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #c8d8f8;
+            color: #8DC9F7;
         }
 
         input[type="text"],
@@ -193,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             font-size: 1rem;
             font-family: 'Quicksand', sans-serif;
             font-weight: 700;
-            background: #7b95e9;
+            background: #8DC9F7;
             color: white;
             border: none;
             border-radius: 10px;

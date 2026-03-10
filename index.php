@@ -500,7 +500,7 @@
             </div>
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
-                 <a href="">mwells@umw.edu</a>
+                 <a href="mailto:mwells@umw.edu">mwells@umw.edu</a>
                 <a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>

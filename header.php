@@ -9,7 +9,7 @@ date_default_timezone_set('America/New_York');
 <?php if (empty($tailwind_mode)): ?>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 <?php endif; ?>
-body { font-family: Nunito, Quicksand, sans-serif; padding-top: 96px; font-size: 14pt; }
+body { font-family: 'Quicksand', sans-serif; padding-top: 96px; font-size: 14pt; }
 h2 { font-weight: normal; font-size: 30px; }
 .extra-info { max-height: 0px; overflow: hidden; transition: max-height 0.3s ease-out; font-size: 14px; color: #444; margin-top: 5px; }
 .content-box-test { flex: 1 1 370px; max-width: 470px; padding: 10px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; cursor: pointer; border: 0.1px solid black; transition: border 0.3s; border-radius: 10px; border-bottom-right-radius: 50px; }
