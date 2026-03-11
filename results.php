@@ -354,9 +354,6 @@
 <?php if ($isAdmin): ?>
 <body>
 <?php require 'header.php'; ?>
-    <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome to the Seacobeck Curriculum Lab, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
-    </div>
 
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
@@ -365,6 +362,10 @@
                     style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;" required>
             </form>
         </div>
+    </div>
+
+    <div style="margin-top: 0px; padding: 30px 20px;">
+        <h2><b>Search Results</b></h2>
     </div>
 
     <?php if (isset($_GET['pcSuccess'])): ?>
@@ -418,10 +419,6 @@
 <body>
 <?php require 'header.php'; ?>
 
-    <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
-    </div>
-
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
@@ -429,6 +426,11 @@
                     style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
             </form>
         </div>
+    </div>
+
+
+    <div style="margin-top: 0px; padding: 30px 20px;">
+	<h2><b>Search Results</b></h2>
     </div>
 
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
@@ -465,6 +467,15 @@
 <?php if ($isGuest): ?>
 <body>
 <?php require 'header.php'; ?>
+
+    <div style="display: flex; justify-content: center; margin: 40px 0;">
+        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+            <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <input type="text" name="query" placeholder="Search..."
+                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
+            </form>
+        </div>
+    </div>
 
     <div style="margin-top: 0px; padding: 30px 20px;">
         <h2><b>Search Results</b></h2>
