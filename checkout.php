@@ -9,7 +9,7 @@
 
   .input-field {
     width: 100%;
-    background: rgba(255,255,255,0.92);
+    background: rgba(255,255,255,0.88);
     color: #111;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
@@ -40,8 +40,8 @@
     text-align: center;
   }
   #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-  #toast.success { background: #1a3a7c; border-left: 5px solid #5b9bd5; }
-  #toast.error   { background: #7a1905; border-left: 5px solid #f87171; }
+  #toast.success { background: #002D61; border-left: 5px solid #8DC9F7; }
+  #toast.error   { background: #7A1905; border-left: 5px solid #f87171; }
 
   .spinner {
     display: inline-block;
@@ -55,26 +55,28 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
-<title>Seacobeck Library | Check Out</title>
+<title>Seacobeck Curriculum Lab | Check Out</title>
 </head>
 <body class="min-h-screen flex flex-col bg-cover bg-center relative"
   style="background-image: url('images/library.jpg');">
 
   <!-- Blue Overlay -->
-  <div class="absolute inset-0 bg-[#0d2b8d]/90"></div>
+  <div class="absolute inset-0 bg-[#002D61]/85"></div>
 
   <!-- Toast -->
   <div id="toast"></div>
 
   <!-- Main Content -->
   <div class="flex-grow flex items-center justify-center relative z-10">
-    <div class="w-full sm:w-2/3 sm:max-w-md px-6 py-8 flex flex-col items-center text-white bg-white/10 backdrop-blur-md rounded-xl shadow-xl">
+    <div class="w-full sm:w-2/3 sm:max-w-md px-6 py-8 flex flex-col items-center text-white bg-[#8DC9F7]/10 backdrop-blur-md rounded-xl shadow-xl">
 
       <h2 class="text-3xl font-bold mb-2 text-center"
         style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
         Thank you for using the Ciriculum Library!
+        style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: white;">
+        Found what you need? Check it out!
       </h2>
-      <p class="text-sm text-blue-200 mb-6 text-center opacity-80">
+      <p class="text-sm text-white mb-6 text-center opacity-80">
         A confirmation email with your due date will be sent to you.
       </p>
 

@@ -397,7 +397,7 @@
         </div>
         <div class="footer-right">
             <div class="footer-section">
-                <div class="footer-topic">Connect</div>
+		<div class="footer-topic">Connect</div>
                 <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
                 <a href="https://www.instagram.com/umw_coe/">Instagram</a>
                 <a href="https://education.umw.edu/">Main Website</a>
@@ -405,7 +405,7 @@
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
                 <a href="">mwells@umw.edu</a>
-		        <a href="tel:5406541290">(540) 654-1290</a>
+                        <a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>
     </footer>
@@ -453,7 +453,7 @@
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
                 <a href="">mwells@umw.edu</a>
-		<a href="tel:5406541290">(540) 654-1290</a>
+                <a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>
     </footer>
@@ -467,16 +467,7 @@
 <?php require 'header.php'; ?>
 
     <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome to the Seacobeck Curriculum Lab!</b> Let's get started.</h2>
-    </div>
-
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <input type="text" name="query" placeholder="Search..."
-                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
-            </form>
-        </div>
+        <h2><b>Search Results</b></h2>
     </div>
 
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
@@ -510,3 +501,4 @@
 <?php endif ?>
 
 </html>
+
