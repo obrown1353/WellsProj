@@ -73,8 +73,7 @@
       <h2 class="text-3xl font-bold mb-2 text-center"
         style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
         Thank you for using the Ciriculum Library!
-        style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: white;">
-        Found what you need? Check it out!
+
       </h2>
       <p class="text-sm text-white mb-6 text-center opacity-80">
         A confirmation email with your due date will be sent to you.
