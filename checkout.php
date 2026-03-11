@@ -78,6 +78,13 @@
         A confirmation email with your due date will be sent to you.
       </p>
 
+      <form style="display: flex; gap: 15px;">    
+        <input type="radio" id="checkout" name="action" value="Checkout">
+        <label for="checkout">Checking Out</label>
+        <input type="radio" id="return" name="action" value="Return">
+        <label for="return">Returning</label>
+    </form>
+
       <div class="w-full space-y-5">
         <input type="text"   id="name"         placeholder="Name: First, Last" class="input-field" />
         <input type="text"   id="materialName" placeholder="Name of Item"      class="input-field" />
