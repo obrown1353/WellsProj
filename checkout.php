@@ -71,8 +71,8 @@
     <div class="w-full sm:w-2/3 sm:max-w-md px-6 py-8 flex flex-col items-center text-white bg-[#8DC9F7]/10 backdrop-blur-md rounded-xl shadow-xl">
 
       <h2 class="text-3xl font-bold mb-2 text-center"
-        style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: white;">
-        Found what you need? Check it out!
+        style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
+        Thank you for using the Ciriculum Library!
       </h2>
       <p class="text-sm text-white mb-6 text-center opacity-80">
         A confirmation email with your due date will be sent to you.
@@ -91,8 +91,8 @@
         <input type="email"  id="email"        placeholder="Email"             class="input-field" />
 
         <button id="submitBtn" onclick="handleCheckout()"
-          class="w-full bg-[#8DC9F7] text-white font-bold py-3 rounded-lg hover:bg-[#0067A2] active:scale-95 transition duration-300">
-          Check Out
+          class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
+          Submit
         </button>
       </div>
 
