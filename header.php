@@ -63,7 +63,7 @@ h2 { font-weight: normal; font-size: 30px; }
 .icon-overlay img { width: 40px; height: 40px; opacity: 0.9; filter: invert(1); }
 .nav-item img { border-radius: 15px; transition: filter 0.3s, background-color 0.3s; }
 .nav-item:hover img, .nav-item.active img { filter: none; }
-.icon .dropdown { top: 130%; left: -415%; }
+.icon .dropdown { top: 130%; right: 0; left: auto; }
 .in-nav { display: flex; align-items: center; gap: 8px; }
 .in-nav span { font-size: 24px; }
 .in-nav img { width: 40px; height: 40px; border-radius: 5px; border-bottom-right-radius: 20px; filter: invert(1) !important; }
