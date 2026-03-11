@@ -72,7 +72,7 @@
 
       <h2 class="text-3xl font-bold mb-2 text-center"
         style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
-        Found what you need? Check it out!
+        Thank you for using the Ciriculum Library!
       </h2>
       <p class="text-sm text-blue-200 mb-6 text-center opacity-80">
         A confirmation email with your due date will be sent to you.
@@ -92,7 +92,7 @@
 
         <button id="submitBtn" onclick="handleCheckout()"
           class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
-          Check Out
+          Submit
         </button>
       </div>
 
