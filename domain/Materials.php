@@ -3,7 +3,7 @@
 class Materials {
     private $material_id;
     private $name;
-    private $location;
+    private $location; 
     private $resource_type;
     private $isbn;
     private $author;
@@ -56,5 +56,19 @@ class Materials {
 
     function getCopyInstock() {
             return $this->copy_instock;
+    }
+
+    function canBeCheckedOut(){
+        if($this->copy_instock > 0){
+            return true;
+        } 
+        return false;
+    }
+
+    function canBeReturned(){
+        if($this->copy_instock < $this->copy_capacity){
+            return true;
+        }
+        return false;
     }
 }
