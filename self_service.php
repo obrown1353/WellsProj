@@ -79,7 +79,7 @@ $material = fetch_material_by_id($id);
 
       <h2 class="text-3xl font-bold mb-2 text-center"
         style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
-        Checking out <?php echo htmlspecialchars($material['name']) ?> ?
+        Checking out <?php echo htmlspecialchars($material->getName()) ?> ?
       </h2>
       <p class="text-sm text-blue-200 mb-6 text-center opacity-80">
         A confirmation email with your due date will be sent to you.
@@ -87,7 +87,7 @@ $material = fetch_material_by_id($id);
 
       <div class="w-full space-y-5">
         <input type="text"   id="name"         placeholder="Name: First, Last" class="input-field" />
-        <input type="text"   id="materialName" placeholder="Name of Item"      class="input-field" value="<?php echo ($material['name']); ?>" required readonly/>
+        <input type="text"   id="materialName" placeholder="Name of Item"      class="input-field" value="<?php echo ($material->getName()); ?>" required readonly/>
         <input type="email"  id="email"        placeholder="Email"             class="input-field" />
 
         <button id="submitBtn" onclick="handleCheckout()"
