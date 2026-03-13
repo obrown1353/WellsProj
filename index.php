@@ -358,6 +358,7 @@
         <h2><b>Welcome to the Seacobeck Curriculum Lab, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
     </div>
 
+    <!-- Search Bar -->
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
@@ -366,6 +367,27 @@
             </form>
         </div>
     </div>
+
+    <!-- Sort by -->
+    <div style="display: flex; justify-content: center; margin-top: -20px;">
+        <form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
+
+            <input type="radio" id="sort-title" name="sort" value="title">
+            <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
+
+            <input type="radio" id="sort-author" name="sort" value="author">
+            <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
+
+            <input type="radio" id="sort-material-type" name="sort" value="material_type">
+            <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
+
+            <input type="radio" id="sort-location" name="sort" value="location">
+            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
+        </form>
+
+    </div>
+
 
     <?php if (isset($_GET['pcSuccess'])): ?>
         <div class="happy-toast">Password changed successfully!</div>
@@ -383,6 +405,7 @@
         <div class="happy-toast">Volunteer registered successfully!</div>
     <?php endif ?>
 
+    <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
     <footer class="footer" style="margin-top: 100px;">
@@ -422,6 +445,7 @@
         <h2><b>Welcome <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
     </div>
 
+    <!-- Search Bar -->
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
@@ -431,6 +455,27 @@
         </div>
     </div>
 
+    <!-- Sort by -->
+    <div style="display: flex; justify-content: center; margin-top: -20px;">
+        <form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
+
+            <input type="radio" id="sort-title" name="sort" value="title">
+            <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
+
+            <input type="radio" id="sort-author" name="sort" value="author">
+            <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
+
+            <input type="radio" id="sort-material-type" name="sort" value="material_type">
+            <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
+
+            <input type="radio" id="sort-location" name="sort" value="location">
+            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
+        </form>
+
+    </div>
+
+    <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
     <footer class="footer" style="margin-top: 100px;">
@@ -470,15 +515,37 @@
         <h2><b>Welcome to the Seacobeck Curriculum Lab!</b> Let's get started.</h2>
     </div>
 
+    <!-- Search Bar -->
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
                 <input type="text" name="query" placeholder="Search..."
                     style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
             </form>
-        </div>
+	</div>
     </div>
 
+    <!-- Sort by -->
+    <div style="display: flex; justify-content: center; margin-top: -20px;">
+	<form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+	    <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
+
+	    <input type="radio" id="sort-title" name="sort" value="title">
+	    <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
+
+            <input type="radio" id="sort-author" name="sort" value="author">
+	    <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
+
+	    <input type="radio" id="sort-material-type" name="sort" value="material_type">
+	    <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
+
+            <input type="radio" id="sort-location" name="sort" value="location">
+            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
+	</form>
+
+    </div>
+
+    <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
     <footer class="footer" style="margin-top: 100px;">
