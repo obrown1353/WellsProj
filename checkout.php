@@ -112,7 +112,8 @@ if (!$isGuest && isset($_SESSION['_id'])) {
       </form>
 
       <div class="w-full space-y-5">
-        <input type="text"  id="name"         placeholder="Name: First, Last" class="input-field" />
+        <input type="text"  id="name"         placeholder="First Name" class="input-field" />
+         <input type="text"  id="name"         placeholder="Last Name" class="input-field" />
         <input type="text"  id="materialName" placeholder="Name of Item"      class="input-field" />
         <input type="email" id="email"        placeholder="Email"             class="input-field" />
 
