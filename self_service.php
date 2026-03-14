@@ -27,10 +27,10 @@ if (!$isGuest && isset($_SESSION['_id'])) {
 
 //accesses database
 include_once "database/dbMaterials.php";
+include_once "database/dbCheckout.php";
 $id = 1;
 //$id = (int) ($_GET['id'] ?? 0);
-$material = fetch_material_by_id($id);
-
+$material = fetch_material_by_id($id); 
 ?>
 
 <!DOCTYPE html>
@@ -106,29 +106,41 @@ $material = fetch_material_by_id($id);
 
       <h2 class="text-3xl font-bold mb-2 text-center"
         style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
-        Checking out <?php echo ($material->getName()); ?> <?php echo ($material->getCopyInstock()); ?>?
+        SELF SERVICE
       </h2>
-      <p class="text-sm text-white mb-6 text-center opacity-80">
-        A confirmation email with your due date will be sent to you.
+      <p class="text-sm text-white mb-4 text-left opacity-80">
+        <?php echo ($material->getName()); ?>
+      </p>
+      <p class="text-xs text-white mb-6 text-left opacity-80">
+        Location: <?php echo ($material->getLocation()); ?> | Resource Type: <?php echo ($material->getResourceType()); ?><br>
+        Copy Instock: <?php echo ($material->getCopyInstock()); ?> | Copy Total: <?php echo ($material->getCopyCapacity()); ?><br>
+        <?php if ($material->getISBN()): ?>
+          ISBN: <?php echo ($material->getISBN()); ?>
+        <?php endif; ?>
+        <?php if ($material->getAuthor()): ?>
+          | Author: <?php echo ($material->getAuthor()); ?>
+        <?php endif; ?> <br>
+        <?php if ($material->getDescription()): ?>
+          Description: <?php echo ($material->getDescription()); ?>
+        <?php endif; ?>
       </p>
 
       <div class="w-full space-y-5">
-        <input type="text"  id="name"         placeholder="Name: First, Last" class="input-field" />
-        <input type="text"  id="materialName" placeholder="Name of Item"      class="input-field" value="<?php echo ($material->getName()); ?>" required readonly/>
-        <input type="email" id="email"        placeholder="Email"             class="input-field" />
+        <form action = "./handle_self_service.php" method="post">
+          <input type="text"  name="first_name"   placeholder="First Name" class="input-field" required/> <br>
+          <input type="text"  name="last_name"    placeholder="Last Name"  class="input-field" required/> <br>
+          <input type="email" name="email"        placeholder="Email"      class="input-field" required/> <br>
+          <input type="hidden" name="id" value = <?php echo ($id); ?>/> <br>
         <?php if ($material->canBeCheckedOut()): ?>
-          <button id="submitBtn" onclick="handleCheckout()"
-          class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
-          Checkout
-          </button>
+          <input type="submit" name="Checkout" value="Checkout"
+            class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
         <?php endif; ?>
         <?php if (($material->canBeReturned())): ?>
           <!-- should be updated handle return -->
-          <button id="submitBtn" onclick="handleReturn()"
+          <input type="submit" name="Return" value="Return"
             class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
-            Return
-          </button>
         <?php endif; ?>
+        </form>
       </div>
 
     </div>
@@ -139,6 +151,22 @@ $material = fetch_material_by_id($id);
     Questions? Contact Dr. Mellisa Wells
     <a href="mailto:mwells@umw.edu" class="underline hover:text-blue-400">mwells@umw.edu</a>
   </footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <script>
     emailjs.init("wyffuz6ZVKFN7dYco");
