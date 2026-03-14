@@ -1,3 +1,30 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_cache_expire(30);
+session_start();
+
+date_default_timezone_set("America/New_York");
+
+if (!isset($_SESSION['access_level'])) {
+    header('Location: login.php');
+    die();
+}
+
+include_once('database/dbPersons.php');
+include_once('domain/Person.php');
+
+$accessLevel = (int) $_SESSION['access_level'];
+$isGuest  = ($accessLevel === 0);
+$isWorker = ($accessLevel === 1);
+$isAdmin  = ($accessLevel >= 2);
+
+if (!$isGuest && isset($_SESSION['_id'])) {
+    $person = retrieve_person($_SESSION['_id']);
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,63 +32,62 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-  * { font-family: StromaBold, 'Lucida Sans'; }
-
-  .input-field {
-    width: 100%;
-    background: rgba(255,255,255,0.88);
-    color: #111;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 15px;
-    outline: none;
-    transition: box-shadow 0.2s, border-color 0.2s;
-  }
-  .input-field:focus {
-    box-shadow: 0 0 0 3px rgba(156,32,7,0.25);
-    border-color: #9C2007;
-  }
-  .input-field::placeholder { color: #6b7280; }
-
-  #toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    color: white;
-    padding: 14px 28px;
-    border-radius: 10px;
-    font-size: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    opacity: 0;
-    z-index: 9999;
-    text-align: center;
-  }
-  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-  #toast.success { background: #002D61; border-left: 5px solid #8DC9F7; }
-  #toast.error   { background: #7A1905; border-left: 5px solid #f87171; }
-
-  .spinner {
-    display: inline-block;
-    width: 18px; height: 18px;
-    border: 3px solid rgba(255,255,255,0.4);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 8px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+* { font-family: StromaBold, 'Lucida Sans'; }
+.input-field {
+  width: 100%;
+  background: rgba(255,255,255,0.88);
+  color: #111;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 15px;
+  outline: none;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.input-field:focus {
+  box-shadow: 0 0 0 3px rgba(156,32,7,0.25);
+  border-color: #9C2007;
+}
+.input-field::placeholder { color: #6b7280; }
+#toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  color: white;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+  z-index: 9999;
+  text-align: center;
+}
+#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+#toast.success { background: #002D61; border-left: 5px solid #8DC9F7; }
+#toast.error   { background: #7A1905; border-left: 5px solid #f87171; }
+.spinner {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 3px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 <title>Seacobeck Curriculum Lab | Check Out</title>
 </head>
 <body class="min-h-screen flex flex-col bg-cover bg-center relative"
-  style="background-image: url('images/library.jpg');">
+  style="background-image: url('images/library.jpg'); padding-top: 95px;">
+
+  <?php require 'header.php'; ?>
 
   <!-- Blue Overlay -->
-  <div class="absolute inset-0 bg-[#002D61]/85"></div>
+  <div class="absolute inset-0 bg-[#002D61]/85" style="top: 95px;"></div>
 
   <!-- Toast -->
   <div id="toast"></div>
@@ -72,23 +98,23 @@
 
       <h2 class="text-3xl font-bold mb-2 text-center"
         style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
-        Thank you for using the Ciriculum Library!
+        Thank you for using the Curriculum Library!
       </h2>
       <p class="text-sm text-white mb-6 text-center opacity-80">
         A confirmation email with your due date will be sent to you.
       </p>
 
-      <form style="display: flex; gap: 15px;">    
+      <form style="display: flex; gap: 15px; margin-bottom: 20px;">
         <input type="radio" id="checkout" name="action" value="Checkout">
-        <label for="checkout">Checking Out</label>
+        <label for="checkout" style="color: white;">Checking Out</label>
         <input type="radio" id="return" name="action" value="Return">
-        <label for="return">Returning</label>
-    </form>
+        <label for="return" style="color: white;">Returning</label>
+      </form>
 
       <div class="w-full space-y-5">
-        <input type="text"   id="name"         placeholder="Name: First, Last" class="input-field" />
-        <input type="text"   id="materialName" placeholder="Name of Item"      class="input-field" />
-        <input type="email"  id="email"        placeholder="Email"             class="input-field" />
+        <input type="text"  id="name"         placeholder="Name: First, Last" class="input-field" />
+        <input type="text"  id="materialName" placeholder="Name of Item"      class="input-field" />
+        <input type="email" id="email"        placeholder="Email"             class="input-field" />
 
         <button id="submitBtn" onclick="handleCheckout()"
           class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
@@ -128,7 +154,7 @@
       btn.disabled = loading;
       btn.innerHTML = loading
         ? '<span class="spinner"></span>Sending...'
-        : 'Check Out';
+        : 'Submit';
     }
 
     function handleCheckout() {
