@@ -362,7 +362,7 @@
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
                 <input type="text" name="query" placeholder="Search..."
-                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;" required>
+                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: black" required>
             </form>
         </div>
     </div>
