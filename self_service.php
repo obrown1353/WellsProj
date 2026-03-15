@@ -73,9 +73,9 @@ $status = $_GET['status'] ?? '';
   white-space: nowrap;
 }
 #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-#toast.success { background: #002D61; border-left: 5px solid #8DC9F7; }
-#toast.error   { background: #7A1905; border-left: 5px solid #f87171; }
-#toast.warning { background: #7a5c00; border-left: 5px solid #fbbf24; }
+#toast.success { background: #002D61; border-left: 5px solid #8df79d; }
+#toast.error   { background: #002D61; border-left: 5px solid #f87171; }
+#toast.warning { background: #002D61; border-left: 5px solid #fbbf24; }
 </style>
 <title>Seacobeck Curriculum Lab | Self Service</title>
 </head>
@@ -178,7 +178,9 @@ $status = $_GET['status'] ?? '';
       'checkout_fail':     { msg: '❌ Checkout failed. Please try again.',            type: 'error'   },
       'return_success':    { msg: '✅ Returned! Confirmation email sent.',            type: 'success' },
       'return_no_email':   { msg: '⚠️ Returned, but email failed to send.',          type: 'warning' },
-      'return_fail':       { msg: '❌ Return failed. Item not found for that email.', type: 'error'   },
+      'return_fail':       { msg: '❌ Return failed. Material not found for that email.', type: 'error'},
+      'cant_checkout':     { msg: '⚠️ Material not available to be checked out.', type: 'warning'},
+      'cant_return':       { msg: '⚠️ Material not available to be returned.', type: 'warning'},
     };
 
     const status = "<?php echo htmlspecialchars($status); ?>";

@@ -178,38 +178,36 @@ HTML;
 
 // Handle Checkout
 if (isset($_POST['Checkout'])) {
-    if ($TEST_MODE) {
-        // TEST MODE: skip database, just send email
-        $success = true;
+    if ($material->canBeCheckedOut()){
+      $success = new_checkout($id, $first_name, $last_name, $email, $checkout_date, $due_date);
+      if ($success) {
+          self_service_update($id, true);
+          $html  = checkoutEmailHTML($full_name, $title, $email, $due_date_nice, $LOGO_URL);
+          $plain = "Hi $full_name,\n\nWe have received your confirmation!\n\nItem: $title\nReturn By: $due_date_nice\n\nWarm regards,\nThe Seacobeck Library Team";
+          $emailSent = sendEmail($email, $full_name, 'Seacobeck Library - Checkout Confirmation', $html, $plain);
+          $status = $emailSent ? 'checkout_success' : 'checkout_no_email';
+      } else {
+          $status = 'checkout_fail';
+      } 
     } else {
-        $success = new_checkout($id, $first_name, $last_name, $email, $checkout_date, $due_date);
-        if ($success) self_service_update($id, true);
+      $status = 'cant_checkout';
     }
-    if ($success) {
-        $html  = checkoutEmailHTML($full_name, $title, $email, $due_date_nice, $LOGO_URL);
-        $plain = "Hi $full_name,\n\nWe have received your confirmation!\n\nItem: $title\nReturn By: $due_date_nice\n\nWarm regards,\nThe Seacobeck Library Team";
-        $emailSent = sendEmail($email, $full_name, 'Seacobeck Library - Checkout Confirmation', $html, $plain);
-        $status = $emailSent ? 'checkout_success' : 'checkout_no_email';
-    } else {
-        $status = 'checkout_fail';
-    }
-
+    
 // Handle Return
 } else if (isset($_POST['Return'])) {
-    if ($TEST_MODE) {
-        // TEST MODE: skip database, just send email
-        $success = true;
+    if ($material->canBeReturned()){
+      $success = remove_checkout($id, $email);
+      if ($success) {
+          self_service_update($id, false);
+          $html  = returnEmailHTML($full_name, $title, $email, $LOGO_URL);
+          $plain = "Hi $full_name,\n\nThank you for returning: $title.\n\nWarm regards,\nThe Seacobeck Library Team";
+          $emailSent = sendEmail($email, $full_name, 'Seacobeck Library - Return Confirmation', $html, $plain);
+          $status = $emailSent ? 'return_success' : 'return_no_email';
+      } else {
+          $status = 'return_fail';
+      }
     } else {
-        $success = remove_checkout($id, $email);
-        if ($success) self_service_update($id, false);
-    }
-    if ($success) {
-        $html  = returnEmailHTML($full_name, $title, $email, $LOGO_URL);
-        $plain = "Hi $full_name,\n\nThank you for returning: $title.\n\nWarm regards,\nThe Seacobeck Library Team";
-        $emailSent = sendEmail($email, $full_name, 'Seacobeck Library - Return Confirmation', $html, $plain);
-        $status = $emailSent ? 'return_success' : 'return_no_email';
-    } else {
-        $status = 'return_fail';
+      $status = 'cant_return';
     }
 }
 
