@@ -25,19 +25,17 @@ if (!$isGuest && isset($_SESSION['_id'])) {
     $person = retrieve_person($_SESSION['_id']);
 }
 
-//accesses database
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
 $id = 1;
-//$id = (int) ($_GET['id'] ?? 0);
-$material = fetch_material_by_id($id); 
-?>
+$material = fetch_material_by_id($id);
 
+$status = $_GET['status'] ?? '';
+?>
 <!DOCTYPE html>
 <html>
 <head>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 * { font-family: StromaBold, 'Lucida Sans'; }
@@ -51,6 +49,7 @@ $material = fetch_material_by_id($id);
   font-size: 15px;
   outline: none;
   transition: box-shadow 0.2s, border-color 0.2s;
+  margin-bottom: 12px;
 }
 .input-field:focus {
   box-shadow: 0 0 0 3px rgba(156,32,7,0.25);
@@ -71,200 +70,126 @@ $material = fetch_material_by_id($id);
   opacity: 0;
   z-index: 9999;
   text-align: center;
+  white-space: nowrap;
 }
 #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 #toast.success { background: #002D61; border-left: 5px solid #8DC9F7; }
 #toast.error   { background: #7A1905; border-left: 5px solid #f87171; }
-.spinner {
-  display: inline-block;
-  width: 18px; height: 18px;
-  border: 3px solid rgba(255,255,255,0.4);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-  margin-right: 8px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+#toast.warning { background: #7a5c00; border-left: 5px solid #fbbf24; }
 </style>
-<title>Seacobeck Curriculum Lab | Check Out</title>
+<title>Seacobeck Curriculum Lab | Self Service</title>
 </head>
 <body class="min-h-screen flex flex-col bg-cover bg-center relative"
   style="background-image: url('images/library.jpg'); padding-top: 95px;">
 
   <?php require 'header.php'; ?>
 
-  <!-- Blue Overlay -->
   <div class="absolute inset-0 bg-[#002D61]/85" style="top: 95px;"></div>
-
-  <!-- Toast -->
   <div id="toast"></div>
 
-  <!-- Main Content -->
   <div class="flex-grow flex items-center justify-center relative z-10">
     <div class="w-full sm:w-2/3 sm:max-w-md px-6 py-8 flex flex-col items-center text-white bg-[#8DC9F7]/10 backdrop-blur-md rounded-xl shadow-xl">
 
       <h2 class="text-3xl font-bold mb-2 text-center"
-        style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
+        style="text-shadow: 1px 1px 0 black,-1px -1px 0 black,1px -1px 0 black,-1px 1px 0 black; color:#bfe5ed;">
         SELF SERVICE
       </h2>
-      <p class="text-sm text-white mb-4 text-left opacity-80">
-        <?php echo ($material->getName()); ?>
+
+      <p class="text-sm text-white mb-2 text-left opacity-80">
+        <?php echo htmlspecialchars($material->getName()); ?>
       </p>
-      <p class="text-xs text-white mb-6 text-left opacity-80">
-        Location: <?php echo ($material->getLocation()); ?> | Resource Type: <?php echo ($material->getResourceType()); ?><br>
-        Copy Instock: <?php echo ($material->getCopyInstock()); ?> | Copy Total: <?php echo ($material->getCopyCapacity()); ?><br>
-        <?php if ($material->getISBN()): ?>
-          ISBN: <?php echo ($material->getISBN()); ?>
-        <?php endif; ?>
-        <?php if ($material->getAuthor()): ?>
-          | Author: <?php echo ($material->getAuthor()); ?>
-        <?php endif; ?> <br>
-        <?php if ($material->getDescription()): ?>
-          Description: <?php echo ($material->getDescription()); ?>
-        <?php endif; ?>
+      <p class="text-xs text-white mb-5 text-left opacity-70">
+        Location: <?php echo htmlspecialchars($material->getLocation()); ?> | Resource Type: <?php echo htmlspecialchars($material->getResourceType()); ?><br>
+        Copy Instock: <?php echo htmlspecialchars($material->getCopyInstock()); ?> | Copy Total: <?php echo htmlspecialchars($material->getCopyCapacity()); ?><br>
+        <?php if ($material->getISBN()): ?>ISBN: <?php echo htmlspecialchars($material->getISBN()); ?> <?php endif; ?>
+        <?php if ($material->getAuthor()): ?>| Author: <?php echo htmlspecialchars($material->getAuthor()); ?><?php endif; ?><br>
+        <?php if ($material->getDescription()): ?>Description: <?php echo htmlspecialchars($material->getDescription()); ?><?php endif; ?>
       </p>
 
-      <div class="w-full space-y-5">
-        <form action = "./handle_self_service.php" method="post">
-          <input type="text"  name="first_name"   placeholder="First Name" class="input-field" required/> <br>
-          <input type="text"  name="last_name"    placeholder="Last Name"  class="input-field" required/> <br>
-          <input type="email" name="email"        placeholder="Email"      class="input-field" required/> <br>
-          <input type="hidden" name="id" value = <?php echo ($id); ?>/> <br>
-        <?php if ($material->canBeCheckedOut()): ?>
-          <input type="submit" name="Checkout" value="Checkout"
-            class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
-        <?php endif; ?>
-        <?php if (($material->canBeReturned())): ?>
-          <!-- should be updated handle return -->
-          <input type="submit" name="Return" value="Return"
-            class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300">
-        <?php endif; ?>
+      <!-- TOGGLE -->
+      <div class="flex w-full mb-5 rounded-xl overflow-hidden border border-white/20 shadow-md">
+        <button type="button" id="tab-checkout" onclick="switchMode('checkout')"
+          class="flex-1 py-3 text-sm font-bold tracking-wide transition-all duration-200 bg-[#0d2b8d] text-white">
+          📤 Check Out
+        </button>
+        <button type="button" id="tab-return" onclick="switchMode('return')"
+          class="flex-1 py-3 text-sm font-bold tracking-wide transition-all duration-200 bg-white/10 text-white/50">
+          📥 Return
+        </button>
+      </div>
+
+      <!-- FORM -->
+      <div class="w-full">
+        <form action="./handle_self_service.php" method="post">
+          <input type="text"  name="first_name" placeholder="First Name" class="input-field" required />
+          <input type="text"  name="last_name"  placeholder="Last Name"  class="input-field" required />
+          <input type="email" name="email"      placeholder="Email"      class="input-field" required />
+          <input type="hidden" name="id" value="<?php echo (int)$id; ?>" />
+
+          <div id="checkout-btn">
+            <input type="submit" name="Checkout" value="Checkout"
+              class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300 cursor-pointer">
+          </div>
+
+          <div id="return-btn" style="display:none;">
+            <input type="submit" name="Return" value="Return"
+              class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-[#7a1905] active:scale-95 transition duration-300 cursor-pointer">
+          </div>
         </form>
       </div>
 
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="relative z-10 w-full text-center text-white bg-black bg-opacity-50 py-4 mt-4">
     Questions? Contact Dr. Mellisa Wells
     <a href="mailto:mwells@umw.edu" class="underline hover:text-blue-400">mwells@umw.edu</a>
   </footer>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   <script>
-    emailjs.init("wyffuz6ZVKFN7dYco");
+    function switchMode(mode) {
+      const checkoutBtn  = document.getElementById('checkout-btn');
+      const returnBtn    = document.getElementById('return-btn');
+      const tabCheckout  = document.getElementById('tab-checkout');
+      const tabReturn    = document.getElementById('tab-return');
 
-    function getReturnDate() {
-      const date = new Date();
-      date.setDate(date.getDate() + 14);
-      return date.toLocaleDateString('en-US', {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-      });
+      if (mode === 'checkout') {
+        checkoutBtn.style.display = 'block';
+        returnBtn.style.display   = 'none';
+        tabCheckout.style.background = '#0d2b8d';
+        tabCheckout.style.color      = 'white';
+        tabCheckout.style.opacity    = '1';
+        tabReturn.style.background   = 'rgba(255,255,255,0.1)';
+        tabReturn.style.color        = 'rgba(255,255,255,0.5)';
+      } else {
+        checkoutBtn.style.display = 'none';
+        returnBtn.style.display   = 'block';
+        tabReturn.style.background   = '#9C2007';
+        tabReturn.style.color        = 'white';
+        tabReturn.style.opacity      = '1';
+        tabCheckout.style.background = 'rgba(255,255,255,0.1)';
+        tabCheckout.style.color      = 'rgba(255,255,255,0.5)';
+      }
     }
 
-    function showToast(message, type = 'success') {
+    const statusMap = {
+      'checkout_success':  { msg: '✅ Checked out! Confirmation email sent.',        type: 'success' },
+      'checkout_no_email': { msg: '⚠️ Checked out, but email failed to send.',       type: 'warning' },
+      'checkout_fail':     { msg: '❌ Checkout failed. Please try again.',            type: 'error'   },
+      'return_success':    { msg: '✅ Returned! Confirmation email sent.',            type: 'success' },
+      'return_no_email':   { msg: '⚠️ Returned, but email failed to send.',          type: 'warning' },
+      'return_fail':       { msg: '❌ Return failed. Item not found for that email.', type: 'error'   },
+    };
+
+    const status = "<?php echo htmlspecialchars($status); ?>";
+    if (status && statusMap[status]) {
+      const { msg, type } = statusMap[status];
       const toast = document.getElementById('toast');
-      toast.textContent = message;
+      toast.textContent = msg;
       toast.className = `show ${type}`;
-      setTimeout(() => { toast.className = ''; }, 4500);
+      setTimeout(() => { toast.className = ''; }, 5000);
+      history.replaceState(null, '', 'self_service.php');
     }
-
-    function setLoading(loading) {
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = loading;
-      btn.innerHTML = loading
-        ? '<span class="spinner"></span>Sending...'
-        : 'Submit';
-    }
-
-    function handleCheckout() {
-      const name        = document.getElementById('name').value.trim();
-      const title       = document.getElementById('materialName').value.trim();
-      const email       = document.getElementById('email').value.trim();
-      const return_date = getReturnDate();
-
-      if (!name || !title || !email) {
-        showToast('⚠️ Please fill in all fields.', 'error');
-        return;
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showToast('⚠️ Please enter a valid email address.', 'error');
-        return;
-      }
-      setLoading(true);
-
-      emailjs.send("service_ulaa9k9", "template_r1s5j65", {
-        name, title, email, return_date
-      })
-      .then(() => {
-        setLoading(false);
-        showToast(`✅ Checked out! Confirmation sent to ${email}`, 'success');
-        document.getElementById('name').value         = '';
-        document.getElementById('materialName').value = '';
-        document.getElementById('email').value        = '';
-        
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.error("EmailJS error:", err);
-        showToast('❌ Something went wrong. Please try again.', 'error');
-      });
-    }
-
-    function handleReturn(){
-      const name        = document.getElementById('name').value.trim();
-      const title       = document.getElementById('materialName').value.trim();
-      const email       = document.getElementById('email').value.trim();
-      const return_date = getReturnDate();
-
-      if (!name || !title || !email) {
-        showToast('⚠️ Please fill in all fields.', 'error');
-        return;
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showToast('⚠️ Please enter a valid email address.', 'error');
-        return;
-      }
-
-      setLoading(true);
-
-      emailjs.send("service_ulaa9k9", "template_r1s5j65", {
-        name, title, email, return_date
-      })
-      .then(() => {
-        setLoading(false);
-        showToast(`✅ Returned! Confirmation sent to ${email}`, 'success');
-        document.getElementById('name').value         = '';
-        document.getElementById('materialName').value = '';
-        document.getElementById('email').value        = '';
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.error("EmailJS error:", err);
-        showToast('❌ Something went wrong. Please try again.', 'error');
-      });
-    }
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Enter') handleCheckout();
-    });
   </script>
 
 </body>
