@@ -72,3 +72,4 @@ class Materials {
         return false;
     }
 }
+?>
