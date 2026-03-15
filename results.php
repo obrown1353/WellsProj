@@ -511,19 +511,19 @@
 
 <!-- GUEST VIEW -->
 <?php if ($isGuest): ?>
-<body>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
 <?php require 'header.php'; ?>
 
 <!-- MAIN TWO-COLUMN LAYOUT -->
-<body style="display: flex; flex-direction: column; min-height: 100vh;">
-<div style="display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
+<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
     <!-- LEFT SIDEBAR (Filters) -->
-    <div style="flex: 0 0 25%; border: 2px solid #0067A2; border-radius: 12px; padding: 20px; background-color: #f5f9ff; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
+    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
 	<h3>Filters</h3>
 	<hr>
 
     	<!-- Location -->
-    	<strong>Location</strong><br>
+	<details>
+	<summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
     	<input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
     	<input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
     	<input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
@@ -548,16 +548,20 @@
     	<input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
     	<input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
     	<input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
+    </details>
 
     <br>
 
     	<!-- Material Type -->
-    	<strong>Material Type</strong><br>
+	<details>
+	<summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
     	<input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
     	<input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
     	<input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
     	<input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
-    	<input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+	<input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+
+	</details>
 </div>
 
     <!-- RIGHT SIDE: MAIN CONTENT -->
@@ -596,6 +600,8 @@
 	<h2><b>Search Results</b></h2>
 	<!-- Results from database go here -->
     </div>
+</div>
+</div>
 </div>
 
     <!-- Footer -->
