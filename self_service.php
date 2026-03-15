@@ -27,7 +27,7 @@ if (!$isGuest && isset($_SESSION['_id'])) {
 
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
-$id = 1;
+$id = 1; //change this to update on id sent to page
 $material = fetch_material_by_id($id);
 
 $status = $_GET['status'] ?? '';
@@ -120,7 +120,7 @@ $status = $_GET['status'] ?? '';
 
       <!-- FORM -->
       <div class="w-full">
-        <form action="./handle_self_service.php" method="post">
+        <form action="./handle_self_service.php?id=' . (<?php echo (int)$id; ?> ?? 0)" method="post">
           <input type="text"  name="first_name" placeholder="First Name" class="input-field" required />
           <input type="text"  name="last_name"  placeholder="Last Name"  class="input-field" required />
           <input type="email" name="email"      placeholder="Email"      class="input-field" required />
