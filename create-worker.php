@@ -10,69 +10,42 @@ if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
     die();
 }
 
-require_once('database/dbPersons.php');
-require_once('domain/Person.php');
+require_once('database/db.php'); // $pdo connection
 
 $success = false;
 $error   = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username   = strtolower(trim($_POST['username'] ?? ''));
+    $staff_id   = strtolower(trim($_POST['staff_id']   ?? ''));
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name  = trim($_POST['last_name']  ?? '');
     $email      = trim($_POST['email']      ?? '');
     $password   = $_POST['password']        ?? '';
     $confirm    = $_POST['confirm']         ?? '';
-    $role       = $_POST['role']            ?? 'worker';
+    $is_admin   = (($_POST['role'] ?? 'worker') === 'admin') ? 1 : 0;
 
-    if (!$username || !$first_name || !$last_name || !$password) {
+    if (!$staff_id || !$first_name || !$last_name || !$password) {
         $error = 'Username, first name, last name, and password are required.';
     } elseif ($password !== $confirm) {
         $error = 'Passwords do not match.';
     } elseif (strlen($password) < 6) {
         $error = 'Password must be at least 6 characters.';
-    } elseif (retrieve_person($username)) {
-        $error = "Username \"$username\" is already taken.";
     } else {
-        $hashed = password_hash($password, PASSWORD_DEFAULT);
-        $type   = ($role === 'admin') ? 'admin' : 'worker';
-        $today  = date('Y-m-d');
-
-        $person = new Person(
-            $username,   // id
-            $today,      // start_date
-            $first_name, // first_name
-            $last_name,  // last_name
-            '',          // street_address
-            '',          // city
-            '',          // state
-            '',          // zip_code
-            '',          // phone1
-            '0',         // over21
-            '',          // phone1type
-            '',          // emergency_contact_phone
-            '',          // emergency_contact_phone_type
-            '',          // birthday
-            $email,      // email
-            'false',     // email_prefs
-            '',          // emergency_contact_first_name
-            '',          // contact_num
-            '',          // emergency_contact_relation
-            '',          // contact_method
-            $type,       // type
-            'Active',    // status
-            '',          // notes
-            $hashed,     // password
-            '',          // affiliation
-            '',          // branch
-            0,           // archived
-            ''           // emergency_contact_last_name
-        );
-
-        if (add_person($person)) {
-            $success = true;
+        $check = $pdo->prepare('SELECT staff_id FROM `dbstaff` WHERE staff_id = ?');
+        $check->execute([$staff_id]);
+        if ($check->fetch()) {
+            $error = "Username \"$staff_id\" is already taken.";
         } else {
-            $error = 'Could not save to database. The username may already exist.';
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare(
+                'INSERT INTO `dbstaff` (staff_id, first_name, last_name, email, password, is_admin)
+                 VALUES (?, ?, ?, ?, ?, ?)'
+            );
+            if ($stmt->execute([$staff_id, $first_name, $last_name, $email, $hashed, $is_admin])) {
+                $success = true;
+            } else {
+                $error = 'Could not save to database. Please try again.';
+            }
         }
     }
 }
@@ -89,6 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php require 'header.php'; ?>
 
 <style>
+    body { background-color: #002654; } 
+
     .page-wrap {
         max-width: 560px;
         margin: 40px auto;
@@ -99,102 +74,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .subtitle { color: #8DC9F7; font-size: 14px; margin-bottom: 30px; }
 
     .card {
-        background: rgb(40, 40, 43);
+        background: rgba(0, 20, 60, 0.85);
         border-radius: 14px;
         padding: 32px;
-        border: 1px solid rgba(141,201,247,.2);
+        border: 1px solid rgba(141, 201, 247, .25);
     }
 
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-bottom: 18px;
-    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
     .form-label {
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .06em;
-        color: #8DC9F7;
+        font-size: 12px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .06em; color: #8DC9F7;
     }
     .form-input {
-        width: 100%;
-        padding: 11px 14px;
-        font-size: 15px;
-        font-family: inherit;
-        background: rgba(255,255,255,.07);
-        border: 1.5px solid rgba(255,255,255,.15);
-        border-radius: 8px;
-        color: white;
-        outline: none;
-        transition: border-color .2s;
+        width: 100%; padding: 11px 14px; font-size: 15px; font-family: inherit;
+        background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.15);
+        border-radius: 8px; color: white; outline: none; transition: border-color .2s;
         box-sizing: border-box;
     }
     .form-input:focus { border-color: #8DC9F7; }
     .form-input::placeholder { color: rgba(255,255,255,.3); }
-    .form-input option { background: rgb(40,40,43); }
+    .form-input option { background: #002654; }
 
     .name-row { display: flex; gap: 14px; }
     .name-row .form-group { flex: 1; }
 
     .role-row { display: flex; gap: 12px; }
     .role-option {
-        flex: 1;
-        border: 2px solid rgba(255,255,255,.15);
-        border-radius: 10px;
-        padding: 12px;
-        cursor: pointer;
-        text-align: center;
-        transition: border-color .2s, background .2s;
-        user-select: none;
-        color: white;
+        flex: 1; border: 2px solid rgba(255,255,255,.15); border-radius: 10px;
+        padding: 12px; cursor: pointer; text-align: center;
+        transition: border-color .2s, background .2s; user-select: none; color: white;
     }
     .role-option input[type="radio"] { display: none; }
     .role-title { font-weight: 700; font-size: 15px; }
     .role-desc  { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 3px; }
     .role-option.selected { border-color: #8DC9F7; background: rgba(141,201,247,.1); }
 
-    .form-divider {
-        border: none;
-        border-top: 1px solid rgba(255,255,255,.1);
-        margin: 22px 0;
-    }
+    .form-divider { border: none; border-top: 1px solid rgba(255,255,255,.1); margin: 22px 0; }
 
     .btn-submit {
-        width: 100%;
-        padding: 13px;
-        font-size: 15px;
-        font-family: inherit;
-        font-weight: 700;
-        background: #7b95e9;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: background .2s, transform .1s;
-        margin-top: 4px;
+        width: 100%; padding: 13px; font-size: 15px; font-family: inherit;
+        font-weight: 700; background: #7b95e9; color: white; border: none;
+        border-radius: 10px; cursor: pointer; transition: background .2s, transform .1s; margin-top: 4px;
     }
     .btn-submit:hover  { background: #0a1e61; }
     .btn-submit:active { transform: scale(.97); }
 
-    .alert {
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
-    }
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 600; }
     .alert-error   { background: rgba(180,30,30,.85); color: white; }
     .alert-success { background: rgba(22,163,74,.85);  color: white; }
 
-    .back-link {
-        display: inline-block;
-        margin-top: 16px;
-        color: #8DC9F7;
-        font-size: 14px;
-        text-decoration: none;
-    }
+    .back-link { display: inline-block; margin-top: 16px; color: #8DC9F7; font-size: 14px; text-decoration: none; }
     .back-link:hover { text-decoration: underline; }
     .req { color: #e87; }
 </style>
@@ -219,10 +148,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <form method="POST" action="create-worker.php">
 
                 <div class="form-group">
-                    <label class="form-label" for="username">Username <span class="req">*</span></label>
-                    <input class="form-input" type="text" id="username" name="username"
+                    <label class="form-label" for="staff_id">Username <span class="req">*</span></label>
+                    <input class="form-input" type="text" id="staff_id" name="staff_id"
                            placeholder="e.g. jsmith"
-                           value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
+                           value="<?php echo htmlspecialchars($_POST['staff_id'] ?? ''); ?>"
                            required>
                 </div>
 
@@ -259,13 +188,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="radio" name="role" value="worker"
                                    <?php echo (($_POST['role'] ?? 'worker') === 'worker') ? 'checked' : ''; ?>>
                             <div class="role-title">👤 Student Worker</div>
-                            <div class="role-desc">Access level 1</div>
                         </label>
                         <label class="role-option <?php echo (($_POST['role'] ?? '') === 'admin') ? 'selected' : ''; ?>">
                             <input type="radio" name="role" value="admin"
                                    <?php echo (($_POST['role'] ?? '') === 'admin') ? 'checked' : ''; ?>>
                             <div class="role-title">🔑 Admin</div>
-                            <div class="role-desc">Access level 2</div>
                         </label>
                     </div>
                 </div>

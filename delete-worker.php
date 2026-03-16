@@ -10,27 +10,30 @@ if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
     die();
 }
 
-require_once('database/dbPersons.php');
-require_once('domain/Person.php');
+require_once('database/db.php'); // $pdo connection
 
-$success = false;
-$error   = '';
+$success      = false;
+$error        = '';
 $deleted_name = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete'])) {
-    $username = strtolower(trim($_POST['username'] ?? ''));
+    $staff_id = strtolower(trim($_POST['staff_id'] ?? ''));
 
-    if (!$username) {
+    if (!$staff_id) {
         $error = 'No username provided.';
-    } elseif ($username === 'vmsroot') {
+    } elseif ($staff_id === 'vmsroot') {
         $error = 'That account cannot be deleted.';
     } else {
-        $person = retrieve_person($username);
+        $stmt = $pdo->prepare('SELECT * FROM `dbstaff` WHERE staff_id = ?');
+        $stmt->execute([$staff_id]);
+        $person = $stmt->fetch(PDO::FETCH_ASSOC);
+
         if (!$person) {
-            $error = "No account found with username \"$username\".";
+            $error = "No account found with username \"$staff_id\".";
         } else {
-            $deleted_name = $person->get_first_name() . ' ' . $person->get_last_name();
-            if (remove_person($username)) {
+            $deleted_name = $person['first_name'] . ' ' . $person['last_name'];
+            $del = $pdo->prepare('DELETE FROM `dbstaff` WHERE staff_id = ?');
+            if ($del->execute([$staff_id])) {
                 $success = true;
             } else {
                 $error = 'Could not delete the account. Please try again.';
@@ -43,10 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete'])) {
 $search_result = null;
 $search_error  = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
-    $q = strtolower(trim($_POST['username'] ?? ''));
+    $q = strtolower(trim($_POST['staff_id'] ?? ''));
     if ($q) {
-        $found = retrieve_person($q);
-        if ($found && $found->get_id() !== 'vmsroot') {
+        $stmt = $pdo->prepare('SELECT * FROM `dbstaff` WHERE staff_id = ?');
+        $stmt->execute([$q]);
+        $found = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($found && $found['staff_id'] !== 'vmsroot') {
             $search_result = $found;
         } else {
             $search_error = "No account found with username \"$q\".";
@@ -64,6 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 <body>
 <?php require 'header.php'; ?>
 <style>
+    body { background-color: #002654; } 
+
     .page-wrap {
         max-width: 560px;
         margin: 40px auto;
@@ -72,14 +79,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
     }
     .page-title { margin-bottom: 6px; font-size: 28px; font-weight: 700; color: white; }
     .subtitle { color: #8DC9F7; font-size: 14px; margin-bottom: 30px; }
+
     .card {
-        background: rgb(40,40,43);
+        background: rgba(0, 20, 60, 0.85);
         border-radius: 14px;
         padding: 32px;
-        border: 1px solid rgba(141,201,247,.2);
+        border: 1px solid rgba(141, 201, 247, .25);
     }
+
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
-    .form-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #8DC9F7; }
+    .form-label {
+        font-size: 12px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .06em; color: #8DC9F7;
+    }
     .form-input {
         width: 100%; padding: 11px 14px; font-size: 15px; font-family: inherit;
         background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.15);
@@ -88,16 +100,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
     }
     .form-input:focus { border-color: #8DC9F7; }
     .form-input::placeholder { color: rgba(255,255,255,.3); }
+
     .btn { width: 100%; padding: 13px; font-size: 15px; font-family: inherit; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; transition: background .2s, transform .1s; margin-top: 4px; }
     .btn:active { transform: scale(.97); }
     .btn-search { background: #7b95e9; color: white; }
     .btn-search:hover { background: #0a1e61; }
     .btn-delete { background: #b91c1c; color: white; }
     .btn-delete:hover { background: #7f1d1d; }
+
     .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 600; }
     .alert-error   { background: rgba(180,30,30,.85); color: white; }
-    .alert-success { background: rgba(22,163,74,.85); color: white; }
-    .alert-warn    { background: rgba(180,100,0,.85); color: white; }
+    .alert-success { background: rgba(22,163,74,.85);  color: white; }
+    .alert-warn    { background: rgba(180,100,0,.85);  color: white; }
+
     .user-card {
         background: rgba(141,201,247,.1);
         border: 1px solid rgba(141,201,247,.3);
@@ -108,7 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
     .user-card .name  { font-size: 18px; font-weight: 700; color: white; }
     .user-card .uname { font-size: 13px; color: #8DC9F7; margin-top: 2px; }
     .user-card .role  { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 4px; text-transform: uppercase; letter-spacing: .05em; }
+
     .form-divider { border: none; border-top: 1px solid rgba(255,255,255,.1); margin: 20px 0; }
+
     .back-link { display: inline-block; margin-top: 16px; color: #8DC9F7; font-size: 14px; text-decoration: none; }
     .back-link:hover { text-decoration: underline; }
 </style>
@@ -135,10 +152,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
             <!-- Step 1: Search -->
             <form method="POST" action="delete-worker.php">
                 <div class="form-group">
-                    <label class="form-label" for="username">Username</label>
-                    <input class="form-input" type="text" id="username" name="username"
+                    <label class="form-label" for="staff_id">Username</label>
+                    <input class="form-input" type="text" id="staff_id" name="staff_id"
                            placeholder="e.g. jsmith"
-                           value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
+                           value="<?php echo htmlspecialchars($_POST['staff_id'] ?? ''); ?>"
                            required>
                 </div>
                 <button type="submit" name="search" value="1" class="btn btn-search">Look Up Account</button>
@@ -148,13 +165,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
             <?php if ($search_result): ?>
                 <hr class="form-divider">
                 <div class="user-card">
-                    <div class="name"><?php echo htmlspecialchars($search_result->get_first_name() . ' ' . $search_result->get_last_name()); ?></div>
-                    <div class="uname">@<?php echo htmlspecialchars($search_result->get_id()); ?></div>
-                    <div class="role"><?php echo htmlspecialchars($search_result->get_type()); ?></div>
+                    <div class="name"><?php echo htmlspecialchars($search_result['first_name'] . ' ' . $search_result['last_name']); ?></div>
+                    <div class="uname">@<?php echo htmlspecialchars($search_result['staff_id']); ?></div>
+                    <div class="role"><?php echo $search_result['is_admin'] ? '🔑 Admin' : '👤 Student Worker'; ?></div>
                 </div>
                 <div class="alert alert-warn">⚠ This will permanently delete the account. This cannot be undone.</div>
                 <form method="POST" action="delete-worker.php">
-                    <input type="hidden" name="username" value="<?php echo htmlspecialchars($search_result->get_id()); ?>">
+                    <input type="hidden" name="staff_id" value="<?php echo htmlspecialchars($search_result['staff_id']); ?>">
                     <button type="submit" name="confirm_delete" value="1" class="btn btn-delete">Delete This Account</button>
                 </form>
             <?php endif; ?>
