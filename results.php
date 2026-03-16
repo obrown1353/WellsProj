@@ -16,16 +16,36 @@
     }
 
     include_once('database/dbPersons.php');
+    include_once('database/dbMaterials.php');
     include_once('domain/Person.php');
 
     $accessLevel = (int) $_SESSION['access_level'];
     $isGuest  = ($accessLevel === 0);
     $isWorker = ($accessLevel === 1);
     $isAdmin  = ($accessLevel >= 2);
+    $query = "";
+    $materials = fetch_all_materials();
+    $results = [];
 
     if (!$isGuest && isset($_SESSION['_id'])) {
         $person = retrieve_person($_SESSION['_id']);
     }
+
+    if (isset($_GET['query'])) {
+	    $query = strtolower(trim($_GET['query']));
+    }
+
+    foreach ($materials as $material) {
+	    if (
+		   str_contains(strtolower((string)$material->getName()), $query) ||
+        	   str_contains(strtolower((string)$material->getAuthor()), $query) ||
+        	   str_contains(strtolower((string)$material->getDescription()), $query) ||
+        	   str_contains(strtolower((string)$material->getISBN()), $query)
+    		) {
+        	$results[] = $material;
+	    }
+    }
+
     $notRoot = !$isAdmin;
 
 ?>
@@ -409,12 +429,19 @@
     <div style="flex: 1; max-width: 900px;">
 
     <!--Search Bar -->
-        <div style="margin: 40px 0; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <input type="text" name="query" placeholder="Search..."
-                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
+    <div style="display: flex; justify-content: center; margin: 40px 0;">
+        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <div style="position: relative; width:100%;">
+                <input type="text" name="query" placeholder="Search materials..."
+                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
+                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
+                Search
+            </button>
+            </div>
             </form>
         </div>
+    </div>
 
     <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
@@ -440,11 +467,35 @@
     <div style="margin-top: 30px; padding: 30px 20px;">
         <h2><b>Search Results</b></h2>
         <!-- Results from database go here -->
+        <?php
+            if (!empty($results)) {
+                    foreach ($results as $material) {
+                        echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
+                        echo "<h3>" . $material->getName() . "</h3>";
+                        echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
+                        echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
+                        echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
+                        echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
+                        echo "<p>" . $material->getDescription() . "</p>";
+                        echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
+
+                        if ($material->canBeCheckedOut()) {
+                            echo "<p style='color:green'><b>Available for Checkout</b></p>";
+                        } else {
+                            echo "<p style='color:red'><b>Out of Stock</b></p>";
+                        }
+                        echo "</div>";
+                }
+
+            } else {
+                echo "<p>No materials found.</p>";
+            }
+
+        ?>
     </div>
 </div>
 </div>
 </div>
-
 
     <?php if (isset($_GET['pcSuccess'])): ?>
         <div class="happy-toast">Password changed successfully!</div>
@@ -553,12 +604,19 @@
     <div style="flex: 1; max-width: 900px;">
 
     <!--Search Bar -->
-        <div style="margin: 40px 0; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <input type="text" name="query" placeholder="Search..."
-                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
+    <div style="display: flex; justify-content: center; margin: 40px 0;">
+        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <div style="position: relative; width:100%;">
+                <input type="text" name="query" placeholder="Search materials..."
+                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
+                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
+                Search
+            </button>
+            </div>
             </form>
         </div>
+    </div>
 
     <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
@@ -584,11 +642,35 @@
     <div style="margin-top: 30px; padding: 30px 20px;">
         <h2><b>Search Results</b></h2>
         <!-- Results from database go here -->
+        <?php
+            if (!empty($results)) {
+                    foreach ($results as $material) {
+                        echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
+                        echo "<h3>" . $material->getName() . "</h3>";
+                        echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
+                        echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
+                        echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
+                        echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
+                        echo "<p>" . $material->getDescription() . "</p>";
+                        echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
+
+                        if ($material->canBeCheckedOut()) {
+                            echo "<p style='color:green'><b>Available for Checkout</b></p>";
+                        } else {
+                            echo "<p style='color:red'><b>Out of Stock</b></p>";
+                        }
+                        echo "</div>";
+                }
+
+            } else {
+                echo "<p>No materials found.</p>";
+            }
+
+        ?>
     </div>
 </div>
 </div>
 </div>
-
 
     <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
@@ -680,12 +762,20 @@
     <div style="flex: 1; max-width: 900px;">
 
     <!--Search Bar -->
-	<div style="margin: 40px 0; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <input type="text" name="query" placeholder="Search..."
-                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
+    <div style="display: flex; justify-content: center; margin: 40px 0;">
+        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <div style="position: relative; width:100%;">
+                <input type="text" name="query" placeholder="Search materials..."
+                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
+                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
+                Search
+            </button>
+            </div>
             </form>
         </div>
+    </div>
+
 
     <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
@@ -711,6 +801,31 @@
     <div style="margin-top: 30px; padding: 30px 20px;">
 	<h2><b>Search Results</b></h2>
 	<!-- Results from database go here -->
+	<?php
+	    if (!empty($results)) {
+		    foreach ($results as $material) {
+			echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
+			echo "<h3>" . $material->getName() . "</h3>";
+        		echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
+        		echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
+        		echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
+        		echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
+        		echo "<p>" . $material->getDescription() . "</p>";
+        		echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
+
+			if ($material->canBeCheckedOut()) {
+        		    echo "<p style='color:green'><b>Available for Checkout</b></p>";
+    			} else {
+        		    echo "<p style='color:red'><b>Out of Stock</b></p>";
+			}
+			echo "</div>";
+    		}
+
+	    } else {
+    		echo "<p>No materials found.</p>";
+	    }
+
+    	?>
     </div>
 </div>
 </div>
