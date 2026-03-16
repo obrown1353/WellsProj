@@ -355,15 +355,66 @@
 <body>
 <?php require 'header.php'; ?>
 
-    <!-- Search Bar -->
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+    <!-- MAIN TWO-COLUMN LAYOUT -->
+<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
+    <!-- LEFT SIDEBAR (Filters) -->
+    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
+        <h3>Filters</h3>
+        <hr>
+
+        <!-- Location -->
+        <details>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
+        <input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
+        <input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
+        <input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
+        <input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
+        <input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
+        <input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
+        <input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
+        <input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
+        <input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
+        <input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
+        <input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
+        <input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
+        <input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
+        <input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
+        <input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
+        <input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
+        <input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
+        <input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
+        <input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
+        <input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
+        <input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
+        <input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
+        <input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
+        <input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
+    </details>
+
+    <br>
+
+        <!-- Material Type -->
+        <details>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
+        <input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
+        <input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
+        <input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
+        <input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
+        <input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+
+        </details>
+</div>
+
+    <!-- RIGHT SIDE: MAIN CONTENT -->
+    <div style="flex: 1; max-width: 900px;">
+
+    <!--Search Bar -->
+        <div style="margin: 40px 0; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
                 <input type="text" name="query" placeholder="Search..."
-                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;" required>
+                    style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
             </form>
         </div>
-    </div>
 
     <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
@@ -385,10 +436,15 @@
 
     </div>
 
-
-    <div style="margin-top: 0px; padding: 30px 20px;">
+    <!-- Search Results -->
+    <div style="margin-top: 30px; padding: 30px 20px;">
         <h2><b>Search Results</b></h2>
+        <!-- Results from database go here -->
     </div>
+</div>
+</div>
+</div>
+
 
     <?php if (isset($_GET['pcSuccess'])): ?>
         <div class="happy-toast">Password changed successfully!</div>
@@ -443,15 +499,66 @@
 <body>
 <?php require 'header.php'; ?>
 
-    <!-- Search Bar -->
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+<!-- MAIN TWO-COLUMN LAYOUT -->
+<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
+    <!-- LEFT SIDEBAR (Filters) -->
+    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
+        <h3>Filters</h3>
+        <hr>
+
+        <!-- Location -->
+        <details>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
+        <input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
+        <input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
+        <input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
+        <input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
+        <input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
+        <input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
+        <input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
+        <input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
+        <input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
+        <input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
+        <input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
+        <input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
+        <input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
+        <input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
+        <input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
+        <input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
+        <input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
+        <input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
+        <input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
+        <input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
+        <input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
+        <input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
+        <input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
+        <input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
+    </details>
+
+    <br>
+
+        <!-- Material Type -->
+        <details>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
+        <input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
+        <input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
+        <input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
+        <input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
+        <input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+
+        </details>
+</div>
+
+    <!-- RIGHT SIDE: MAIN CONTENT -->
+    <div style="flex: 1; max-width: 900px;">
+
+    <!--Search Bar -->
+        <div style="margin: 40px 0; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="calendar.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
                 <input type="text" name="query" placeholder="Search..."
                     style="width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
             </form>
         </div>
-    </div>
 
     <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
@@ -473,10 +580,15 @@
 
     </div>
 
-
-    <div style="margin-top: 0px; padding: 30px 20px;">
-	<h2><b>Search Results</b></h2>
+    <!-- Search Results -->
+    <div style="margin-top: 30px; padding: 30px 20px;">
+        <h2><b>Search Results</b></h2>
+        <!-- Results from database go here -->
     </div>
+</div>
+</div>
+</div>
+
 
     <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
@@ -496,8 +608,8 @@
                 <div class="footer-topic">Connect</div>
                 <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
                 <a href="https://www.instagram.com/umw_coe/">Instagram</a>
-                <a href="https://education.umw.edu/">Main Website</a
-            </div>
+                <a href="https://education.umw.edu/">Main Website</a>
+	    </div>
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
                 <a href="">mwells@umw.edu</a>
