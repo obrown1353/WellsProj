@@ -75,6 +75,15 @@
             font-size: 30px;
         }
 
+        h3 a:link, h3 a:visited, h3 a:active {
+            color: #002D61;
+        }
+
+        h3 a:hover {
+            color: #8DC9F7;
+        }
+
+
         .full-width-bar {
             width: 100%;
             background: #8DC9F7 !important;
@@ -471,14 +480,13 @@
             if (!empty($results)) {
                     foreach ($results as $material) {
                         echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
-                        echo "<h3>" . $material->getName() . "</h3>";
+                        echo "<h3><a href='self_service.php?material_id=" . $material->getMaterialID() . "'>" .  $material->getName() .  "</a></h3>";
                         echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
                         echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
                         echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
                         echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
                         echo "<p>" . $material->getDescription() . "</p>";
                         echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
-
                         if ($material->canBeCheckedOut()) {
                             echo "<p style='color:green'><b>Available for Checkout</b></p>";
                         } else {
@@ -646,7 +654,7 @@
             if (!empty($results)) {
                     foreach ($results as $material) {
                         echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
-                        echo "<h3>" . $material->getName() . "</h3>";
+                        echo "<h3><a href='self_service.php?material_id=" . $material->getMaterialID() . "'>" .  $material->getName() .  "</a></h3>";
                         echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
                         echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
                         echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
@@ -805,13 +813,13 @@
 	    if (!empty($results)) {
 		    foreach ($results as $material) {
 			echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
-			echo "<h3>" . $material->getName() . "</h3>";
-        		echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
-        		echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
-        		echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
-        		echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
-        		echo "<p>" . $material->getDescription() . "</p>";
-        		echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
+            echo "<h3><a href='self_service.php?material_id=" . $material->getMaterialID() . "'>" .  $material->getName() .  "</a></h3>";
+            echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
+            echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
+            echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
+            echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
+            echo "<p>" . $material->getDescription() . "</p>";
+            echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
 
 			if ($material->canBeCheckedOut()) {
         		    echo "<p style='color:green'><b>Available for Checkout</b></p>";

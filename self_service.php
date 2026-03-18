@@ -27,7 +27,7 @@ if (!$isGuest && isset($_SESSION['_id'])) {
 
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
-$id = 1; //change this to update on id sent to page
+$id = $_GET['material_id'] ?? '';
 $material = fetch_material_by_id($id);
 
 $status = $_GET['status'] ?? '';
@@ -96,7 +96,7 @@ $status = $_GET['status'] ?? '';
       </h2>
 
       <p class="text-sm text-white mb-2 text-left opacity-80">
-        <?php echo htmlspecialchars($material->getName()); ?>
+        <?php echo $material->getName(); ?>
       </p>
       <p class="text-xs text-white mb-5 text-left opacity-70">
         Location: <?php echo htmlspecialchars($material->getLocation()); ?> | Resource Type: <?php echo htmlspecialchars($material->getResourceType()); ?><br>
