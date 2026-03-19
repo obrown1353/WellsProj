@@ -8,8 +8,7 @@ session_start();
 
 date_default_timezone_set("America/New_York");
 
-// ✅ Allow guests (0), workers (1), admins (2+)
-// Only block if NOT logged in at all
+// Allow guests (0), workers (1), admins (2+)
 if (!isset($_SESSION['access_level'])) {
     $_SESSION['access_level'] = 0; // treat as guest
 }

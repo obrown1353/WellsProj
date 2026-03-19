@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 
 session_start();
 
-// ✅ Admin-only access
+// Admin-only access
 if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
     header('Location: index.php');
     die();
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $fileName = $file['name'];
     $fileTmpPath = $file['tmp_name'];
 
-    // ✅ Validate file type
+    // Validate file type
     $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $allowed = ['xlsx', 'csv'];
 
@@ -57,13 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
                 $capacity    = (int)($row[6] ?? 0);
                 $instock     = (int)($row[7] ?? 0);
 
-                // ✅ Basic validation
+                // Basic validation
                 if (!$name || $capacity < 0 || $instock < 0) {
                     $skipped++;
                     continue;
                 }
 
-                // ✅ Prevent duplicates (by name)
+                // Prevent duplicates (by name)
                 $check = mysqli_query($con, "SELECT material_id FROM dbmaterials WHERE name='$name'");
                 if (mysqli_num_rows($check) > 0) {
                     $skipped++;
