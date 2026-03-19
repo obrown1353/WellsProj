@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // Worker Navbar
 $common_nav_links = '
       <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
-      <div class="nav-item"><a href="calendar.php" class="nav-link">Catalog</a></div>
+      <div class="nav-item"><a href="viewMaterials.php" class="nav-link">Catalog</a></div>
       <div class="nav-item"><a href="checkout.php" class="nav-link">Checkout</a></div>
       <div class="nav-item">Worker
         <div class="dropdown">
@@ -186,6 +186,7 @@ echo('
         <div class="dropdown">
           <a href="create-worker.php" style="text-decoration:none"><div class="in-nav"><img src="images/plus-solid.svg"><span>Create Account</span></div></a>
           <a href="delete-worker.php" style="text-decoration:none"><div class="in-nav"><img src="images/users-solid.svg"><span>Delete Account</span></div></a>
+          <a href="importMaterials.php" style="text-decoration:none"><div class="in-nav><img src="images/send.png"><span>Import Materials</span></div></a>
         </div>
       </div>
     </div>
