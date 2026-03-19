@@ -128,6 +128,7 @@ $common_nav_links = '
       <div class="nav-item">Worker
         <div class="dropdown">
           <a href="viewCheckouts.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>View Checkouts</span></div></a>
+          <a href="genReport.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>Generate Report</span></div></a>
         </div>
       </div>';
 
