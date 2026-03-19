@@ -122,10 +122,20 @@ document.addEventListener("DOMContentLoaded", function() {
 <?php
 // Shared navigation links to keep Admin and Worker sections consistent
 $common_nav_links = '
-      <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
-      <div class="nav-item"><a href="calendar.php" class="nav-link">Catalog</a></div>
-      <div class="nav-item"><a href="checkout.php" class="nav-link">Checkout</a></div>
-      <div class="nav-item">Worker</div>';
+  <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
+  <div class="nav-item"><a href="calendar.php" class="nav-link">Catalog</a></div>
+  <div class="nav-item"><a href="checkout.php" class="nav-link">Checkout</a></div>
+
+  <div class="nav-item">Worker
+    <div class="dropdown">
+      <a href="genreport.php" class="dropdown-link">
+        <div class="in-nav">
+          <img src="images/chart-bar-solid.svg">
+          <span>Generate Report</span>
+        </div>
+      </a>
+    </div>
+  </div>';
 
 $showing_login = false;
 
