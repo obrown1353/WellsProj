@@ -16,8 +16,8 @@
     }
 
     include_once('database/dbPersons.php');
-    include_once('domain/Person.php');
     include_once('database/dbMaterials.php');
+    include_once('domain/Person.php');
 
     $accessLevel = (int) $_SESSION['access_level'];
     $isGuest  = ($accessLevel === 0);
@@ -27,25 +27,24 @@
     $materials = fetch_all_materials();
     $results = [];
 
-
     if (!$isGuest && isset($_SESSION['_id'])) {
         $person = retrieve_person($_SESSION['_id']);
     }
 
     if (isset($_GET['query'])) {
-            $query = strtolower(trim($_GET['query']));
+	    $query = strtolower(trim($_GET['query']));
     }
 
     foreach ($materials as $material) {
-            if (
-                   str_contains(strtolower((string)$material->getName()), $query) ||
-                   str_contains(strtolower((string)$material->getAuthor()), $query) ||
-                   str_contains(strtolower((string)$material->getDescription()), $query) ||
-                   str_contains(strtolower((string)$material->getISBN()), $query)
-                ) {
-        $results[] = $material;
-            }
-    }	
+	    if (
+		   str_contains(strtolower((string)$material->getName()), $query) ||
+        	   str_contains(strtolower((string)$material->getAuthor()), $query) ||
+        	   str_contains(strtolower((string)$material->getDescription()), $query) ||
+        	   str_contains(strtolower((string)$material->getISBN()), $query)
+    		) {
+        	$results[] = $material;
+	    }
+    }
 
     $notRoot = !$isAdmin;
 
@@ -375,11 +374,61 @@
 <?php if ($isAdmin): ?>
 <body>
 <?php require 'header.php'; ?>
-    <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome to the Seacobeck Curriculum Lab, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
-    </div>
 
-    <!-- Search Bar -->
+    <!-- MAIN TWO-COLUMN LAYOUT -->
+<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
+    <!-- LEFT SIDEBAR (Filters) -->
+    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
+        <h3>Filters</h3>
+        <hr>
+
+        <!-- Location -->
+        <details>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
+        <input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
+        <input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
+        <input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
+        <input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
+        <input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
+        <input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
+        <input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
+        <input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
+        <input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
+        <input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
+        <input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
+        <input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
+        <input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
+        <input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
+        <input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
+        <input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
+        <input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
+        <input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
+        <input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
+        <input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
+        <input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
+        <input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
+        <input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
+        <input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
+    </details>
+
+    <br>
+
+        <!-- Material Type -->
+        <details>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
+        <input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
+        <input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
+        <input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
+        <input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
+        <input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+
+        </details>
+</div>
+
+    <!-- RIGHT SIDE: MAIN CONTENT -->
+    <div style="flex: 1; max-width: 900px;">
+
+    <!--Search Bar -->
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
@@ -393,7 +442,6 @@
             </form>
         </div>
     </div>
-
 
     <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
@@ -415,6 +463,39 @@
 
     </div>
 
+    <!-- Search Results -->
+    <div style="margin-top: 30px; padding: 30px 20px;">
+        <h2><b>Search Results</b></h2>
+        <!-- Results from database go here -->
+        <?php
+            if (!empty($results)) {
+                    foreach ($results as $material) {
+                        echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
+                        echo "<h3>" . $material->getName() . "</h3>";
+                        echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
+                        echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
+                        echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
+                        echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
+                        echo "<p>" . $material->getDescription() . "</p>";
+                        echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
+
+                        if ($material->canBeCheckedOut()) {
+                            echo "<p style='color:green'><b>Available for Checkout</b></p>";
+                        } else {
+                            echo "<p style='color:red'><b>Out of Stock</b></p>";
+                        }
+                        echo "</div>";
+                }
+
+            } else {
+                echo "<p>No materials found.</p>";
+            }
+
+        ?>
+    </div>
+</div>
+</div>
+</div>
 
     <?php if (isset($_GET['pcSuccess'])): ?>
         <div class="happy-toast">Password changed successfully!</div>
@@ -432,6 +513,165 @@
         <div class="happy-toast">Volunteer registered successfully!</div>
     <?php endif ?>
 
+
+    <!-- Footer -->
+    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
+
+    <footer class="footer" style="margin-top: 100px;">
+        <div class="footer-left">
+            <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+        <div class="footer-right">
+            <div class="footer-section">
+		<div class="footer-topic">Connect</div>
+                <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
+                <a href="https://www.instagram.com/umw_coe/">Instagram</a>
+                <a href="https://education.umw.edu/">Main Website</a>
+            </div>
+            <div class="footer-section">
+                <div class="footer-topic">Contact Us</div>
+                <a href="">mwells@umw.edu</a>
+                        <a href="tel:5406541290">(540) 654-1290</a>
+            </div>
+        </div>
+    </footer>
+    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+</body>
+<?php endif ?>
+
+<!-- WORKER VIEW -->
+<?php if ($isWorker): ?>
+<body>
+<?php require 'header.php'; ?>
+
+<!-- MAIN TWO-COLUMN LAYOUT -->
+<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
+    <!-- LEFT SIDEBAR (Filters) -->
+    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
+        <h3>Filters</h3>
+        <hr>
+
+        <!-- Location -->
+        <details>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
+        <input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
+        <input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
+        <input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
+        <input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
+        <input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
+        <input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
+        <input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
+        <input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
+        <input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
+        <input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
+        <input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
+        <input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
+        <input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
+        <input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
+        <input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
+        <input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
+        <input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
+        <input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
+        <input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
+        <input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
+        <input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
+        <input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
+        <input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
+        <input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
+    </details>
+
+    <br>
+
+        <!-- Material Type -->
+        <details>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
+        <input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
+        <input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
+        <input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
+        <input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
+        <input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+
+        </details>
+</div>
+
+    <!-- RIGHT SIDE: MAIN CONTENT -->
+    <div style="flex: 1; max-width: 900px;">
+
+    <!--Search Bar -->
+    <div style="display: flex; justify-content: center; margin: 40px 0;">
+        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
+            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <div style="position: relative; width:100%;">
+                <input type="text" name="query" placeholder="Search materials..."
+                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
+                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
+                Search
+            </button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sort by -->
+    <div style="display: flex; justify-content: center; margin-top: -20px;">
+        <form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
+
+            <input type="radio" id="sort-title" name="sort" value="title">
+            <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
+
+            <input type="radio" id="sort-author" name="sort" value="author">
+            <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
+
+            <input type="radio" id="sort-material-type" name="sort" value="material_type">
+            <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
+
+            <input type="radio" id="sort-location" name="sort" value="location">
+            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
+        </form>
+
+    </div>
+
+    <!-- Search Results -->
+    <div style="margin-top: 30px; padding: 30px 20px;">
+        <h2><b>Search Results</b></h2>
+        <!-- Results from database go here -->
+        <?php
+            if (!empty($results)) {
+                    foreach ($results as $material) {
+                        echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
+                        echo "<h3>" . $material->getName() . "</h3>";
+                        echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
+                        echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
+                        echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
+                        echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
+                        echo "<p>" . $material->getDescription() . "</p>";
+                        echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
+
+                        if ($material->canBeCheckedOut()) {
+                            echo "<p style='color:green'><b>Available for Checkout</b></p>";
+                        } else {
+                            echo "<p style='color:red'><b>Out of Stock</b></p>";
+                        }
+                        echo "</div>";
+                }
+
+            } else {
+                echo "<p>No materials found.</p>";
+            }
+
+        ?>
+    </div>
+</div>
+</div>
+</div>
+
     <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
@@ -451,11 +691,11 @@
                 <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
                 <a href="https://www.instagram.com/umw_coe/">Instagram</a>
                 <a href="https://education.umw.edu/">Main Website</a>
-            </div>
+	    </div>
             <div class="footer-section">
                 <div class="footer-topic">Contact Us</div>
                 <a href="">mwells@umw.edu</a>
-		        <a href="tel:5406541290">(540) 654-1290</a>
+                <a href="tel:5406541290">(540) 654-1290</a>
             </div>
         </div>
     </footer>
@@ -463,16 +703,65 @@
 </body>
 <?php endif ?>
 
-<!-- WORKER VIEW -->
-<?php if ($isWorker): ?>
-<body>
+<!-- GUEST VIEW -->
+<?php if ($isGuest): ?>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
 <?php require 'header.php'; ?>
 
-    <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
-    </div>
+<!-- MAIN TWO-COLUMN LAYOUT -->
+<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
+    <!-- LEFT SIDEBAR (Filters) -->
+    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
+	<h3>Filters</h3>
+	<hr>
 
-    <!-- Search Bar -->
+    	<!-- Location -->
+	<details>
+	<summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
+    	<input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
+    	<input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
+    	<input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
+    	<input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
+    	<input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
+    	<input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
+    	<input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
+    	<input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
+    	<input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
+    	<input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
+    	<input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
+    	<input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
+    	<input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
+    	<input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
+    	<input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
+    	<input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
+    	<input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
+    	<input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
+    	<input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
+    	<input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
+    	<input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
+    	<input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
+    	<input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
+    	<input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
+    </details>
+
+    <br>
+
+    	<!-- Material Type -->
+	<details>
+	<summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
+    	<input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
+    	<input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
+    	<input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
+    	<input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
+	<input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+
+	</details>
+</div>
+
+    <!-- RIGHT SIDE: MAIN CONTENT -->
+    <div style="flex: 1; max-width: 900px;">
+
+    <!--Search Bar -->
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
@@ -486,7 +775,6 @@
             </form>
         </div>
     </div>
-
 
 
     <!-- Sort by -->
@@ -509,80 +797,39 @@
 
     </div>
 
-    <!-- Footer -->
-    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
+    <!-- Search Results -->
+    <div style="margin-top: 30px; padding: 30px 20px;">
+	<h2><b>Search Results</b></h2>
+	<!-- Results from database go here -->
+	<?php
+	    if (!empty($results)) {
+		    foreach ($results as $material) {
+			echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
+			echo "<h3>" . $material->getName() . "</h3>";
+        		echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
+        		echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
+        		echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
+        		echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
+        		echo "<p>" . $material->getDescription() . "</p>";
+        		echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
 
-    <footer class="footer" style="margin-top: 100px;">
-        <div class="footer-left">
-            <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
-        <div class="footer-right">
-            <div class="footer-section">
-                <div class="footer-topic">Connect</div>
-                <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
-                <a href="https://www.instagram.com/umw_coe/">Instagram</a>
-                <a href="https://education.umw.edu/">Main Website</a>
-            </div>
-            <div class="footer-section">
-                <div class="footer-topic">Contact Us</div>
-                <a href="">mwells@umw.edu</a>
-		<a href="tel:5406541290">(540) 654-1290</a>
-            </div>
-        </div>
-    </footer>
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
-</body>
-<?php endif ?>
+			if ($material->canBeCheckedOut()) {
+        		    echo "<p style='color:green'><b>Available for Checkout</b></p>";
+    			} else {
+        		    echo "<p style='color:red'><b>Out of Stock</b></p>";
+			}
+			echo "</div>";
+    		}
 
-<!-- GUEST VIEW -->
-<?php if ($isGuest): ?>
-<body>
-<?php require 'header.php'; ?>
+	    } else {
+    		echo "<p>No materials found.</p>";
+	    }
 
-    <div style="margin-top: 0px; padding: 30px 20px;">
-        <h2><b>Welcome to the Seacobeck Curriculum Lab!</b> Let's get started.</h2>
+    	?>
     </div>
-
-    <!-- Search Bar -->
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-	    <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-		<div style="position: relative; width:100%;">
-                <input type="text" name="query" placeholder="Search materials..."
-		    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
-		<button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
-                Search
-	    </button>
-	    </div>
-            </form>
-	</div>
-    </div>
-
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-	<form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-	    <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-	    <input type="radio" id="sort-title" name="sort" value="title">
-	    <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
-
-            <input type="radio" id="sort-author" name="sort" value="author">
-	    <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
-
-	    <input type="radio" id="sort-material-type" name="sort" value="material_type">
-	    <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
-
-            <input type="radio" id="sort-location" name="sort" value="location">
-            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
-	</form>
-
-    </div>
+</div>
+</div>
+</div>
 
     <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
@@ -616,3 +863,4 @@
 <?php endif ?>
 
 </html>
+
