@@ -27,7 +27,9 @@ if (!$isGuest && isset($_SESSION['_id'])) {
 
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
-$id = $_GET['material_id'] ?? '';
+if (isset($_GET['material_id'])){
+  $id = $_GET['material_id'] ?? '';
+}
 $material = fetch_material_by_id($id);
 
 $status = $_GET['status'] ?? '';
@@ -142,7 +144,7 @@ $status = $_GET['status'] ?? '';
   </div>
 
   <footer class="relative z-10 w-full text-center text-white bg-black bg-opacity-50 py-4 mt-4">
-    Questions? Contact Dr. Mellisa Wells
+    Questions? Contact Dr. Melissa Wells
     <a href="mailto:mwells@umw.edu" class="underline hover:text-blue-400">mwells@umw.edu</a>
   </footer>
 
