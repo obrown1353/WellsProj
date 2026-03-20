@@ -148,6 +148,15 @@ tbody tr:hover {
     padding: 40px;
     color: rgba(255,255,255,0.5);
 }
+
+.edit-button{
+    background: #8DC9F7;
+    color: #002D61;
+    padding: 10px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700; 
+}
 </style>
 </head>
 
@@ -197,13 +206,14 @@ tbody tr:hover {
                     <th>ISBN</th>
                     <th>Available</th>
                     <th>Description</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
 
             <?php if (empty($filteredMaterials)): ?>
                 <tr>
-                    <td colspan="7">
+                    <td colspan="8">
                         <div class="empty-state">
                             No materials found<?php echo $searchQuery ? ' matching your search' : ''; ?>.
                         </div>
@@ -222,6 +232,7 @@ tbody tr:hover {
                     <td><?php if ($mat->getISBN()){echo htmlspecialchars($mat->getISBN()); } else { echo "N/A"; }?></td>
                     <td> <?php echo $mat->getCopyInstock(); ?> / <?php echo $mat->getCopyCapacity(); ?></td>
                     <td><?php if ($mat->getDescription()){echo htmlspecialchars($mat->getDescription()); } else { echo "N/A"; }?></td>
+                    <td><a href="editMaterial.php?material_id=<?php echo htmlspecialchars($mat->getMaterialID()); ?>" class="edit-button">Edit</a></td>
                 </tr>
                 <?php endforeach; ?>
 
