@@ -35,19 +35,9 @@
 	    $query = strtolower(trim($_GET['query']));
     }
 
-    foreach ($materials as $material) {
-	    if (
-		   str_contains(strtolower((string)$material->getName()), $query) ||
-        	   str_contains(strtolower((string)$material->getAuthor()), $query) ||
-        	   str_contains(strtolower((string)$material->getDescription()), $query) ||
-        	   str_contains(strtolower((string)$material->getISBN()), $query)
-    		) {
-        	$results[] = $material;
-	    }
-    }
+    $results = fetch_materials_by_query($query);
 
     $notRoot = !$isAdmin;
-
 ?>
 
 <!DOCTYPE html>
