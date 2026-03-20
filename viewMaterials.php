@@ -22,29 +22,12 @@ $isAdmin     = ($accessLevel >= 2);
 include_once('database/dbMaterials.php');
 include_once('domain/Materials.php');
 
-// Fetch materials
-$allMaterials = fetch_all_materials();
-
 // Search
 $searchQuery = isset($_GET['query']) ? strtolower(trim($_GET['query'])) : '';
+$filteredMaterials = fetch_materials_by_query($searchQuery);
 
-function matchesSearch($material, $query) {
-    if ($query === '') return true;
-
-    return str_contains(strtolower($material->getName()), $query)
-        || str_contains(strtolower($material->getAuthor()), $query)
-        || str_contains(strtolower($material->getDescription()), $query)
-        || str_contains(strtolower($material->getResourceType()), $query)
-        || str_contains(strtolower($material->getLocation()), $query)
-        || str_contains(strtolower($material->getIsbn()), $query);
-}
-
-// Filtered materials
-$filteredMaterials = array_filter(
-    $allMaterials,
-    fn($m) => matchesSearch($m, $searchQuery)
-);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,6 +148,15 @@ tbody tr:hover {
     padding: 40px;
     color: rgba(255,255,255,0.5);
 }
+
+.edit-button{
+    background: #8DC9F7;
+    color: #002D61;
+    padding: 10px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700; 
+}
 </style>
 </head>
 
@@ -176,7 +168,7 @@ tbody tr:hover {
 
     <h1 class="page-heading">Materials Catalog</h1>
     <p class="page-subheading">
-        Browse all available materials. Search by title, author, type, or ISBN.
+        Browse all available materials. Search by Title, Author, Description, or ISBN.
     </p>
 
     <!-- Search -->
@@ -214,13 +206,14 @@ tbody tr:hover {
                     <th>ISBN</th>
                     <th>Available</th>
                     <th>Description</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
 
             <?php if (empty($filteredMaterials)): ?>
                 <tr>
-                    <td colspan="7">
+                    <td colspan="8">
                         <div class="empty-state">
                             No materials found<?php echo $searchQuery ? ' matching your search' : ''; ?>.
                         </div>
@@ -233,17 +226,13 @@ tbody tr:hover {
                     <td class="material-name">
                         <?php echo htmlspecialchars($mat->getName()); ?>
                     </td>
-                    <td><?php echo htmlspecialchars($mat->getAuthor()); ?></td>
+                    <td><?php if ($mat->getAuthor()){echo htmlspecialchars($mat->getAuthor()); } else { echo "N/A"; }?></td>
                     <td><?php echo htmlspecialchars($mat->getResourceType()); ?></td>
                     <td><?php echo htmlspecialchars($mat->getLocation()); ?></td>
-                    <td><?php echo htmlspecialchars($mat->getIsbn()); ?></td>
-                    <td>
-                        <?php echo $mat->getCopyInstock(); ?>
-                        / <?php echo $mat->getCopyCapacity(); ?>
-                    </td>
-                    <td>
-                        <?php echo htmlspecialchars($mat->getDescription()); ?>
-                    </td>
+                    <td><?php if ($mat->getISBN()){echo htmlspecialchars($mat->getISBN()); } else { echo "N/A"; }?></td>
+                    <td> <?php echo $mat->getCopyInstock(); ?> / <?php echo $mat->getCopyCapacity(); ?></td>
+                    <td><?php if ($mat->getDescription()){echo htmlspecialchars($mat->getDescription()); } else { echo "N/A"; }?></td>
+                    <td><a href="editMaterial.php?material_id=<?php echo htmlspecialchars($mat->getMaterialID()); ?>" class="edit-button">Edit</a></td>
                 </tr>
                 <?php endforeach; ?>
 
@@ -258,31 +247,7 @@ tbody tr:hover {
 
 <div class="divider"></div>
 
-<footer class="footer">
-    <div class="footer-left">
-        <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
-        <div class="social-icons">
-            <a href="https://www.facebook.com/profile.php?id=100086673730177#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-            <a href="https://www.instagram.com/umw_coe/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://education.umw.edu/" aria-label="Website"><i class="fas fa-globe"></i></a>
-        </div>
-    </div>
-
-    <div class="footer-right">
-        <div class="footer-section">
-            <div class="footer-topic">Connect</div>
-            <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
-            <a href="https://www.instagram.com/umw_coe/">Instagram</a>
-            <a href="https://education.umw.edu/">Main Website</a>
-        </div>
-
-        <div class="footer-section">
-            <div class="footer-topic">Contact Us</div>
-            <a href="mailto:mwells@umw.edu">mwells@umw.edu</a>
-            <a href="tel:5406541290">(540) 654-1290</a>
-        </div>
-    </div>
-</footer>
+<?php require 'footer.php'; ?>
 
 </body>
 </html>

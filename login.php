@@ -293,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
     </div>
 
     <footer>
-        Questions? Contact Dr. Mellisa Wells &mdash;
+        Questions? Contact Dr. Melissa Wells &mdash;
         <a href="mailto:mwells@umw.edu">mwells@umw.edu</a>
     </footer>
 </body>

@@ -59,6 +59,23 @@ function fetch_material_by_name($name){
     return $materials;
 }
 
+//Fetchs a material by a given query (usually in the form of a processed search for materials)
+function fetch_materials_by_query($query){
+    $materials = fetch_all_materials();
+    $queried_materials = [];
+    foreach ($materials as $material) {
+	    if (
+		   str_contains(strtolower((string)$material->getName()), $query) ||
+        	   str_contains(strtolower((string)$material->getAuthor()), $query) ||
+        	   str_contains(strtolower((string)$material->getDescription()), $query) ||
+        	   str_contains(strtolower((string)$material->getISBN()), $query)
+    		) {
+        	$queried_materials[] = $material;
+	    }
+    }
+    return $queried_materials;
+}
+
 //Updates the copy_instock of a material for a self service transaction. isCheckout is true for checkout, false for return. 
 //Error checking should be prevented before this function is called. 
 function self_service_update($id, $isCheckout){

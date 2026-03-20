@@ -58,6 +58,6 @@ if (isset($_POST['Checkout'])) {
     }
 }
 
-header('Location: self_service.php?status=' . ($status ?? 'unknown'));
+header('Location: self_service.php?status=' . ($status ?? 'unknown') . '&material_id=' . $id);
 die();
 ?>
