@@ -416,33 +416,110 @@
         <h3>Filters</h3>
         <hr>
 
+
+        <form action="results.php" method="GET">
+            <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
+
         <!-- Location -->
         <details>
         <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
-        <input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
-        <input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
-        <input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
-        <input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
-        <input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
-        <input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
-        <input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
-        <input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
-        <input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
-        <input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
-        <input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
-        <input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
-        <input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
-        <input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
-        <input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
-        <input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
-        <input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
-        <input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
-        <input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
-        <input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
-        <input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
-        <input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
-        <input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
-        <input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
+
+        <input type="checkbox" name="location[]" value="Early Readers1" id="loc-early1"
+        <?php if(in_array("Early Readers 1", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-early1">Early Readers 1</label><br>
+
+        <input type="checkbox" name="location[]" value="Early Readers2" id="loc-early2"
+        <?php if(in_array("Early Readers 2", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-early2">Early Readers 2</label><br>
+
+        <input type="checkbox" name="location[]" value="General Fiction A-M" id="loc-gen-a-m"
+        <?php if(in_array("General Fiction A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-gen-a-m">General Fiction A-M</label><br>
+
+        <input type="checkbox" name="location[]" value="General Fiction N-Z" id="loc-gen-n-z"
+        <?php if(in_array("General Fiction N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-gen-n-z">General Fiction N-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="General Nonfiction" id="loc-nonfiction"
+        <?php if(in_array("General Nonfiction", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-nonfiction">General Nonfiction</label><br>
+
+        <input type="checkbox" name="location[]" value="Holiday" id="loc-holiday"
+        <?php if(in_array("Holiday", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-holiday">Holiday</label><br>
+
+        <input type="checkbox" name="location[]" value="Middle Grade Novels" id="loc-middle-grade"
+        <?php if(in_array("Middle Grade Novels", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-middle-grade">Middle Grade Novels</label><br>
+
+        <input type="checkbox" name="location[]" value="Multilingual" id="loc-multilingual"
+        <?php if(in_array("Multilingual", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-multilingual">Multilingual</label><br>
+
+        <input type="checkbox" name="location[]" value="Realistic Fiction A-G" id="loc-realistic-a-g"
+        <?php if(in_array("Realistic Fiction A-G", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
+
+        <input type="checkbox" name="location[]" value="Realistic Fiction H-Z" id="loc-realistic-h-z"
+        <?php if(in_array("Realistic Fiction H-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="Science A-F" id="loc-science-a-f"
+        <?php if(in_array("Science A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-a-f">Science A-F</label><br>
+
+        <input type="checkbox" name="location[]" value="Science A-M" id="loc-science-a-m"
+        <?php if(in_array("Science A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-a-m">Science A-M</label><br>
+
+        <input type="checkbox" name="location[]" value="Science G-Q" id="loc-science-g-q"
+        <?php if(in_array("Science G-Q", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-g-q">Science G-Q</label><br>
+
+        <input type="checkbox" name="location[]" value="Science N-Z" id="loc-science-n-z"
+        <?php if(in_array("Science N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-n-z">Science N-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="Science R-Z" id="loc-science-r-z"
+        <?php if(in_array("Science R-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-r-z">Science R-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="Science Resources" id="loc-science-resources"
+        <?php if(in_array("Science Resources", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-resources">Science Resources</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies" id="loc-social-studies"
+        <?php if(in_array("Social Studies", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-studies">Social Studies</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies Stories A-F" id="loc-social-f"
+        <?php if(in_array("Social Studies Stories A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-f">Social Studies Stories A-F</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies Stories A-L" id="loc-social-l"
+        <?php if(in_array("Social Studies Stories A-L", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-l">Social Studies Stories A-L</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies Stories G-O" id="loc-social-g-o"
+        <?php if(in_array("Social Studies Stories G-O", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies Stories P-Z" id="loc-social-p-z"
+        <?php if(in_array("Social Studies Stories P-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="Trad Folk" id="loc-trad-folk"
+        <?php if(in_array("Trad Folk", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-trad-folk">Trad/Folk</label><br>
+
+        <input type="checkbox" name="location[]" value="Transportation" id="loc-transportation"
+        <?php if(in_array("Transportation", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-transportation">Transportation</label><br>
+
+        <input type="checkbox" name="location[]" value="Wordless Picture Books" id="loc-wordless"
+        <?php if(in_array("Wordless Picture Books", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-wordless">Wordless Picture Books</label><br>
+
     </details>
 
     <br>
@@ -450,14 +527,36 @@
         <!-- Material Type -->
         <details>
         <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
-        <input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
-        <input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
-        <input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
-        <input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
-        <input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Children's Literature" id="mat-child-lit"
+        <?php if(in_array("Children's Literature", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-child-lit">Children's Literature</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Math Manipulatives" id="mat-math"
+        <?php if(in_array("Math Manipulatives", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-math">Math Manipulatives</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Professional Text" id="mat-prof"
+        <?php if(in_array("Professional Text", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-prof">Professional Text</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Textbook" id="mat-textbook"
+        <?php if(in_array("Textbook", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-textbook">Textbook</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Supplies" id="mat-supplies"
+        <?php if(in_array("Supplies", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-supplies">Supplies</label><br>
 
         </details>
+        </br>
+        <button type="submit" style="padding: 10px 20px; border-radius: 12px; border:none; background:#fff; color:#0067A2; font-weight:bold; cursor:pointer;">
+            Apply Filters
+        </button>
+    </form>
+
 </div>
+
 
     <!-- RIGHT SIDE: MAIN CONTENT -->
     <div style="flex: 1; max-width: 900px;">
@@ -605,33 +704,109 @@
         <h3>Filters</h3>
         <hr>
 
+        <form action="results.php" method="GET">
+            <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
+
         <!-- Location -->
         <details>
         <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
-        <input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
-        <input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
-        <input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
-        <input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
-        <input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
-        <input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
-        <input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
-        <input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
-        <input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
-        <input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
-        <input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
-        <input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
-        <input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
-        <input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
-        <input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
-        <input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
-        <input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
-        <input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
-        <input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
-        <input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
-        <input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
-        <input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
-        <input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
-        <input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
+
+        <input type="checkbox" name="location[]" value="Early Readers1" id="loc-early1"
+        <?php if(in_array("Early Readers 1", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-early1">Early Readers 1</label><br>
+
+        <input type="checkbox" name="location[]" value="Early Readers2" id="loc-early2"
+        <?php if(in_array("Early Readers 2", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-early2">Early Readers 2</label><br>
+
+        <input type="checkbox" name="location[]" value="General Fiction A-M" id="loc-gen-a-m"
+        <?php if(in_array("General Fiction A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-gen-a-m">General Fiction A-M</label><br>
+
+        <input type="checkbox" name="location[]" value="General Fiction N-Z" id="loc-gen-n-z"
+        <?php if(in_array("General Fiction N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-gen-n-z">General Fiction N-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="General Nonfiction" id="loc-nonfiction"
+        <?php if(in_array("General Nonfiction", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-nonfiction">General Nonfiction</label><br>
+
+        <input type="checkbox" name="location[]" value="Holiday" id="loc-holiday"
+        <?php if(in_array("Holiday", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-holiday">Holiday</label><br>
+
+        <input type="checkbox" name="location[]" value="Middle Grade Novels" id="loc-middle-grade"
+        <?php if(in_array("Middle Grade Novels", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-middle-grade">Middle Grade Novels</label><br>
+
+        <input type="checkbox" name="location[]" value="Multilingual" id="loc-multilingual"
+        <?php if(in_array("Multilingual", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-multilingual">Multilingual</label><br>
+
+        <input type="checkbox" name="location[]" value="Realistic Fiction A-G" id="loc-realistic-a-g"
+        <?php if(in_array("Realistic Fiction A-G", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
+
+        <input type="checkbox" name="location[]" value="Realistic Fiction H-Z" id="loc-realistic-h-z"
+        <?php if(in_array("Realistic Fiction H-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="Science A-F" id="loc-science-a-f"
+        <?php if(in_array("Science A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-a-f">Science A-F</label><br>
+
+        <input type="checkbox" name="location[]" value="Science A-M" id="loc-science-a-m"
+        <?php if(in_array("Science A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-a-m">Science A-M</label><br>
+
+        <input type="checkbox" name="location[]" value="Science G-Q" id="loc-science-g-q"
+        <?php if(in_array("Science G-Q", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-g-q">Science G-Q</label><br>
+
+        <input type="checkbox" name="location[]" value="Science N-Z" id="loc-science-n-z"
+        <?php if(in_array("Science N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-n-z">Science N-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="Science R-Z" id="loc-science-r-z"
+        <?php if(in_array("Science R-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-r-z">Science R-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="Science Resources" id="loc-science-resources"
+        <?php if(in_array("Science Resources", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-science-resources">Science Resources</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies" id="loc-social-studies"
+        <?php if(in_array("Social Studies", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-studies">Social Studies</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies Stories A-F" id="loc-social-f"
+        <?php if(in_array("Social Studies Stories A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-f">Social Studies Stories A-F</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies Stories A-L" id="loc-social-l"
+        <?php if(in_array("Social Studies Stories A-L", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-l">Social Studies Stories A-L</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies Stories G-O" id="loc-social-g-o"
+        <?php if(in_array("Social Studies Stories G-O", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
+
+        <input type="checkbox" name="location[]" value="Social Studies Stories P-Z" id="loc-social-p-z"
+        <?php if(in_array("Social Studies Stories P-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
+
+        <input type="checkbox" name="location[]" value="Trad Folk" id="loc-trad-folk"
+        <?php if(in_array("Trad Folk", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-trad-folk">Trad/Folk</label><br>
+
+        <input type="checkbox" name="location[]" value="Transportation" id="loc-transportation"
+        <?php if(in_array("Transportation", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-transportation">Transportation</label><br>
+
+        <input type="checkbox" name="location[]" value="Wordless Picture Books" id="loc-wordless"
+        <?php if(in_array("Wordless Picture Books", $_GET['location'] ?? [])) echo 'checked'; ?>>
+        <label for="loc-wordless">Wordless Picture Books</label><br>
+
     </details>
 
     <br>
@@ -639,13 +814,34 @@
         <!-- Material Type -->
         <details>
         <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
-        <input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
-        <input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
-        <input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
-        <input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
-        <input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Children's Literature" id="mat-child-lit"
+        <?php if(in_array("Children's Literature", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-child-lit">Children's Literature</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Math Manipulatives" id="mat-math"
+        <?php if(in_array("Math Manipulatives", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-math">Math Manipulatives</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Professional Text" id="mat-prof"
+        <?php if(in_array("Professional Text", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-prof">Professional Text</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Textbook" id="mat-textbook"
+        <?php if(in_array("Textbook", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-textbook">Textbook</label><br>
+
+        <input type="checkbox" name="material_type[]" value="Supplies" id="mat-supplies"
+        <?php if(in_array("Supplies", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <label for="mat-supplies">Supplies</label><br>
 
         </details>
+        </br>
+        <button type="submit" style="padding: 10px 20px; border-radius: 12px; border:none; background:#fff; color:#0067A2; font-weight:bold; cursor:pointer;">
+            Apply Filters
+        </button>
+    </form>
+
 </div>
 
     <!-- RIGHT SIDE: MAIN CONTENT -->
