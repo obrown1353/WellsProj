@@ -50,6 +50,18 @@ $categories = $_GET['category'] ?? []; // multiple categories
         margin: 0 auto;
         padding: 40px 50px 60px;
     }
+   .optionsFlex {
+    display: none;     
+    flex-direction: column; 
+    align-items: center;  
+    margin-top: 10px;
+    gap: 10px;          
+}
+
+.optionsGroup {
+    display: flex;       
+    gap: 10px;            
+}
   </style>
   <title>Seacobeck Curriculum Lab | Report</title>
 </head>
@@ -110,13 +122,20 @@ $categories = $_GET['category'] ?? []; // multiple categories
 
       <div id="hiddenInputs"></div>
     </div>
-    <!-- Submit Button -->
-    <button 
-      type="submit"
-      class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-    >
-      Apply Filters
-    </button>
+ <!-- Submit Button -->
+<button onclick="document.getElementById('options').style.display='flex';"
+  type="button" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+>
+  Generate
+</button>
+
+<div id="options" class="optionsFlex">
+  <p>Select file type:</p>
+  <div class="optionsGroup">
+    <button>CSV</button>
+    <button>XLSX</button>
+  </div>
+</div>
 
   </div>
 </form>
