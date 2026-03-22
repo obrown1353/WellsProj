@@ -120,16 +120,21 @@ document.addEventListener("DOMContentLoaded", function() {
 </head>
 <header>
 <?php
-// Shared navigation links to keep Admin and Worker sections consistent
+// Worker Navbar
 $common_nav_links = '
       <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
-      <div class="nav-item"><a href="calendar.php" class="nav-link">Catalog</a></div>
+      <div class="nav-item"><a href="viewMaterials.php" class="nav-link">Catalog</a></div>
       <div class="nav-item"><a href="checkout.php" class="nav-link">Checkout</a></div>
-      <div class="nav-item">Worker</div>';
+      <div class="nav-item">Worker
+        <div class="dropdown">
+          <a href="viewCheckouts.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>View Checkouts</span></div></a>
+          <a href="genReport.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>Generate Report</span></div></a>
+        </div>
+      </div>';
 
 $showing_login = false;
 
-// ── GUEST NAVBAR ──────────────────────────────────────────────────────────
+// Guest Navbar
 if (!isset($_SESSION['logged_in']) || $_SESSION['access_level'] === 0) {
 echo('
 <div class="navbar">
@@ -158,8 +163,8 @@ echo('
 </div>');
 
 } else if ($_SESSION['logged_in']) {
-// (Permission logic remains exactly the same as provided)
 $permission_array['index.php'] = 0; $permission_array['about.php'] = 0; $permission_array['apply.php'] = 0; $permission_array['logout.php'] = 0; $permission_array['volunteerregister.php'] = 0; $permission_array['leaderboard.php'] = 0; $permission_array['help.php'] = 1; $permission_array['dashboard.php'] = 1; $permission_array['calendar.php'] = 0; $permission_array['eventsearch.php'] = 1; $permission_array['changepassword.php'] = 1; $permission_array['editprofile.php'] = 1; $permission_array['inbox.php'] = 1; $permission_array['date.php'] = 1; $permission_array['event.php'] = 0; $permission_array['viewprofile.php'] = 1; $permission_array['viewnotification.php'] = 1; $permission_array['volunteerreport.php'] = 1; $permission_array['viewmyupcomingevents.php'] = 1; $permission_array['volunteerviewgroup.php'] = 1; $permission_array['viewcheckinout.php'] = 1; $permission_array['viewresources.php'] = 1; $permission_array['discussionmain.php'] = 1; $permission_array['viewdiscussions.php'] = 1; $permission_array['discussioncontent.php'] = 1; $permission_array['milestonepoints.php'] = 1; $permission_array['selectvotm.php'] = 1; $permission_array['volunteerviewgroupmembers.php'] = 1; $permission_array['viewallevents.php'] = 0; $permission_array['personsearch.php'] = 2; $permission_array['personedit.php'] = 0; $permission_array['viewschedule.php'] = 2; $permission_array['addweek.php'] = 2; $permission_array['log.php'] = 2; $permission_array['reports.php'] = 2; $permission_array['eventedit.php'] = 2; $permission_array['modifyuserrole.php'] = 2; $permission_array['addevent.php'] = 2; $permission_array['editevent.php'] = 2; $permission_array['report.php'] = 2; $permission_array['reportspage.php'] = 2; $permission_array['resetpassword.php'] = 2; $permission_array['eventsuccess.php'] = 2; $permission_array['viewsignuplist.php'] = 2; $permission_array['vieweventsignups.php'] = 2; $permission_array['viewpendingapps.php'] = 2; $permission_array['resources.php'] = 2; $permission_array['uploadresources.php'] = 2; $permission_array['deleteresources.php'] = 2; $permission_array['creategroup.php'] = 2; $permission_array['showgroups.php'] = 2; $permission_array['groupview.php'] = 2; $permission_array['managemembers.php'] = 2; $permission_array['deleteGroup.php'] = 2; $permission_array['volunteermanagement.php'] = 2; $permission_array['groupmanagement.php'] = 2; $permission_array['eventmanagement.php'] = 2; $permission_array['creatediscussion.php'] = 2; $permission_array['checkedinvolunteers.php'] = 2; $permission_array['deletediscussion.php'] = 2; $permission_array['generatereport.php'] = 2; $permission_array['generateemaillist.php'] = 2; $permission_array['clockoutbulk.php'] = 2; $permission_array['clockOut.php'] = 2; $permission_array['edithours.php'] = 2; $permission_array['eventlist.php'] = 1; $permission_array['eventsignup.php'] = 1; $permission_array['eventfailure.php'] = 1; $permission_array['signupsuccess.php'] = 1; $permission_array['edittimes.php'] = 1; $permission_array['adminviewingevents.php'] = 2; $permission_array['pendingApp.php'] = 1; $permission_array['requestfailed.php'] = 1; $permission_array['settimes.php'] = 1; $permission_array['eventfailurebaddeparturetime.php'] = 1; $permission_array['viewretreatapplications.php'] = 2; $permission_array['viewapplication.php'] = 2; $permission_array['createemail.php'] = 2; $permission_array['viewallapplications.php'] = 2; $permission_array['applicationsuccess.php'] = 2; $permission_array['denyapplication.php'] = 2; $permission_array['viewdrafts.php'] = 2; $permission_array['editdrafts.php'] = 2; $permission_array['logattendees.php'] = 2; $permission_array['processattendees.php'] = 2; $permission_array['viewdata.php'] = 2; $permission_array['deleteusersearch.php'] = 2; $permission_array['noshows.php'] = 2; $permission_array["view_encrypted_gallery.php"] = 2; $permission_array['upload_encrypted_image.php'] = 1; $permission_array['createsuggestion.php'] = 1; $permission_array['viewsuggestion.php'] = 2; $permission_array['create-worker.php'] = 2; $permission_array['delete-worker.php'] = 2;
+$permission_array['viewCheckouts.php'] = 1;
 
 $current_page = strtolower(substr($_SERVER['PHP_SELF'], strrpos($_SERVER['PHP_SELF'], '/') + 1));
 $current_page = substr($current_page, strpos($current_page, "/"));
@@ -168,7 +173,7 @@ if (isset($permission_array[$current_page]) && $permission_array[$current_page] 
     die();
 }
 
-// ── ADMIN NAVBAR (access_level >= 2) ──────────────────────────────────────
+// Admin Navbar (access_level >= 2) 
 if ($_SESSION['access_level'] >= 2) {
 echo('
 <div class="navbar">
@@ -182,6 +187,7 @@ echo('
         <div class="dropdown">
           <a href="create-worker.php" style="text-decoration:none"><div class="in-nav"><img src="images/plus-solid.svg"><span>Create Account</span></div></a>
           <a href="delete-worker.php" style="text-decoration:none"><div class="in-nav"><img src="images/users-solid.svg"><span>Delete Account</span></div></a>
+          <a href="importMaterials.php" style="text-decoration:none"><div class="in-nav><img src="images/send.png"><span>Import Materials</span></div></a>
         </div>
       </div>
     </div>
@@ -202,7 +208,7 @@ echo('
 </div>');
 }
 
-// ── WORKER NAVBAR (access_level == 1) ─────────────────────────────────────
+// Worker Navbar (access_level == 1) 
 else if ($_SESSION['access_level'] == 1) {
 echo('
 <div class="navbar">
