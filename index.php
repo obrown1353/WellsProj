@@ -395,27 +395,6 @@
     </div>
 
 
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-        <form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-            <input type="radio" id="sort-title" name="sort" value="title">
-            <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
-
-            <input type="radio" id="sort-author" name="sort" value="author">
-            <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
-
-            <input type="radio" id="sort-material-type" name="sort" value="material_type">
-            <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
-
-            <input type="radio" id="sort-location" name="sort" value="location">
-            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
-        </form>
-
-    </div>
-
-
     <?php if (isset($_GET['pcSuccess'])): ?>
         <div class="happy-toast">Password changed successfully!</div>
     <?php elseif (isset($_GET['deleteService'])): ?>
@@ -466,27 +445,6 @@
     </div>
 
 
-
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-        <form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-            <input type="radio" id="sort-title" name="sort" value="title">
-            <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
-
-            <input type="radio" id="sort-author" name="sort" value="author">
-            <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
-
-            <input type="radio" id="sort-material-type" name="sort" value="material_type">
-            <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
-
-            <input type="radio" id="sort-location" name="sort" value="location">
-            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
-        </form>
-
-    </div>
-
     <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
@@ -530,37 +488,18 @@
     <!-- Search Bar -->
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-	    <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-		<div style="position: relative; width:100%;">
+            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
+                <div style="position: relative; width:100%;">
                 <input type="text" name="query" placeholder="Search materials..."
-		    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
-		<button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
+                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
+                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
                 Search
-	    </button>
-	    </div>
+            </button>
+            </div>
             </form>
-	</div>
+        </div>
     </div>
 
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-	<form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-	    <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-	    <input type="radio" id="sort-title" name="sort" value="title">
-	    <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
-
-            <input type="radio" id="sort-author" name="sort" value="author">
-	    <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
-
-	    <input type="radio" id="sort-material-type" name="sort" value="material_type">
-	    <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
-
-            <input type="radio" id="sort-location" name="sort" value="location">
-            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
-	</form>
-
-    </div>
 
     <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
