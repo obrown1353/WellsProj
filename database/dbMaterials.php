@@ -90,4 +90,41 @@ function self_service_update($id, $isCheckout){
     mysqli_close($con);
     return $result;
 }
+
+//Updates the information of a material based on a passed materials object. Requires a materials object
+function update_material(Materials $material){
+    $con = connect();
+    $query = "UPDATE `dbmaterials` 
+    SET `name` = '" . $material->getName() . "',
+        `location` = '" . $material->getLocation() . "',  
+        `resource_type` = '" . $material->getResourceType() . "', 
+        `isbn` = '" . $material->getISBN() . "', 
+        `author` = '" . $material->getAuthor() . "', 
+        `description` = '" . $material->getDescription() . "', 
+        `copy_capacity` = '" . $material->getCopyCapacity() . "', 
+        `copy_instock` = '" . $material->getCopyInstock() . "' 
+    WHERE `material_id` = '" . $material->getMaterialID() . "'";
+    $result = mysqli_query($con, $query);
+    mysqli_commit($con);
+    mysqli_close($con);
+    return $result;
+}
+
+//Adds a new material to database based on passed materials object. Requires a materials object
+function add_material(Materials $material){
+    $con = connect();
+    $query = "INSERT INTO `dbmaterials` (`name`, `location`, `resource_type`, `isbn`, `author`, `description`, `copy_capacity`, `copy_instock`)
+    VALUES ('" . $material->getName() . "', 
+            '" . $material->getLocation() . "',
+            '" . $material->getResourceType() . "',
+            '" . $material->getISBN() . "',
+            '" . $material->getAuthor() . "',
+            '" . $material->getDescription() . "',
+            '" . $material->getCopyCapacity() . "',
+            '" . $material->getCopyInstock() . "')";
+    $result = mysqli_query($con, $query);
+    mysqli_commit($con);
+    mysqli_close($con);
+    return $result;
+}
 ?>

@@ -15,14 +15,10 @@ if (!isset($_SESSION['access_level'])) {
     die();
 }
 
-if (isset($_GET['material_id'])){
-  $id = $_GET['material_id'] ?? '';
-}
-
 $args = sanitize($_POST);
 
 if (!empty($_POST)) {
-    $updated_material = new materials(
+    $new_material = new materials(
         $id, 
         ($args['name']), 
         ($args['location']), 
@@ -34,7 +30,7 @@ if (!empty($_POST)) {
         (int)($args['copy_instock']),
     );
 
-    update_material($updated_material);
+    add_material($new_material);
     header('Location: viewMaterials.php');
     die();
 }
@@ -49,8 +45,6 @@ if ($isGuest) {
     header('Location: index.php');
     die();
 }
-
-$material = fetch_material_by_id($id);
 
 ?>
 
@@ -145,51 +139,42 @@ body {
 
 <div class="page-wrapper">
 
-    <h1 class="page-heading">Edit <?php echo htmlspecialchars($material->getName())?></h1>
+    <h1 class="page-heading">Add New Material</h1>
 
     <div class = "edit-wrapper">
         <div class = "edit-box">
-        <form method="POST" action="editMaterial.php?<?php echo http_build_query(['material_id' => $material->getMaterialID()]); ?>">
+        <form method="POST" action="addMaterial.php">
             <div class="edit-inner">
                 <label class="edit-label" for="name">Name:</label>
-                <input class="edit-input" type="text" id="name" name="name" value="<?php echo $material->getName(); ?>" required/>
+                <input class="edit-input" type="text" id="name" name="name" required/>
             </div>
             <div class="edit-inner">
                 <label class="edit-label" for="location">Location:</label>
-                <input class="edit-input" type="text" id="location" name="location" value="<?php echo $material->getLocation(); ?>" required/>
+                <input class="edit-input" type="text" id="location" name="location" required/>
             </div>
             <div class="edit-inner">
                 <label class="edit-label" for="resource_type">Resource Type:</label>
-                <input class="edit-input" type="text" id="resource_type" name="resource_type" value="<?php echo $material->getResourceType(); ?>" required/>
+                <input class="edit-input" type="text" id="resource_type" name="resource_type" required/>
             </div>
             <div class="edit-inner">
                 <label class="edit-label" for="isbn">ISBN:</label>
-                <input class="edit-input" id="isbn" name="isbn"
-                    value = "<?php if ($material->getISBN()){
-                        echo $material->getISBN();
-                        } ?>" />
+                <input class="edit-input" id="isbn" name="isbn"/>
             </div>
             <div class="edit-inner">
                 <label class="edit-label" for="author">Author:</label>
-                <input class="edit-input" id="author" name="author"
-                    value = "<?php if ($material->getAuthor()){
-                        echo $material->getAuthor();
-                        } ?>" />
+                <input class="edit-input" id="author" name="author"/>
             </div>
             <div class="edit-inner">
                 <label class="edit-label" for="description">Description:</label>
-                <input class="edit-input" id="description" name="description" 
-                    value = "<?php if ($material->getDescription()){
-                        echo $material->getDescription();
-                        } ?>" />
+                <input class="edit-input" id="description" name="description" />
             </div>
             <div class="edit-inner">
                 <label class="edit-label" for="copy_capacity">Copy Capacity:</label>
-                <input class="edit-input" type="text" id="copy_capacity" name="copy_capacity" value="<?php echo $material->getCopyCapacity(); ?>" required/>
+                <input class="edit-input" type="text" id="copy_capacity" name="copy_capacity" required/>
             </div>
             <div class="edit-inner">
                 <label class="edit-label" for="copy_instock">Copy Instock:</label>
-                <input class="edit-input" type="text" id="copy_instock" name="copy_instock" value="<?php echo $material->getCopyInstock(); ?>" required/>
+                <input class="edit-input" type="text" id="copy_instock" name="copy_instock" required/>
             </div>
             
             <div>
