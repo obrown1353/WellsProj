@@ -193,6 +193,7 @@ tbody tr:hover {
     <h2 class="section-heading">
         📚 Materials
         <span class="badge"><?php echo count($filteredMaterials); ?></span>
+        <a href="addMaterial.php" class="badge">Add Material</a>
     </h2>
 
     <div class="table-wrapper">
@@ -205,7 +206,6 @@ tbody tr:hover {
                     <th>Location</th>
                     <th>ISBN</th>
                     <th>Available</th>
-                    <th>Description</th>
                     <th>Edit</th>
                 </tr>
             </thead>
@@ -213,7 +213,7 @@ tbody tr:hover {
 
             <?php if (empty($filteredMaterials)): ?>
                 <tr>
-                    <td colspan="8">
+                    <td colspan="7">
                         <div class="empty-state">
                             No materials found<?php echo $searchQuery ? ' matching your search' : ''; ?>.
                         </div>
@@ -224,15 +224,14 @@ tbody tr:hover {
                 <?php foreach ($filteredMaterials as $mat): ?>
                 <tr>
                     <td class="material-name">
-                        <?php echo htmlspecialchars($mat->getName()); ?>
+                        <?php echo $mat->getName(); ?>
                     </td>
-                    <td><?php if ($mat->getAuthor()){echo htmlspecialchars($mat->getAuthor()); } else { echo "N/A"; }?></td>
-                    <td><?php echo htmlspecialchars($mat->getResourceType()); ?></td>
-                    <td><?php echo htmlspecialchars($mat->getLocation()); ?></td>
-                    <td><?php if ($mat->getISBN()){echo htmlspecialchars($mat->getISBN()); } else { echo "N/A"; }?></td>
+                    <td><?php if ($mat->getAuthor()){echo $mat->getAuthor(); } else { echo "N/A"; }?></td>
+                    <td><?php echo $mat->getResourceType(); ?></td>
+                    <td><?php echo $mat->getLocation(); ?></td>
+                    <td><?php if ($mat->getISBN()){echo $mat->getISBN(); } else { echo "N/A"; }?></td>
                     <td> <?php echo $mat->getCopyInstock(); ?> / <?php echo $mat->getCopyCapacity(); ?></td>
-                    <td><?php if ($mat->getDescription()){echo htmlspecialchars($mat->getDescription()); } else { echo "N/A"; }?></td>
-                    <td><a href="editMaterial.php?material_id=<?php echo htmlspecialchars($mat->getMaterialID()); ?>" class="edit-button">Edit</a></td>
+                    <td><a href="editMaterial.php?material_id=<?php echo ($mat->getMaterialID()); ?>" class="edit-button">Edit</a></td>
                 </tr>
                 <?php endforeach; ?>
 
