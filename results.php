@@ -557,6 +557,12 @@
     <div style="display: flex; justify-content: center; margin-top: -20px;">
         <form action="results.php?" method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
         <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
+        <?php foreach ($selectedLocations as $location){
+            echo "<input type='hidden' name='location[]' value='" . htmlspecialchars($location) . "'>";
+        }?>
+        <?php foreach ($selectedTypes as $resource_type){
+            echo "<input type='hidden' name='resource_type[]' value='" . htmlspecialchars($resource_type) . "'>";
+        }?>
 
         <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
 
