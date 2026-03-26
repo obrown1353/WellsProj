@@ -42,6 +42,7 @@
 
     if (!empty($sort) && !empty($results)) {
 
+    
     usort($results, function($a, $b) use ($sort) {
 
         switch ($sort) {
@@ -62,7 +63,6 @@
                 return 0;
         }
     });
-}
 
     if (!empty($selectedLocations) || !empty($selectedTypes)) {
     $results = array_filter($results, function($material) use ($selectedLocations, $selectedTypes) {
@@ -70,7 +70,10 @@
         $matchType = empty($selectedTypes) || in_array($material->getResourceType(), $selectedTypes);
         return $matchLocation && $matchType;
     });
+    }
 }
+
+
 
     $notRoot = !$isAdmin;
 ?>
@@ -404,8 +407,6 @@
     </script>
 </head>
 
-<!-- ADMIN VIEW -->
-<?php if ($isAdmin): ?>
 <body>
 <?php require 'header.php'; ?>
 
@@ -419,6 +420,9 @@
 
         <form action="results.php" method="GET">
             <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
+            <?php if (isset($_GET['sort'])):?>
+                <input type="hidden" name="sort" value="<?php echo htmlspecialchars($_GET['sort'] ?? []); ?>">
+            <?php endif; ?>
 
         <!-- Location -->
         <details>
@@ -579,12 +583,10 @@
 
     <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
-        <form action="results.php" method="GET"
-            style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-
-            <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
-
-            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
+        <form action="results.php" . method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+        <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
+        
+        <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
 
         <label style="color:white; white-space: nowrap;">
             <input type="radio" name="sort" value="title" onchange="this.form.submit()"
@@ -644,528 +646,12 @@
 </div>
 </div>
 
-    <?php if (isset($_GET['pcSuccess'])): ?>
-        <div class="happy-toast">Password changed successfully!</div>
-    <?php elseif (isset($_GET['deleteService'])): ?>
-        <div class="happy-toast">Service successfully removed!</div>
-    <?php elseif (isset($_GET['serviceAdded'])): ?>
-        <div class="happy-toast">Service successfully added!</div>
-    <?php elseif (isset($_GET['animalRemoved'])): ?>
-        <div class="happy-toast">Animal successfully removed!</div>
-    <?php elseif (isset($_GET['locationAdded'])): ?>
-        <div class="happy-toast">Location successfully added!</div>
-    <?php elseif (isset($_GET['deleteLocation'])): ?>
-        <div class="happy-toast">Location successfully removed!</div>
-    <?php elseif (isset($_GET['registerSuccess'])): ?>
-        <div class="happy-toast">Volunteer registered successfully!</div>
-    <?php endif ?>
-
     <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
     <?php require 'footer.php'; ?>
-
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
-
 </body>
-<?php endif ?>
 
-<!-- WORKER VIEW -->
-<?php if ($isWorker): ?>
-<body>
-<?php require 'header.php'; ?>
-
-<!-- MAIN TWO-COLUMN LAYOUT -->
-<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
-    <!-- LEFT SIDEBAR (Filters) -->
-    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
-        <h3>Filters</h3>
-        <hr>
-
-        <form action="results.php" method="GET">
-            <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
-
-        <!-- Location -->
-        <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
-
-        <input type="checkbox" name="location[]" value="Early Readers1" id="loc-early1"
-        <?php if(in_array("Early Readers 1", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-early1">Early Readers 1</label><br>
-
-        <input type="checkbox" name="location[]" value="Early Readers2" id="loc-early2"
-        <?php if(in_array("Early Readers 2", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-early2">Early Readers 2</label><br>
-
-        <input type="checkbox" name="location[]" value="General Fiction A-M" id="loc-gen-a-m"
-        <?php if(in_array("General Fiction A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-gen-a-m">General Fiction A-M</label><br>
-
-        <input type="checkbox" name="location[]" value="General Fiction N-Z" id="loc-gen-n-z"
-        <?php if(in_array("General Fiction N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-gen-n-z">General Fiction N-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="General Nonfiction" id="loc-nonfiction"
-        <?php if(in_array("General Nonfiction", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-nonfiction">General Nonfiction</label><br>
-
-        <input type="checkbox" name="location[]" value="Holiday" id="loc-holiday"
-        <?php if(in_array("Holiday", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-holiday">Holiday</label><br>
-
-        <input type="checkbox" name="location[]" value="Middle Grade Novels" id="loc-middle-grade"
-        <?php if(in_array("Middle Grade Novels", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-middle-grade">Middle Grade Novels</label><br>
-
-        <input type="checkbox" name="location[]" value="Multilingual" id="loc-multilingual"
-        <?php if(in_array("Multilingual", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-multilingual">Multilingual</label><br>
-
-        <input type="checkbox" name="location[]" value="Realistic Fiction A-G" id="loc-realistic-a-g"
-        <?php if(in_array("Realistic Fiction A-G", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
-
-        <input type="checkbox" name="location[]" value="Realistic Fiction H-Z" id="loc-realistic-h-z"
-        <?php if(in_array("Realistic Fiction H-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="Science A-F" id="loc-science-a-f"
-        <?php if(in_array("Science A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-a-f">Science A-F</label><br>
-
-        <input type="checkbox" name="location[]" value="Science A-M" id="loc-science-a-m"
-        <?php if(in_array("Science A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-a-m">Science A-M</label><br>
-
-        <input type="checkbox" name="location[]" value="Science G-Q" id="loc-science-g-q"
-        <?php if(in_array("Science G-Q", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-g-q">Science G-Q</label><br>
-
-        <input type="checkbox" name="location[]" value="Science N-Z" id="loc-science-n-z"
-        <?php if(in_array("Science N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-n-z">Science N-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="Science R-Z" id="loc-science-r-z"
-        <?php if(in_array("Science R-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-r-z">Science R-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="Science Resources" id="loc-science-resources"
-        <?php if(in_array("Science Resources", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-resources">Science Resources</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies" id="loc-social-studies"
-        <?php if(in_array("Social Studies", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-studies">Social Studies</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies Stories A-F" id="loc-social-f"
-        <?php if(in_array("Social Studies Stories A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-f">Social Studies Stories A-F</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies Stories A-L" id="loc-social-l"
-        <?php if(in_array("Social Studies Stories A-L", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-l">Social Studies Stories A-L</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies Stories G-O" id="loc-social-g-o"
-        <?php if(in_array("Social Studies Stories G-O", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies Stories P-Z" id="loc-social-p-z"
-        <?php if(in_array("Social Studies Stories P-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="Trad Folk" id="loc-trad-folk"
-        <?php if(in_array("Trad Folk", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-trad-folk">Trad/Folk</label><br>
-
-        <input type="checkbox" name="location[]" value="Transportation" id="loc-transportation"
-        <?php if(in_array("Transportation", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-transportation">Transportation</label><br>
-
-        <input type="checkbox" name="location[]" value="Wordless Picture Books" id="loc-wordless"
-        <?php if(in_array("Wordless Picture Books", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-wordless">Wordless Picture Books</label><br>
-
-    </details>
-
-    <br>
-
-        <!-- Material Type -->
-        <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
-
-        <input type="checkbox" name="material_type[]" value="Children's Literature" id="mat-child-lit"
-        <?php if(in_array("Children's Literature", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-child-lit">Children's Literature</label><br>
-
-        <input type="checkbox" name="material_type[]" value="Math Manipulatives" id="mat-math"
-        <?php if(in_array("Math Manipulatives", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-math">Math Manipulatives</label><br>
-
-        <input type="checkbox" name="material_type[]" value="Professional Text" id="mat-prof"
-        <?php if(in_array("Professional Text", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-prof">Professional Text</label><br>
-
-        <input type="checkbox" name="material_type[]" value="Textbook" id="mat-textbook"
-        <?php if(in_array("Textbook", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-textbook">Textbook</label><br>
-
-        <input type="checkbox" name="material_type[]" value="Supplies" id="mat-supplies"
-        <?php if(in_array("Supplies", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-supplies">Supplies</label><br>
-
-        </details>
-        </br>
-        <button type="submit" style="padding: 10px 20px; border-radius: 12px; border:none; background:#fff; color:#0067A2; font-weight:bold; cursor:pointer;">
-            Apply Filters
-        </button>
-    </form>
-
-</div>
-
-    <!-- RIGHT SIDE: MAIN CONTENT -->
-    <div style="flex: 1; max-width: 900px;">
-
-    <!--Search Bar -->
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <div style="position: relative; width:100%;">
-                <input type="text" name="query" placeholder="Search materials..."
-                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
-                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
-                Search
-            </button>
-            </div>
-            </form>
-        </div>
-    </div>
-
-
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-        <form action="results.php" method="GET"
-            style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-
-            <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
-
-            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="title" onchange="this.form.submit()"
-                <?php if ($sort === 'title') echo 'checked'; ?>> Title
-        </label>
-
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="author" onchange="this.form.submit()"
-                <?php if ($sort === 'author') echo 'checked'; ?>> Author
-        </label>
-
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="material_type" onchange="this.form.submit()"
-                <?php if ($sort === 'material_type') echo 'checked'; ?>> Material Type
-        </label>
-
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="location" onchange="this.form.submit()"
-                <?php if ($sort === 'location') echo 'checked'; ?>> Location
-        </label>
-
-        </form>
-
-    </div>
-
-
-    <!-- Search Results -->
-    <div style="margin-top: 30px; padding: 30px 20px;">
-        <h2><b>Search Results</b></h2>
-        <!-- Results from database go here -->
-        <?php
-            if (!empty($results)) {
-                    foreach ($results as $material) {
-                        echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
-                        echo "<h3><a href='self_service.php?material_id=" . $material->getMaterialID() . "'>" .  $material->getName() .  "</a></h3>";
-                        echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
-                        echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
-                        echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
-                        echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
-                        echo "<p>" . $material->getDescription() . "</p>";
-                        echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
-
-                        if ($material->canBeCheckedOut()) {
-                            echo "<p style='color:green'><b>Available for Checkout</b></p>";
-                        } else {
-                            echo "<p style='color:red'><b>Out of Stock</b></p>";
-                        }
-                        echo "</div>";
-                }
-
-            } else {
-                echo "<p>No materials found.</p>";
-            }
-
-        ?>
-    </div>
-</div>
-</div>
-</div>
-
-    <!-- Footer -->
-    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
-
-    <?php require 'footer.php'; ?>
-
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
-
-</body>
-<?php endif ?>
-
-<!-- GUEST VIEW -->
-<?php if ($isGuest): ?>
-<body style="display: flex; flex-direction: column; min-height: 100vh;">
-<?php require 'header.php'; ?>
-
-<!-- MAIN TWO-COLUMN LAYOUT -->
-<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
-    <!-- LEFT SIDEBAR (Filters) -->
-    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
-	<h3>Filters</h3>
-	<hr>
-
-	<form action="results.php" method="GET">
-	    <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
-
-    	<!-- Location -->
-	<details>
-	<summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
-
-	<input type="checkbox" name="location[]" value="Early Readers1" id="loc-early1"
-	<?php if(in_array("Early Readers 1", $_GET['location'] ?? [])) echo 'checked'; ?>> 
-	<label for="loc-early1">Early Readers 1</label><br>
-	
-	<input type="checkbox" name="location[]" value="Early Readers2" id="loc-early2"
-	<?php if(in_array("Early Readers 2", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-early2">Early Readers 2</label><br>
-	
-	<input type="checkbox" name="location[]" value="General Fiction A-M" id="loc-gen-a-m"
-	<?php if(in_array("General Fiction A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-gen-a-m">General Fiction A-M</label><br>
-	
-	<input type="checkbox" name="location[]" value="General Fiction N-Z" id="loc-gen-n-z"
-        <?php if(in_array("General Fiction N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-gen-n-z">General Fiction N-Z</label><br>
-	
-	<input type="checkbox" name="location[]" value="General Nonfiction" id="loc-nonfiction"
-        <?php if(in_array("General Nonfiction", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-nonfiction">General Nonfiction</label><br>
-	
-	<input type="checkbox" name="location[]" value="Holiday" id="loc-holiday"
-        <?php if(in_array("Holiday", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-holiday">Holiday</label><br>
-	
-	<input type="checkbox" name="location[]" value="Middle Grade Novels" id="loc-middle-grade"
-        <?php if(in_array("Middle Grade Novels", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-middle-grade">Middle Grade Novels</label><br>
-	
-	<input type="checkbox" name="location[]" value="Multilingual" id="loc-multilingual"
-        <?php if(in_array("Multilingual", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-multilingual">Multilingual</label><br>
-	
-	<input type="checkbox" name="location[]" value="Realistic Fiction A-G" id="loc-realistic-a-g"
-        <?php if(in_array("Realistic Fiction A-G", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
-	
-	<input type="checkbox" name="location[]" value="Realistic Fiction H-Z" id="loc-realistic-h-z"
-        <?php if(in_array("Realistic Fiction H-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
-	
-	<input type="checkbox" name="location[]" value="Science A-F" id="loc-science-a-f"
-        <?php if(in_array("Science A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-science-a-f">Science A-F</label><br>
-	
-	<input type="checkbox" name="location[]" value="Science A-M" id="loc-science-a-m"
-        <?php if(in_array("Science A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-science-a-m">Science A-M</label><br>
-	
-	<input type="checkbox" name="location[]" value="Science G-Q" id="loc-science-g-q"
-        <?php if(in_array("Science G-Q", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-science-g-q">Science G-Q</label><br>
-	
-	<input type="checkbox" name="location[]" value="Science N-Z" id="loc-science-n-z"
-        <?php if(in_array("Science N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>> 
-	<label for="loc-science-n-z">Science N-Z</label><br>
-	
-	<input type="checkbox" name="location[]" value="Science R-Z" id="loc-science-r-z"
-        <?php if(in_array("Science R-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-science-r-z">Science R-Z</label><br>
-	
-	<input type="checkbox" name="location[]" value="Science Resources" id="loc-science-resources"
-        <?php if(in_array("Science Resources", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-science-resources">Science Resources</label><br>
-	
-	<input type="checkbox" name="location[]" value="Social Studies" id="loc-social-studies"
-        <?php if(in_array("Social Studies", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-social-studies">Social Studies</label><br>
-	
-	<input type="checkbox" name="location[]" value="Social Studies Stories A-F" id="loc-social-f"
-        <?php if(in_array("Social Studies Stories A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-social-f">Social Studies Stories A-F</label><br>
-	
-	<input type="checkbox" name="location[]" value="Social Studies Stories A-L" id="loc-social-l"
-        <?php if(in_array("Social Studies Stories A-L", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-social-l">Social Studies Stories A-L</label><br>
-	
-	<input type="checkbox" name="location[]" value="Social Studies Stories G-O" id="loc-social-g-o"
-        <?php if(in_array("Social Studies Stories G-O", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-social-g-o">Social Studies Stories G-O</label><br>
-	
-	<input type="checkbox" name="location[]" value="Social Studies Stories P-Z" id="loc-social-p-z"
-        <?php if(in_array("Social Studies Stories P-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
-	
-	<input type="checkbox" name="location[]" value="Trad Folk" id="loc-trad-folk"
-        <?php if(in_array("Trad Folk", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-trad-folk">Trad/Folk</label><br>
-	
-	<input type="checkbox" name="location[]" value="Transportation" id="loc-transportation"
-        <?php if(in_array("Transportation", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-transportation">Transportation</label><br>
-	
-	<input type="checkbox" name="location[]" value="Wordless Picture Books" id="loc-wordless"
-        <?php if(in_array("Wordless Picture Books", $_GET['location'] ?? [])) echo 'checked'; ?>>
-	<label for="loc-wordless">Wordless Picture Books</label><br>
-    
-    </details>
-
-    <br>
-
-    	<!-- Material Type -->
-	<details>
-	<summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
-
-	<input type="checkbox" name="material_type[]" value="Children's Literature" id="mat-child-lit"
-        <?php if(in_array("Children's Literature", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-	<label for="mat-child-lit">Children's Literature</label><br>
-	
-	<input type="checkbox" name="material_type[]" value="Math Manipulatives" id="mat-math"
-        <?php if(in_array("Math Manipulatives", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-	<label for="mat-math">Math Manipulatives</label><br>
-    	
-	<input type="checkbox" name="material_type[]" value="Professional Text" id="mat-prof"
-        <?php if(in_array("Professional Text", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-	<label for="mat-prof">Professional Text</label><br>
-	
-	<input type="checkbox" name="material_type[]" value="Textbook" id="mat-textbook"
-        <?php if(in_array("Textbook", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-	<label for="mat-textbook">Textbook</label><br>
-	
-	<input type="checkbox" name="material_type[]" value="Supplies" id="mat-supplies"
-        <?php if(in_array("Supplies", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
-	<label for="mat-supplies">Supplies</label><br>
-
-	</details>
-	</br>
-	<button type="submit" style="padding: 10px 20px; border-radius: 12px; border:none; background:#fff; color:#0067A2; font-weight:bold; cursor:pointer;">
-            Apply Filters
-	</button>
-    </form>
-
-</div>
-
-    <!-- RIGHT SIDE: MAIN CONTENT -->
-    <div style="flex: 1; max-width: 900px;">
-
-    <!--Search Bar -->
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <div style="position: relative; width:100%;">
-                <input type="text" name="query" placeholder="Search materials..."
-                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
-                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
-                Search
-            </button>
-            </div>
-            </form>
-        </div>
-    </div>
-
-
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-	<form action="results.php" method="GET"
-	    style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-
-	    <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
-
-            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="title" onchange="this.form.submit()"
-                <?php if ($sort === 'title') echo 'checked'; ?>> Title
-        </label>
-
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="author" onchange="this.form.submit()"
-                <?php if ($sort === 'author') echo 'checked'; ?>> Author
-        </label>
-
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="material_type" onchange="this.form.submit()"
-                <?php if ($sort === 'material_type') echo 'checked'; ?>> Material Type
-        </label>
-
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="location" onchange="this.form.submit()"
-                <?php if ($sort === 'location') echo 'checked'; ?>> Location
-        </label>
-
-        </form>
-
-    </div>
-
-    <!-- Search Results -->
-    <div style="margin-top: 30px; padding: 30px 20px;">
-	<h2><b>Search Results</b></h2>
-	<!-- Results from database go here -->
-	<?php
-	    if (!empty($results)) {
-		    foreach ($results as $material) {
-			echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
-            echo "<h3><a href='self_service.php?material_id=" . $material->getMaterialID() . "'>" .  $material->getName() .  "</a></h3>";
-            echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
-            echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
-            echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
-            echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
-            echo "<p>" . $material->getDescription() . "</p>";
-            echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
-
-			if ($material->canBeCheckedOut()) {
-        		    echo "<p style='color:green'><b>Available for Checkout</b></p>";
-    			} else {
-        		    echo "<p style='color:red'><b>Out of Stock</b></p>";
-			}
-			echo "</div>";
-    		}
-
-	    } else {
-    		echo "<p>No materials found.</p>";
-	    }
-
-    	?>
-    </div>
-</div>
-</div>
-</div>
-
-    <!-- Footer -->
-    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
-
-    <?php require 'footer.php';?>
-
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
-
-</body>
-<?php endif ?>
 
 </html>
 

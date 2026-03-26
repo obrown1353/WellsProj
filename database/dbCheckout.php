@@ -3,15 +3,15 @@ include_once('dbinfo.php');
 include_once(dirname(__FILE__).'/../domain/Checkout.php');
 
 //encapsulates row information from query into a checkout object for function access.
-function prepare_checkout_object($material){
+function prepare_checkout_object($checkout){
     return new Checkout(
-        $material['checkout_id'], 
-        $material['material_id'], 
-        $material['first_name'], 
-        $material['last_name'],
-        $material['email'],
-        $material['checkout_date'],
-        $material['due_date'],
+        $checkout['checkout_id'], 
+        $checkout['material_id'], 
+        $checkout['first_name'], 
+        $checkout['last_name'],
+        $checkout['email'],
+        $checkout['checkout_date'],
+        $checkout['due_date'],
     );
 }
 
@@ -30,7 +30,7 @@ function fetch_all_checkouts(){
 }
 
 //Fetchs a checkout by a given checkout id
-function fetch_material_by_checkout_id($id){
+function fetch_checkout_by_checkout_id($id){
     $con = connect();
     $query = "SELECT * FROM dbcheckout WHERE checkout_id = '" . $id . "'";
     $result = mysqli_query($con, $query);
