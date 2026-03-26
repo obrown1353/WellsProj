@@ -31,6 +31,20 @@ function fetch_all_materials(){
     return $materials;
 }
 
+//Fetchs all materials in dbmaterials, can return empty array
+function fetch_all_materials_sorted($sort = 'material_id'){
+    $con = connect();
+    $query = "SELECT * FROM dbmaterials ORDER BY " . $sort;
+    $result = mysqli_query($con, $query);
+    $materials = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $materials[] = prepare_material_object($row);
+    }
+    mysqli_close($con);  
+    return $materials;
+}
+
 //Fetchs a material by a given id
 function fetch_material_by_id($id){
     $con = connect();
@@ -60,8 +74,8 @@ function fetch_material_by_name($name){
 }
 
 //Fetchs a material by a given query (usually in the form of a processed search for materials)
-function fetch_materials_by_query($query){
-    $materials = fetch_all_materials();
+function fetch_materials_by_query($query, $sort = 'material_id'){
+    $materials = fetch_all_materials_sorted($sort);
     $queried_materials = [];
     foreach ($materials as $material) {
 	    if (

@@ -24,11 +24,10 @@
     $isWorker = ($accessLevel === 1);
     $isAdmin  = ($accessLevel >= 2);
     $query = "";
-    $materials = fetch_all_materials();
     $results = [];
-    $sort = $_GET['sort'] ?? '';
+    $sort = $_GET['sort'] ?? 'material_id';
     $selectedLocations = $_GET['location'] ?? [];
-    $selectedTypes = $_GET['material_type'] ?? [];
+    $selectedTypes = $_GET['resource_type'] ?? [];
 
     if (!$isGuest && isset($_SESSION['_id'])) {
         $person = retrieve_person($_SESSION['_id']);
@@ -38,42 +37,15 @@
 	    $query = strtolower(trim($_GET['query']));
     }
 
-    $results = fetch_materials_by_query($query);
-
-    if (!empty($sort) && !empty($results)) {
-
+    $results = fetch_materials_by_query($query, $sort);
     
-    usort($results, function($a, $b) use ($sort) {
-
-        switch ($sort) {
-
-            case "title":
-                return strcmp(strtolower((string)$a->getName()), strtolower((string)$b->getName()));
-
-            case "author":
-                return strcmp(strtolower((string)$a->getAuthor()), strtolower((string)$b->getAuthor()));
-
-            case "material_type":
-                return strcmp(strtolower((string)$a->getResourceType()), strtolower((string)$b->getResourceType()));
-
-            case "location":
-                return strcmp(strtolower((string)$a->getLocation()), strtolower((string)$b->getLocation()));
-
-            default:
-                return 0;
-        }
-    });
-
     if (!empty($selectedLocations) || !empty($selectedTypes)) {
-    $results = array_filter($results, function($material) use ($selectedLocations, $selectedTypes) {
-        $matchLocation = empty($selectedLocations) || in_array($material->getLocation(), $selectedLocations);
-        $matchType = empty($selectedTypes) || in_array($material->getResourceType(), $selectedTypes);
-        return $matchLocation && $matchType;
-    });
+        $results = array_filter($results, function($material) use ($selectedLocations, $selectedTypes) {
+            $matchLocation = empty($selectedLocations) || in_array($material->getLocation(), $selectedLocations);
+            $matchType = empty($selectedTypes) || in_array($material->getResourceType(), $selectedTypes);
+            return $matchLocation && $matchType;
+        });
     }
-}
-
-
 
     $notRoot = !$isAdmin;
 ?>
@@ -528,28 +500,28 @@
 
     <br>
 
-        <!-- Material Type -->
+        <!-- Resource Type -->
         <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
+        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Resource Type</summary>
 
-        <input type="checkbox" name="material_type[]" value="Children's Literature" id="mat-child-lit"
-        <?php if(in_array("Children's Literature", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <input type="checkbox" name="resource_type[]" value="Children's Literature" id="mat-child-lit"
+        <?php if(in_array("Children's Literature", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
         <label for="mat-child-lit">Children's Literature</label><br>
 
-        <input type="checkbox" name="material_type[]" value="Math Manipulatives" id="mat-math"
-        <?php if(in_array("Math Manipulatives", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <input type="checkbox" name="resource_type[]" value="Math Manipulatives" id="mat-math"
+        <?php if(in_array("Math Manipulatives", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
         <label for="mat-math">Math Manipulatives</label><br>
 
-        <input type="checkbox" name="material_type[]" value="Professional Text" id="mat-prof"
-        <?php if(in_array("Professional Text", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <input type="checkbox" name="resource_type[]" value="Professional Text" id="mat-prof"
+        <?php if(in_array("Professional Text", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
         <label for="mat-prof">Professional Text</label><br>
 
-        <input type="checkbox" name="material_type[]" value="Textbook" id="mat-textbook"
-        <?php if(in_array("Textbook", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <input type="checkbox" name="resource_type[]" value="Textbook" id="mat-textbook"
+        <?php if(in_array("Textbook", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
         <label for="mat-textbook">Textbook</label><br>
 
-        <input type="checkbox" name="material_type[]" value="Supplies" id="mat-supplies"
-        <?php if(in_array("Supplies", $_GET['material_type'] ?? [])) echo 'checked'; ?>>
+        <input type="checkbox" name="resource_type[]" value="Supplies" id="mat-supplies"
+        <?php if(in_array("Supplies", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
         <label for="mat-supplies">Supplies</label><br>
 
         </details>
@@ -583,14 +555,14 @@
 
     <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
-        <form action="results.php" . method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+        <form action="results.php?" method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
         <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
-        
+
         <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
 
         <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="title" onchange="this.form.submit()"
-                <?php if ($sort === 'title') echo 'checked'; ?>> Title
+            <input type="radio" name="sort" value="name" onchange="this.form.submit()"
+                <?php if ($sort === 'name') echo 'checked'; ?>> Name
         </label>
 
         <label style="color:white; white-space: nowrap;">
@@ -599,8 +571,8 @@
         </label>
 
         <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="sort" value="material_type" onchange="this.form.submit()"
-                <?php if ($sort === 'material_type') echo 'checked'; ?>> Material Type
+            <input type="radio" name="sort" value="resource_type" onchange="this.form.submit()"
+                <?php if ($sort === 'resource_type') echo 'checked'; ?>> Resource Type
         </label>
 
         <label style="color:white; white-space: nowrap;">
@@ -625,7 +597,7 @@
                         echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
                         echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
                         echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
-                        echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
+                        echo "<p><b>Resource Type:</b> " . $material->getResourceType() . "</p>";
                         echo "<p>" . $material->getDescription() . "</p>";
                         echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
                         if ($material->canBeCheckedOut()) {
