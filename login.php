@@ -5,22 +5,7 @@ ini_set("display_errors", 1);
 error_reporting(E_ALL);
 
 $badLogin = false;
-
-// ── Hardcoded test users ───────────────────────────────────────────────────
-$hardcodedUsers = [
-    'admin' => [
-        'password'     => password_hash('admin123', PASSWORD_DEFAULT),
-        'access_level' => 2,
-        'first_name'   => 'Admin',
-        'last_name'    => 'User',
-    ],
-    'worker' => [
-        'password'     => password_hash('worker123', PASSWORD_DEFAULT),
-        'access_level' => 1,
-        'first_name'   => 'Worker',
-        'last_name'    => 'User',
-    ],
-];
+$errorMsg = '';
 
 // ── Guest login ────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guest'])) {
@@ -37,47 +22,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
     $username = strtolower(trim($_POST['username']));
     $password = $_POST['password'] ?? '';
 
-    // 1. Check hardcoded users first
-    $user = $hardcodedUsers[$username] ?? null;
+    require_once(__DIR__ . '/database/dbPersons.php');
+    require_once(__DIR__ . '/domain/Person.php');
 
-    if ($user) {
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['logged_in']    = true;
-            $_SESSION['access_level'] = $user['access_level'];
-            $_SESSION['_id']          = $username;
-            $_SESSION['f_name']       = $user['first_name'];
-            $_SESSION['l_name']       = $user['last_name'];
-            header('Location: index.php');
-            exit();
+    $dbUser = retrieve_person($username);
+
+    if ($dbUser && password_verify($password, $dbUser->get_password())) {
+        $_SESSION['logged_in'] = true;
+        $_SESSION['_id']       = $dbUser->get_id();
+        $_SESSION['f_name']    = $dbUser->get_first_name();
+        $_SESSION['l_name']    = $dbUser->get_last_name();
+
+        // FIX: Person::get_access_level() always returns 1 for non-vmsroot,
+        // so we map from type directly instead.
+        if ($dbUser->get_id() === 'vmsroot') {
+            $_SESSION['access_level'] = 2;
+        } elseif ($dbUser->get_type() === 'admin') {
+            $_SESSION['access_level'] = 2;
         } else {
-            $badLogin = true;
+            $_SESSION['access_level'] = 1;
         }
+
+        header('Location: index.php');
+        exit();
     } else {
-        // 2. Fall back to database
-        $dbUserFile = __DIR__ . '/database/dbPersons.php';
-        $domainFile = __DIR__ . '/domain/Person.php';
-        if (file_exists($dbUserFile) && file_exists($domainFile)) {
-            require_once($dbUserFile);
-            require_once($domainFile);
-            $dbUser = retrieve_person($username);
-            if ($dbUser && password_verify($password, $dbUser->get_password())) {
-                $_SESSION['logged_in'] = true;
-                $_SESSION['_id']       = $dbUser->get_id();
-                $_SESSION['f_name']    = $dbUser->get_first_name();
-                $_SESSION['l_name']    = $dbUser->get_last_name();
-
-                // vmsroot always gets full admin access
-                if ($dbUser->get_id() === 'vmsroot') {
-                    $_SESSION['access_level'] = 2;
-                } else {
-                    $_SESSION['access_level'] = $dbUser->get_access_level();
-                }
-
-                header('Location: index.php');
-                exit();
-            }
-        }
         $badLogin = true;
+        $errorMsg = $dbUser
+            ? 'Incorrect password. Please try again.'
+            : 'No account found with that username.';
     }
 }
 ?>
@@ -177,15 +149,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             border-color: #8DC9F7;
             background: rgba(255,255,255,0.18);
         }
-
-        .error-msg {
-            background: rgba(180,30,30,0.85);
-            color: white;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            text-align: center;
+        input.input-error {
+            border-color: #f87171 !important;
+            animation: shake 0.4s ease;
         }
+        @keyframes shake {
+            0%   { transform: translateX(0); }
+            20%  { transform: translateX(-7px); }
+            40%  { transform: translateX(7px); }
+            60%  { transform: translateX(-5px); }
+            80%  { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-120px);
+            background: rgba(180, 30, 30, 0.95);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: 'Quicksand', sans-serif;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast-icon { font-size: 1.2rem; }
+        .toast-close {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-left: 8px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .toast-close:hover { color: white; }
 
         .btn-primary {
             width: 100%;
@@ -256,28 +267,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
 <body>
     <div class="overlay"></div>
 
+    <!-- Toast -->
+    <div class="toast" id="errorToast">
+        <span class="toast-icon">⚠</span>
+        <span id="toastMsg"><?php echo htmlspecialchars($errorMsg); ?></span>
+        <button class="toast-close" onclick="hideToast()" aria-label="Dismiss">&times;</button>
+    </div>
+
     <div class="main-content">
         <img src="images/umw_eagle.png" alt="UMW Logo" class="logo">
         <h2>Welcome</h2>
 
         <form class="login-form" action="login.php" method="POST">
-            <?php if ($badLogin): ?>
-                <div class="error-msg">Incorrect username or password. Please try again.</div>
-            <?php endif; ?>
-
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username"
-                       placeholder="Enter your username" required>
-            </div>
-            <!-- logo -->
-            <div class="w-full flex justify-center mb-6">
+                       placeholder="Enter your username"
+                       value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
+                       class="<?php echo $badLogin ? 'input-error' : ''; ?>"
+                       required>
             </div>
 
             <div class="input-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password"
-                       placeholder="Enter your password" required>
+                       placeholder="Enter your password"
+                       class="<?php echo $badLogin ? 'input-error' : ''; ?>"
+                       required>
             </div>
 
             <button type="submit" class="btn-primary">Staff Login</button>
@@ -296,5 +312,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
         Questions? Contact Dr. Melissa Wells &mdash;
         <a href="mailto:mwells@umw.edu">mwells@umw.edu</a>
     </footer>
+
+    <script>
+    <?php if ($badLogin): ?>
+    window.addEventListener('DOMContentLoaded', function () {
+        const toast = document.getElementById('errorToast');
+        setTimeout(() => toast.classList.add('show'), 80);
+        setTimeout(() => hideToast(), 4000);
+    });
+    <?php endif; ?>
+
+    function hideToast() {
+        document.getElementById('errorToast').classList.remove('show');
+    }
+
+    document.querySelectorAll('.input-error').forEach(function(el) {
+        el.addEventListener('input', function() {
+            this.classList.remove('input-error');
+        });
+    });
+    </script>
 </body>
 </html>

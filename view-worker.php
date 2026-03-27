@@ -35,8 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_worker'])) {
         if (!$person) {
             $error = 'Account not found.';
         } else {
-            // Use the existing update_person_required function from dbPersons.php
-            // keeping city, state, phone1, affiliation, branch, email_prefs from current values
+            // Save the person's current type so we never lose it
+            $current_type = $person->get_type();
+
+            // Update name, email using existing DB function
             $result = update_person_required(
                 $username,
                 $first_name,
@@ -50,7 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_worker'])) {
                 $person->get_branch()
             );
 
-            // If username changed, do a separate direct update
+            // Restore the type explicitly — update_person_required doesn't touch
+            // type, but we call update_type to be absolutely safe
+            if ($result) {
+                update_type($username, $current_type);
+            }
+
+            // If username changed, update the id column
             if ($result && $new_username !== $username) {
                 $con = connect();
                 $safe_new = mysqli_real_escape_string($con, $new_username);
@@ -58,6 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_worker'])) {
                 $q = "UPDATE dbpersons SET id='$safe_new' WHERE id='$safe_old'";
                 $result = mysqli_query($con, $q);
                 mysqli_close($con);
+
+                // If the admin just renamed their own account, update session too
+                if ($result && isset($_SESSION['id']) && $_SESSION['id'] === $username) {
+                    $_SESSION['id'] = $new_username;
+                }
             }
 
             if ($result) {
@@ -71,11 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_worker'])) {
 
 // Fetch all accounts using the correct function name from dbPersons.php
 $workers = [];
-$all_persons = getall_persons(); // correct function name from dbPersons.php
+$all_persons = getall_persons();
 if ($all_persons) {
     foreach ($all_persons as $p) {
-        // getall_persons() already excludes vmsroot, but just in case:
         if ($p->get_id() === 'vmsroot') continue;
+        // Only show admin and worker accounts, not volunteers
+        if (!in_array($p->get_type(), ['admin', 'worker'])) continue;
         $workers[] = $p;
     }
 }
@@ -105,7 +119,6 @@ $worker_count = $total_count - $admin_count;
     .page-title { margin-bottom: 6px; font-size: 28px; font-weight: 700; color: white; }
     .subtitle   { color: #8DC9F7; font-size: 14px; margin-bottom: 28px; }
 
-    /* Summary pills */
     .summary-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
     .stat-pill {
         background: rgb(40,40,43);
@@ -118,7 +131,6 @@ $worker_count = $total_count - $admin_count;
     }
     .stat-pill span { color: white; margin-left: 6px; }
 
-    /* Search / filter bar */
     .search-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
     .search-input {
         flex: 1;
@@ -148,12 +160,10 @@ $worker_count = $total_count - $admin_count;
     }
     .filter-select option { background: rgb(40,40,43); }
 
-    /* Alerts */
     .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 600; }
     .alert-error   { background: rgba(180,30,30,.85); color: white; }
     .alert-success { background: rgba(22,163,74,.85);  color: white; }
 
-    /* Table */
     .table-wrap {
         background: rgb(40,40,43);
         border-radius: 14px;
@@ -184,7 +194,6 @@ $worker_count = $total_count - $admin_count;
     .badge-admin  { background: rgba(251,191,36,.15); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
     .badge-worker { background: rgba(141,201,247,.12); color: #8DC9F7; border: 1px solid rgba(141,201,247,.25); }
 
-    /* Edit button */
     .btn-edit {
         background: transparent;
         border: 1.5px solid rgba(141,201,247,.35);
@@ -200,12 +209,10 @@ $worker_count = $total_count - $admin_count;
     }
     .btn-edit:hover { background: rgba(141,201,247,.12); border-color: #8DC9F7; }
 
-    /* Empty / no-results */
     .empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,.35); font-size: 15px; }
     .no-results-row { display: none; }
     .no-results-row td { text-align: center; padding: 40px; color: rgba(255,255,255,.35); }
 
-    /* Modal */
     .modal-backdrop {
         display: none;
         position: fixed;
@@ -241,7 +248,6 @@ $worker_count = $total_count - $admin_count;
     }
     .modal-close-btn:hover { color: white; }
 
-    /* Modal form */
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
     .form-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #8DC9F7; }
     .form-input {
