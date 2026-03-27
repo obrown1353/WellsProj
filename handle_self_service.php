@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
+include_once "database/dbLogs.php";
 
 $id         = $_POST["id"];
 $first_name = $_POST["first_name"] ?? '';
@@ -33,6 +34,13 @@ if (isset($_POST['Checkout'])) {
           $plain = "Hi $full_name,\n\nWe have received your confirmation!\n\nItem: $title\nReturn By: $due_date_nice\n\nWarm regards,\nThe Seacobeck Library Team";
           $emailSent = sendEmail($email, $full_name, 'Seacobeck Library - Checkout Confirmation', $html, $plain);
           $status = $emailSent ? 'checkout_success' : 'checkout_no_email';
+          $log = new Log(
+            null, 
+            $log_type = "checkouts", 
+            $message = $full_name . " has checked out " . $title, 
+            $log_time = date('Y-m-d H:i:s')
+          );
+          new_log($log);
       } else {
           $status = 'checkout_fail';
       } 
@@ -50,6 +58,13 @@ if (isset($_POST['Checkout'])) {
           $plain = "Hi $full_name,\n\nThank you for returning: $title.\n\nWarm regards,\nThe Seacobeck Library Team";
           $emailSent = sendEmail($email, $full_name, 'Seacobeck Library - Return Confirmation', $html, $plain);
           $status = $emailSent ? 'return_success' : 'return_no_email';
+          $log = new Log(
+            null, 
+            $log_type = "checkouts", 
+            $message = $full_name . " has returned " . $title, 
+            $log_time = date('Y-m-d H:i:s')
+          );
+          new_log($log);
       } else {
           $status = 'return_fail';
       }

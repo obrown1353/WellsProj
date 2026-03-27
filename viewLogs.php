@@ -11,8 +11,8 @@ date_default_timezone_set("America/New_York");
 // Includes
 include_once('database/dbPersons.php');
 include_once('domain/Person.php');
-include_once('database/dbMaterials.php');
-include_once('domain/Materials.php');
+include_once('database/dbLogs.php');
+include_once('domain/Log.php');
 
 if (!isset($_SESSION['access_level'])) {
     header('Location: login.php');
@@ -28,9 +28,13 @@ if (!$isGuest && isset($_SESSION['_id'])) {
     $person = retrieve_person($_SESSION['_id']);
 }
 
-// Search
-$searchQuery = isset($_GET['query']) ? strtolower(trim($_GET['query'])) : '';
-$filteredMaterials = fetch_materials_by_query($searchQuery);
+$type = $_GET['type'] ?? '';
+$logs = [];
+if (isset($_GET['type']) && $_GET['type'] != 'all') {
+    $logs = fetch_logs_by_type($_GET['type']);
+} else {
+    $logs = fetch_all_logs();
+}
 
 ?>
 
@@ -40,7 +44,7 @@ $filteredMaterials = fetch_materials_by_query($searchQuery);
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
-<title>Seacobeck Curriculum Lab | Materials Catalog</title>
+<title>Seacobeck Curriculum Lab | System Logs</title>
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
@@ -172,72 +176,72 @@ tbody tr:hover {
 
 <div class="page-wrapper">
 
-    <h1 class="page-heading">Materials Catalog</h1>
+    <h1 class="page-heading">Logs</h1>
     <p class="page-subheading">
-        Browse all available materials. Search by Title, Author, Description, or ISBN.
+        Browse all logs.
     </p>
-
-    <!-- Search -->
-    <div class="search-wrapper">
-        <div class="search-box">
-            <form method="GET">
-                <div class="search-inner">
-                    <input
-                        type="text"
-                        name="query"
-                        class="search-input"
-                        placeholder="Search materials..."
-                        value="<?php echo htmlspecialchars($searchQuery); ?>"
-                    >
-                    <button class="search-btn">Search</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Materials Table -->
     <h2 class="section-heading">
-        📚 Materials
-        <span class="badge"><?php echo count($filteredMaterials); ?></span>
-        <a href="addMaterial.php" class="badge">Add Material</a>
+        📚 Logs
+        <!-- Sort by -->
+    <div style="display: flex; justify-content: center; margin-top: -20px;">
+
+        <form action="viewLogs.php?" method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+        <span style="font-weight: bold; white-space: nowrap;">Filter by: </span>
+
+        <label style="color:white; white-space: nowrap;">
+            <input type="radio" name="type" value="all" onchange="this.form.submit()"
+                <?php if ($type === 'all') echo 'checked'; ?>> All
+        </label>
+
+        <label style="color:white; white-space: nowrap;">
+            <input type="radio" name="type" value="system" onchange="this.form.submit()"
+                <?php if ($type === 'system') echo 'checked'; ?>> System
+        </label>
+
+        <label style="color:white; white-space: nowrap;">
+            <input type="radio" name="type" value="checkouts" onchange="this.form.submit()"
+                <?php if ($type === 'checkouts') echo 'checked'; ?>> Checkouts
+        </label>
+
+        <label style="color:white; white-space: nowrap;">
+            <input type="radio" name="type" value="catalog" onchange="this.form.submit()"
+                <?php if ($type === 'catalog') echo 'checked'; ?>> Catalog
+        </label>
+        </form>
+
+    </div>
     </h2>
 
     <div class="table-wrapper">
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Author</th>
-                    <th>Type</th>
-                    <th>Location</th>
-                    <th>ISBN</th>
-                    <th>Available</th>
-                    <th>Edit</th>
+                    <th>Log Type</th>
+                    <th>Message</th>
+                    <th>Log Time</th>
                 </tr>
             </thead>
             <tbody>
 
-            <?php if (empty($filteredMaterials)): ?>
+            <?php if (empty($logs)): ?>
                 <tr>
-                    <td colspan="7">
+                    <td colspan="3">
                         <div class="empty-state">
-                            No materials found<?php echo $searchQuery ? ' matching your search' : ''; ?>.
+                            No logs found.
                         </div>
                     </td>
                 </tr>
             <?php else: ?>
 
-                <?php foreach ($filteredMaterials as $mat): ?>
+                <?php foreach ($logs as $log): ?>
                 <tr>
-                    <td class="material-name">
-                        <?php echo $mat->getName(); ?>
+                    <td class="material-name" style="width:15%">
+                        <?php echo htmlspecialchars($log->getLogType()); ?>
                     </td>
-                    <td><?php if ($mat->getAuthor()){echo $mat->getAuthor(); } else { echo "N/A"; }?></td>
-                    <td><?php echo $mat->getResourceType(); ?></td>
-                    <td><?php echo $mat->getLocation(); ?></td>
-                    <td><?php if ($mat->getISBN()){echo $mat->getISBN(); } else { echo "N/A"; }?></td>
-                    <td> <?php echo $mat->getCopyInstock(); ?> / <?php echo $mat->getCopyCapacity(); ?></td>
-                    <td><a href="editMaterial.php?material_id=<?php echo ($mat->getMaterialID()); ?>" class="edit-button">Edit</a></td>
+                    <td style="width:70%"><?php echo htmlspecialchars($log->getMessage()); ?></td>
+                    <td style="width:15%"><?php echo htmlspecialchars($log->getLogTime()); ?></td>
                 </tr>
                 <?php endforeach; ?>
 

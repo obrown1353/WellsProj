@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 18, 2026 at 01:40 AM
+-- Generation Time: Mar 27, 2026 at 02:05 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -329,6 +329,19 @@ INSERT INTO `dbgroups` (`group_name`, `color_level`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `dblogs`
+--
+
+CREATE TABLE `dblogs` (
+  `log_id` int(11) NOT NULL,
+  `log_type` varchar(30) NOT NULL,
+  `message` text NOT NULL,
+  `log_time` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `dbmaterials`
 --
 
@@ -349,8 +362,8 @@ CREATE TABLE `dbmaterials` (
 --
 
 INSERT INTO `dbmaterials` (`material_id`, `name`, `location`, `resource_type`, `isbn`, `author`, `description`, `copy_capacity`, `copy_instock`) VALUES
-(1, 'Hoop Kings', 'General Nonfiction', 'Children\'s Literature', '9780763635602', 'Smith, Charles R., Jr.', NULL, 1, 1),
-(2, 'Soccer Stars', 'General Nonfiction', 'Children\'s Literature', '9780593886151', 'DiLeo, Travis', NULL, 1, 1),
+(1, 'Hoop Kings', 'Holiday', 'Children\'s Literature', '9780763635602', 'Smith, Charles R., Jr.', '', 1, 1),
+(2, 'Soccer Stars', 'General Nonfiction', 'Children\'s Literature', '9780593886151', 'DiLeo, Travis', '', 1, 1),
 (3, 'Mouse Views', 'General Nonfiction', 'Children\'s Literature', '9780823410088', 'McMillan, Bruce', NULL, 1, 1),
 (4, 'Buried Alive!', 'General Nonfiction', 'Children\'s Literature', '9780547707785', 'Scott, Elaine', NULL, 1, 1),
 (5, 'Let\'s Read Biography: Barbara Jordan', 'General Nonfiction', 'Children\'s Literature', '9780395813362', NULL, NULL, 1, 1),
@@ -791,7 +804,6 @@ INSERT INTO `dbpersons` (`id`, `start_date`, `first_name`, `last_name`, `street_
 ('fakename', '2025-12-10', 'fake', 'name', NULL, 'realtown', 'VA', NULL, '5555555555', 0, '', '', '', '', 'fakeemail@email.email.com', 'true', '', '', '', '', '', '', '', '$2y$10$4h8ImkaTyMprwU3SzWrWx./NBI7yClMoqCkEbYJuA1/9cb0tSlUI.', 'Civilian', 'Marine Corp', NULL, ''),
 ('firstName', '2025-12-10', 'firstName', 'lastName', NULL, 'homeTown', 'TX', NULL, '5555555555', 0, '', '', '', '', 'realemail@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$og/aLBzrg195Qph9d2M/DuX2DIPhP.0sVT3vtu/WUpGCse8B.k71m', 'Civilian', 'Navy', NULL, ''),
 ('gabriel', '2026-02-02', 'Gabriel', 'Courtney', NULL, 'King George', 'VA', NULL, '5404295285', 0, '', '', '', '', 'gabrielcourtney04@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$4uvfLFyFy9Ui1i8Q1r0MWuFRGYfgvVh4.iUtvXksfVJm4pZpxxtSq', 'Active duty', 'Space Force', NULL, ''),
-('hlydell', '2026-03-17', 'Hannah', 'Lydell', NULL, '', '', NULL, '', 0, '', '', '', '', 'lydellhannah@gmail.com', 'false', '', '', '', '', 'worker', 'Active', '', '$2y$10$3P8zF0Yi33XONMvO.O46.u1kFCT.CxIo3QFiVYLqfjvr12viwoNL2', '', '', NULL, ''),
 ('japper', '2026-02-02', 'Jennifer', 'Polack', NULL, 'Fredericksburg', 'VA', NULL, '5406541318', 0, '', '', '', '', 'jenniferpolack@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$mJzI.UGPGUmYgo7HxTamkeKlsmajzLwXM6su4NdxuHYHZXIGnb0xm', 'Family', 'Marine Corp', NULL, ''),
 ('Jlipinsk', '2025-12-03', 'Jake', 'Lipinski', NULL, 'Williamsburg', 'VA', NULL, '7577903325', 0, '', '', '', '', 'jlipinsk@mail.umw.edu', 'true', '', '', '', '', '', '', '', '$2y$10$qz33T0Sq760IITyYajCYOeWlHR/7sRJH.U609EUkF3R5zRiWWddkG', 'Civilian', 'Army', NULL, ''),
 ('johnDoe123', '2026-02-07', 'John', 'Doe', NULL, 'Fredericksburg', 'VA', NULL, '2345678910', 0, '', '', '', '', 'test@email.com', 'false', '', '', '', '', '', '', '', '$2y$10$LTVIuLeSZ4ferdNOe0JdTedaFHqFuEOAz7HDCQuZ4PG9kZrRJc7xS', 'Active duty', 'Navy', NULL, ''),
@@ -800,7 +812,7 @@ INSERT INTO `dbpersons` (`id`, `start_date`, `first_name`, `last_name`, `street_
 ('michael_smith', '2025-03-16', 'Michael', 'Smith', '789 Pine Street', 'Charlottesville', 'VA', '22903', '4345559876', 0, 'mobile', '4345553322', 'work', '1995-08-22', 'michaelsmith@email.com', NULL, 'Sarah', '4345553322', 'Sister', 'email', 'volunteer', 'Active', '', '$2y$10$XYZ789xyz456LMN123DEF', NULL, NULL, 0, 'Smith'),
 ('michellevb', '2025-04-29', 'Michelle', 'Van Buren', '1234 Red St', 'Freddy', 'VA', '22401', '1234567890', 0, 'cellphone', '0987654321', 'cellphone', '1980-08-18', 'michelle.vb@gmail.com', NULL, 'Madison', 'n/a', 'daughter', NULL, 'volunteer', 'Active', NULL, '$2y$10$bkqOWUdIJoSa6kZoRo5KH.cerZkBQf74RYsponUUgefJxNc8ExppK', NULL, NULL, 0, 'Van Buren'),
 ('navyspouse', '2025-11-30', 'Navy', 'Spouse', NULL, 'FXBG', 'VA', NULL, '3543534543', 0, '', '', '', '', 'example@example.com', 'false', '', '', '', '', '', '', '', '$2y$10$nqoIFq4ru0k1wLkg0E/rfupwez.x1Gg6ldEuKgC.jIQemgCEuDzkG', 'Family', 'Navy', NULL, ''),
-('olivia', '2026-02-04', 'Olivia', 'Blue', NULL, 'Fredericksburg', 'VA', NULL, '1112223333', 0, '', '', '', '', 'oliviablue@gmail.com', 'false', '', '', '', '', '', '', '', '$2y$10$ew4nuUYBtx6.CbNBezMTYuAQGaxMJgxIs4I3uIx05Sb7SqxKHJO2S', 'Family', 'Marine Corp', NULL, ''),
+('olivi', '2026-02-04', 'Olivia', 'Blue', NULL, 'Fredericksburg', 'VA', NULL, '1112223333', 0, '', '', '', '', 'oliviablue@gmail.com', 'false', '', '', '', '', '', '', '', '$2y$10$ew4nuUYBtx6.CbNBezMTYuAQGaxMJgxIs4I3uIx05Sb7SqxKHJO2S', 'Family', 'Marine Corp', NULL, ''),
 ('test_acc', '2025-04-29', 'test', 'test', 'test', 'test', 'VA', '22405', '5555555555', 0, 'cellphone', '5555555555', 'cellphone', '2003-03-03', 'test@gmail.com', NULL, 'test', 'n/a', 't', NULL, 'volunteer', 'Active', NULL, '$2y$10$kpVA41EXvoJyv896uDBEF.fHCPmSlkVSaXjHojBl7DqbRnEm//kxy', NULL, NULL, 0, 'test'),
 ('test_person', '2025-10-26', 'Testina', 'Tester', NULL, 'Testville', 'VA', NULL, '5555555555', 0, 'mobile', NULL, NULL, '1980-08-18', 'testing@gmail.com', 'false', NULL, 'n/a', NULL, NULL, NULL, NULL, NULL, '$2y$10$blAQaBgCChBv5qRtBFVVAe1m6gIfwPf/wJ8HxzLFTYiY3aWpvaW8e', 'civilian', 'Army', NULL, NULL),
 ('test_persona', '2025-10-28', 'Testana', 'Tester', NULL, 'Testinaville', 'VA', NULL, '5555555555', 0, NULL, NULL, NULL, NULL, 'testerana@gmail.com', 'true', NULL, 'n/a', NULL, NULL, NULL, NULL, NULL, '$2y$10$s90qlNAJE9EbgLhZbhG5vO4IGSM.PIbK3Ve9IvpfoicMwXbFEXQFi', 'active', 'air_force', NULL, NULL),
@@ -810,6 +822,23 @@ INSERT INTO `dbpersons` (`id`, `start_date`, `first_name`, `last_name`, `street_
 ('vmsroot', NULL, 'vmsroot', '', 'N/A', 'N/A', 'VA', 'N/A', '', 0, 'N/A', 'N/A', 'N/A', NULL, '', NULL, 'vmsroot', 'N/A', 'N/A', 'email', 'superadmin', 'Active', 'System root user account', '$2y$10$.3p8xvmUqmxNztEzMJQRBesLDwdiRU3xnt/HOcJtsglwsbUk88VTO', NULL, NULL, 0, 'vmsroot'),
 ('Volunteer25', '2025-04-30', 'Volley', 'McTear', '123 Dog St', 'Dogville', 'VA', '56748', '9887765543', 0, 'home', '6565651122', 'home', '2025-04-29', 'volly@gmail.com', NULL, 'Holly', 'n/a', 'Besty', NULL, 'volunteer', 'Active', NULL, '$2y$10$45gKdbjW78pNKX/5ROtb7eU9OykSCsP/QCyTAvqBtord4J7V3Ywga', NULL, NULL, 0, 'McTear'),
 ('Welp', '2025-12-04', 'Jake', 'Lipinski', NULL, 'Apple', 'VA', NULL, '7577903325', 0, '', '', '', '', 'mcdonalds@happymeal.com', 'true', '', '', '', '', '', '', '', '$2y$10$LvWD62DJ6pwlVGnWenQkneWCFINzgbHgzyvaBdiLn72/WwM4wo7Iy', 'Active duty', 'Air Force', NULL, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dbreturns`
+--
+
+CREATE TABLE `dbreturns` (
+  `return_id` int(11) NOT NULL,
+  `material_id` int(11) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `checkout_date` datetime NOT NULL,
+  `due_date` datetime NOT NULL,
+  `return_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1142,6 +1171,12 @@ ALTER TABLE `dbgroups`
   ADD PRIMARY KEY (`group_name`);
 
 --
+-- Indexes for table `dblogs`
+--
+ALTER TABLE `dblogs`
+  ADD PRIMARY KEY (`log_id`);
+
+--
 -- Indexes for table `dbmaterials`
 --
 ALTER TABLE `dbmaterials`
@@ -1165,6 +1200,12 @@ ALTER TABLE `dbpersonhours`
 --
 ALTER TABLE `dbpersons`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `dbreturns`
+--
+ALTER TABLE `dbreturns`
+  ADD PRIMARY KEY (`return_id`);
 
 --
 -- Indexes for table `dbscheduledemails`
@@ -1238,7 +1279,7 @@ ALTER TABLE `dbattendance`
 -- AUTO_INCREMENT for table `dbcheckout`
 --
 ALTER TABLE `dbcheckout`
-  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `dbdrafts`
@@ -1259,16 +1300,28 @@ ALTER TABLE `dbevents`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
 
 --
+-- AUTO_INCREMENT for table `dblogs`
+--
+ALTER TABLE `dblogs`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `dbmaterials`
 --
 ALTER TABLE `dbmaterials`
-  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `dbmessages`
 --
 ALTER TABLE `dbmessages`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=473;
+
+--
+-- AUTO_INCREMENT for table `dbreturns`
+--
+ALTER TABLE `dbreturns`
+  MODIFY `return_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `dbscheduledemails`

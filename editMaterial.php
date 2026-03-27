@@ -9,6 +9,8 @@ date_default_timezone_set("America/New_York");
 
 require('include/input-validation.php');
 include_once "database/dbMaterials.php";
+include_once "database/dbLogs.php";
+
 
 if (!isset($_SESSION['access_level'])) {
     header('Location: login.php');
@@ -34,7 +36,15 @@ if (!empty($_POST)) {
         (int)($args['copy_instock']),
     );
 
-    update_material($updated_material);
+    if(update_material($updated_material)){
+        $log = new Log(
+                null, 
+                $log_type = "catalog", 
+                $message = "Material: " . $args['name'] .  " has been updated", 
+                $log_time = date('Y-m-d H:i:s')
+        );
+        new_log($log);
+    };
     header('Location: viewMaterials.php');
     die();
 }
