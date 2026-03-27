@@ -12,6 +12,7 @@ if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
 
 require_once('database/dbPersons.php');
 require_once('domain/Person.php');
+include_once "database/dbLogs.php";
 
 $success = false;
 $error   = '';
@@ -32,6 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete'])) {
             $deleted_name = $person->get_first_name() . ' ' . $person->get_last_name();
             if (remove_person($username)) {
                 $success = true;
+                $log = new Log(
+                    null, 
+                    $log_type = "system", 
+                    $message = $username . " has been been removed from staff", 
+                    $log_time = date('Y-m-d H:i:s')
+                );
+                new_log($log);
             } else {
                 $error = 'Could not delete the account. Please try again.';
             }
