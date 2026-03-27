@@ -124,10 +124,10 @@ document.addEventListener("DOMContentLoaded", function() {
 $common_nav_links = '
       <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
       <div class="nav-item"><a href="viewMaterials.php" class="nav-link">Catalog</a></div>
-      <div class="nav-item"><a href="checkout.php" class="nav-link">Checkout</a></div>
       <div class="nav-item">Worker
         <div class="dropdown">
           <a href="viewCheckouts.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>View Checkouts</span></div></a>
+          <a href="viewLogs.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>View Logs</span></div></a>
           <a href="genReport.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>Generate Report</span></div></a>
         </div>
       </div>';
@@ -144,8 +144,7 @@ echo('
     </div>
     <div class="nav-links">
       <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
-      <div class="nav-item"><a href="calendar.php" class="nav-link">Catalog</a></div>
-      <div class="nav-item"><a href="checkout.php" class="nav-link">Checkout</a></div>
+      <div class="nav-item"><a href="results.php" class="nav-link">Search</a></div>
     </div>
   </div>
   <div class="right-section">

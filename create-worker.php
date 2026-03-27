@@ -12,6 +12,7 @@ if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
 
 require_once('database/dbPersons.php');
 require_once('domain/Person.php');
+include_once "database/dbLogs.php";
 
 $success = false;
 $error   = '';
@@ -71,6 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (add_person($person)) {
             $success = true;
+            $log = new Log(
+                null, 
+                $log_type = "system", 
+                $message = $username . " has been added as a " . $type, 
+                $log_time = date('Y-m-d H:i:s')
+            );
+            new_log($log);
         } else {
             $error = 'Could not save to database. The username may already exist.';
         }
