@@ -39,6 +39,19 @@ $categories = $_GET['category'] ?? []; // multiple categories
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: StromaBold, 'Lucida Sans'; }
+   .title {
+      font-size: 1.875rem; 
+      line-height: 2.25rem;
+      font-weight: 700; 
+      margin-bottom: 0.5rem; 
+      text-align: center; 
+      color: #bfe5ed;
+      text-shadow: 
+        1px 1px 0 black,
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black;
+}
     body {
         background-color: #002D61;
         min-height: 100vh;
@@ -57,11 +70,21 @@ $categories = $_GET['category'] ?? []; // multiple categories
     margin-top: 10px;
     gap: 10px;          
 }
-
 .optionsGroup {
     display: flex;       
     gap: 10px;            
 }
+.searchBar {
+  background-color: #ffffff; 
+  color: #000000; 
+  padding: 1.5rem; 
+  border-radius: 0.5rem; 
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1),
+              0 4px 6px rgba(0, 0, 0, 0.1); 
+  width: 100%; 
+  max-width: 28rem; 
+}
+
   </style>
   <title>Seacobeck Curriculum Lab | Report</title>
 </head>
@@ -69,8 +92,7 @@ $categories = $_GET['category'] ?? []; // multiple categories
 <?php require 'header.php'; ?>
 
 <div class="page-wrapper text-center">
-    <h1 class="text-3xl font-bold mb-2 text-center"
-        style="text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black; color: #bfe5ed;">
+    <h1 class="title">
         Generate a Report
       </h1>
       <p class="text-sm text-white mb-6 text-center opacity-80">
@@ -80,7 +102,7 @@ $categories = $_GET['category'] ?? []; // multiple categories
 
 
 <form method="GET" class="flex justify-center">
-  <div class="bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-md space-y-4">
+  <div class="searchBar">
     <!-- Search Bar -->
     <input 
       type="text" 
@@ -118,6 +140,9 @@ $categories = $_GET['category'] ?? []; // multiple categories
         <label class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
           <input type="checkbox" value="Material type" class="category-checkbox mr-2"> Material type
         </label>
+        <label class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+          <input type="checkbox" value="Date Added" class="category-checkbox mr-2"> Date Added
+        </label>
       </div>
 
       <div id="hiddenInputs"></div>
@@ -136,7 +161,6 @@ $categories = $_GET['category'] ?? []; // multiple categories
     <button>XLSX</button>
   </div>
 </div>
-
   </div>
 </form>
 
