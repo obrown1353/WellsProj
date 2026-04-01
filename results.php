@@ -37,15 +37,36 @@
 	    $query = strtolower(trim($_GET['query']));
     }
 
-    $results = fetch_materials_by_query($query, $sort);
+    $allResults = fetch_materials_by_query($query, $sort);
     
     if (!empty($selectedLocations) || !empty($selectedTypes)) {
-        $results = array_filter($results, function($material) use ($selectedLocations, $selectedTypes) {
+        $allResults = array_filter($allResults, function($material) use ($selectedLocations, $selectedTypes) {
             $matchLocation = empty($selectedLocations) || in_array($material->getLocation(), $selectedLocations);
             $matchType = empty($selectedTypes) || in_array($material->getResourceType(), $selectedTypes);
             return $matchLocation && $matchType;
         });
     }
+
+    // ── PAGINATION LOGIC START ──
+    $allResults = array_values($allResults); 
+    $perPage     = 10; 
+    $totalItems  = count($allResults);
+    $totalPages  = max(1, ceil($totalItems / $perPage));
+    $currentPage = max(1, min((int)($_GET['page'] ?? 1), $totalPages));
+    $offset      = ($currentPage - 1) * $perPage;
+    $results     = array_slice($allResults, $offset, $perPage);
+
+    function buildUrl($page, $query, $sort, $locations, $types) {
+        $parts = [
+            'page='  . $page,
+            'query=' . urlencode($query),
+            'sort='  . urlencode($sort),
+        ];
+        foreach ($locations as $l) $parts[] = 'location[]=' . urlencode($l);
+        foreach ($types     as $t) $parts[] = 'resource_type[]=' . urlencode($t);
+        return 'results.php?' . implode('&', $parts);
+    }
+    // ── PAGINATION LOGIC END ──
 
     $notRoot = !$isAdmin;
 ?>
@@ -57,7 +78,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="./css/base.css" rel="stylesheet">
-    <title>Seacobeck Curriculum Lab | Dashboard</title>
+    <title>Seacobeck Curriculum Lab | Search Results</title>
     <style>
         * {
             box-sizing: border-box;
@@ -68,6 +89,7 @@
         body {
             font-family: Quicksand, sans-serif;
             background-color: #002D61 !important;
+            padding-top: 95px;
         }
 
         h2 {
@@ -362,6 +384,202 @@
         .content-box-test .graph-text { color: black; }
 
         .background-image { display: none; }
+
+        /* ── SIDEBAR (from viewMaterials) ─────────────────────────────────────── */
+        .filter-sidebar {
+            flex: 0 0 260px;
+            width: 260px;
+            border: 2px solid #8DC9F7;
+            border-radius: 14px;
+            padding: 22px 18px;
+            background-color: #0067A2;
+            position: sticky;
+            top: 115px;
+            max-height: 88vh;
+            overflow-y: auto;
+        }
+
+        .filter-sidebar h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .filter-sidebar hr {
+            border-color: rgba(255,255,255,0.3);
+            margin-bottom: 14px;
+        }
+
+        .filter-sidebar details summary {
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 8px;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .filter-sidebar details summary::before {
+            content: '▶';
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .filter-sidebar details[open] summary::before { transform: rotate(90deg); }
+
+        .filter-sidebar .check-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 6px;
+            padding-left: 4px;
+        }
+
+        .filter-sidebar label {
+            font-size: 13px !important;
+            cursor: pointer;
+            margin-left: 4px;
+            color: white !important;
+            font-weight: 400 !important;
+            width: auto !important;
+        }
+
+        .filter-sidebar input[type="checkbox"] {
+            accent-color: #8DC9F7;
+            cursor: pointer;
+            width: auto !important;
+            margin-bottom: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        .apply-btn {
+            display: block;
+            width: 100% !important;
+            margin-top: 18px;
+            padding: 12px 0 !important;
+            border-radius: 10px !important;
+            border: none !important;
+            background: #8DC9F7 !important;
+            color: #002D61 !important;
+            font-family: Quicksand, sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            text-align: center !important;
+        }
+
+        .apply-btn:hover {
+            background: #ffffff !important;
+            transform: translateY(-1px);
+        }
+
+        .clear-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .clear-link:hover { color: white; }
+
+        /* ── OUTER LAYOUT (matches viewMaterials) ─── */
+        .outer {
+            display: flex;
+            gap: 36px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 32px 80px;
+            align-items: flex-start;
+        }
+
+        /* ── PAGINATION STYLES ── */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            height: 38px;
+            padding: 0 12px;
+            border-radius: 8px !important;
+            border: 2px solid #8DC9F7 !important;
+            background: transparent !important;
+            color: white !important;
+            font-family: Quicksand, sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s, color 0.18s;
+            width: auto !important;
+        }
+
+        .page-btn:hover {
+            background: #8DC9F7 !important;
+            color: #002D61 !important;
+        }
+
+        .page-btn.active {
+            background: #8DC9F7 !important;
+            color: #002D61 !important;
+            pointer-events: none;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .ellipsis {
+            color: white;
+            align-self: center;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 0 2px;
+        }
+        
+        .jump-input {
+            width: 85px !important;
+            height: 38px !important;
+            background: #002D61 !important;
+            border: 2px solid #8DC9F7 !important;
+            border-radius: 8px !important;
+            padding: 0 10px !important;
+            font-family: Quicksand, sans-serif !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            color: #8DC9F7 !important;
+            display: inline-block !important;
+            margin: 0 !important;
+            vertical-align: middle;
+            text-align: center !important;
+        }
+
+        .pagination form {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            margin-left: 8px !important;
+            width: auto !important;
+            background: transparent !important;
+        }
     </style>
 
     <script>
@@ -382,162 +600,93 @@
 <body>
 <?php require 'header.php'; ?>
 
-    <!-- MAIN TWO-COLUMN LAYOUT -->
-<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
-    <!-- LEFT SIDEBAR (Filters) -->
-    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
-        <h3>Filters</h3>
+    <div class="outer">
+
+    <div class="filter-sidebar">
+        <h3>🔍 Filters</h3>
         <hr>
 
-
-        <form action="results.php" method="GET">
+        <form method="GET" action="results.php">
             <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
-            <?php if (isset($_GET['sort'])):?>
-                <input type="hidden" name="sort" value="<?php echo htmlspecialchars($_GET['sort'] ?? []); ?>">
+            <input type="hidden" name="sort"  value="<?php echo htmlspecialchars($sort); ?>">
+
+            <details <?php if (!empty($selectedLocations)) echo 'open'; ?>>
+                <summary>Location</summary>
+                <div class="check-group">
+                <?php
+                $locations = [
+                    "Early Readers1"             => "Early Readers 1",
+                    "Early Readers2"             => "Early Readers 2",
+                    "General Fiction A-M"        => "General Fiction A-M",
+                    "General Fiction N-Z"        => "General Fiction N-Z",
+                    "General Nonfiction"         => "General Nonfiction",
+                    "Holiday"                    => "Holiday",
+                    "Middle Grade Novels"        => "Middle Grade Novels",
+                    "Multilingual"               => "Multilingual",
+                    "Realistic Fiction A-G"      => "Realistic Fiction A-G",
+                    "Realistic Fiction H-Z"      => "Realistic Fiction H-Z",
+                    "Science A-F"                => "Science A-F",
+                    "Science A-M"                => "Science A-M",
+                    "Science G-Q"                => "Science G-Q",
+                    "Science N-Z"                => "Science N-Z",
+                    "Science R-Z"                => "Science R-Z",
+                    "Science Resources"          => "Science Resources",
+                    "Social Studies"             => "Social Studies",
+                    "Social Studies Stories A-F" => "Social Studies Stories A-F",
+                    "Social Studies Stories A-L" => "Social Studies Stories A-L",
+                    "Social Studies Stories G-O" => "Social Studies Stories G-O",
+                    "Social Studies Stories P-Z" => "Social Studies Stories P-Z",
+                    "Trad Folk"                  => "Trad/Folk",
+                    "Transportation"             => "Transportation",
+                    "Wordless Picture Books"     => "Wordless Picture Books",
+                ];
+                foreach ($locations as $val => $label):
+                    $checked = in_array($val, $selectedLocations) ? 'checked' : '';
+                ?>
+                <div>
+                    <input type="checkbox" name="location[]" value="<?php echo $val; ?>"
+                           id="loc-<?php echo $val; ?>" <?php echo $checked; ?>>
+                    <label for="loc-<?php echo $val; ?>"><?php echo $label; ?></label>
+                </div>
+                <?php endforeach; ?>
+                </div>
+            </details>
+
+            <br>
+
+            <details <?php if (!empty($selectedTypes)) echo 'open'; ?>>
+                <summary>Resource Type</summary>
+                <div class="check-group">
+                <?php
+                $types = [
+                    "Children's Literature" => "Children's Literature",
+                    "Math Manipulatives"    => "Math Manipulatives",
+                    "Professional Text"     => "Professional Text",
+                    "Textbook"              => "Textbook",
+                    "Supplies"              => "Supplies",
+                ];
+                foreach ($types as $val => $label):
+                    $checked = in_array($val, $selectedTypes) ? 'checked' : '';
+                ?>
+                <div>
+                    <input type="checkbox" name="resource_type[]" value="<?php echo $val; ?>"
+                           id="type-<?php echo $val; ?>" <?php echo $checked; ?>>
+                    <label for="type-<?php echo $val; ?>"><?php echo $label; ?></label>
+                </div>
+                <?php endforeach; ?>
+                </div>
+            </details>
+
+            <button type="submit" class="apply-btn">✓ Apply Filters</button>
+            <?php if (!empty($selectedLocations) || !empty($selectedTypes)): ?>
+                <a href="results.php?query=<?php echo urlencode($_GET['query'] ?? ''); ?>&sort=<?php echo urlencode($sort); ?>" class="clear-link">Clear filters</a>
             <?php endif; ?>
-
-        <!-- Location -->
-        <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
-
-        <input type="checkbox" name="location[]" value="Early Readers1" id="loc-early1"
-        <?php if(in_array("Early Readers 1", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-early1">Early Readers 1</label><br>
-
-        <input type="checkbox" name="location[]" value="Early Readers2" id="loc-early2"
-        <?php if(in_array("Early Readers 2", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-early2">Early Readers 2</label><br>
-
-        <input type="checkbox" name="location[]" value="General Fiction A-M" id="loc-gen-a-m"
-        <?php if(in_array("General Fiction A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-gen-a-m">General Fiction A-M</label><br>
-
-        <input type="checkbox" name="location[]" value="General Fiction N-Z" id="loc-gen-n-z"
-        <?php if(in_array("General Fiction N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-gen-n-z">General Fiction N-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="General Nonfiction" id="loc-nonfiction"
-        <?php if(in_array("General Nonfiction", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-nonfiction">General Nonfiction</label><br>
-
-        <input type="checkbox" name="location[]" value="Holiday" id="loc-holiday"
-        <?php if(in_array("Holiday", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-holiday">Holiday</label><br>
-
-        <input type="checkbox" name="location[]" value="Middle Grade Novels" id="loc-middle-grade"
-        <?php if(in_array("Middle Grade Novels", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-middle-grade">Middle Grade Novels</label><br>
-
-        <input type="checkbox" name="location[]" value="Multilingual" id="loc-multilingual"
-        <?php if(in_array("Multilingual", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-multilingual">Multilingual</label><br>
-
-        <input type="checkbox" name="location[]" value="Realistic Fiction A-G" id="loc-realistic-a-g"
-        <?php if(in_array("Realistic Fiction A-G", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
-
-        <input type="checkbox" name="location[]" value="Realistic Fiction H-Z" id="loc-realistic-h-z"
-        <?php if(in_array("Realistic Fiction H-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="Science A-F" id="loc-science-a-f"
-        <?php if(in_array("Science A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-a-f">Science A-F</label><br>
-
-        <input type="checkbox" name="location[]" value="Science A-M" id="loc-science-a-m"
-        <?php if(in_array("Science A-M", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-a-m">Science A-M</label><br>
-
-        <input type="checkbox" name="location[]" value="Science G-Q" id="loc-science-g-q"
-        <?php if(in_array("Science G-Q", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-g-q">Science G-Q</label><br>
-
-        <input type="checkbox" name="location[]" value="Science N-Z" id="loc-science-n-z"
-        <?php if(in_array("Science N-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-n-z">Science N-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="Science R-Z" id="loc-science-r-z"
-        <?php if(in_array("Science R-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-r-z">Science R-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="Science Resources" id="loc-science-resources"
-        <?php if(in_array("Science Resources", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-science-resources">Science Resources</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies" id="loc-social-studies"
-        <?php if(in_array("Social Studies", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-studies">Social Studies</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies Stories A-F" id="loc-social-f"
-        <?php if(in_array("Social Studies Stories A-F", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-f">Social Studies Stories A-F</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies Stories A-L" id="loc-social-l"
-        <?php if(in_array("Social Studies Stories A-L", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-l">Social Studies Stories A-L</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies Stories G-O" id="loc-social-g-o"
-        <?php if(in_array("Social Studies Stories G-O", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
-
-        <input type="checkbox" name="location[]" value="Social Studies Stories P-Z" id="loc-social-p-z"
-        <?php if(in_array("Social Studies Stories P-Z", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
-
-        <input type="checkbox" name="location[]" value="Trad Folk" id="loc-trad-folk"
-        <?php if(in_array("Trad Folk", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-trad-folk">Trad/Folk</label><br>
-
-        <input type="checkbox" name="location[]" value="Transportation" id="loc-transportation"
-        <?php if(in_array("Transportation", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-transportation">Transportation</label><br>
-
-        <input type="checkbox" name="location[]" value="Wordless Picture Books" id="loc-wordless"
-        <?php if(in_array("Wordless Picture Books", $_GET['location'] ?? [])) echo 'checked'; ?>>
-        <label for="loc-wordless">Wordless Picture Books</label><br>
-
-    </details>
-
-    <br>
-
-        <!-- Resource Type -->
-        <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Resource Type</summary>
-
-        <input type="checkbox" name="resource_type[]" value="Children's Literature" id="mat-child-lit"
-        <?php if(in_array("Children's Literature", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-child-lit">Children's Literature</label><br>
-
-        <input type="checkbox" name="resource_type[]" value="Math Manipulatives" id="mat-math"
-        <?php if(in_array("Math Manipulatives", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-math">Math Manipulatives</label><br>
-
-        <input type="checkbox" name="resource_type[]" value="Professional Text" id="mat-prof"
-        <?php if(in_array("Professional Text", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-prof">Professional Text</label><br>
-
-        <input type="checkbox" name="resource_type[]" value="Textbook" id="mat-textbook"
-        <?php if(in_array("Textbook", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-textbook">Textbook</label><br>
-
-        <input type="checkbox" name="resource_type[]" value="Supplies" id="mat-supplies"
-        <?php if(in_array("Supplies", $_GET['resource_type'] ?? [])) echo 'checked'; ?>>
-        <label for="mat-supplies">Supplies</label><br>
-
-        </details>
-        </br>
-        <button type="submit" style="padding: 10px 20px; border-radius: 12px; border:none; background:#fff; color:#0067A2; font-weight:bold; cursor:pointer;">
-            Apply Filters
-        </button>
-    </form>
-
-</div>
+        </form>
+    </div>
 
 
-    <!-- RIGHT SIDE: MAIN CONTENT -->
     <div style="flex: 1; max-width: 900px;">
 
-    <!--Search Bar -->
     <div style="display: flex; justify-content: center; margin: 40px 0;">
         <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
             <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
@@ -553,7 +702,6 @@
     </div>
 
 
-    <!-- Sort by -->
     <div style="display: flex; justify-content: center; margin-top: -20px;">
         <form action="results.php?" method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
         <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
@@ -591,10 +739,12 @@
     </div>
 
 
-    <!-- Search Results -->
     <div style="margin-top: 30px; padding: 30px 20px;">
-        <h2><b>Search Results</b></h2>
-        <!-- Results from database go here -->
+        <h2 style="color:white"><b>Search Results</b> (<?php echo $totalItems; ?>)</h2>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 20px;">
+                Showing <?php echo $offset + 1; ?>–<?php echo min($offset + $perPage, $totalItems); ?> of <?php echo $totalItems; ?> materials
+        </p>
+
         <?php
             if (!empty($results)) {
                     foreach ($results as $material) {
@@ -614,17 +764,63 @@
                         echo "</div>";
                 }
 
+                // --- PAGINATION UI START ---
+                if ($totalPages > 1):
+                    $win = 2; 
+                ?>
+                <div class="pagination">
+                    <a href="<?php echo buildUrl($currentPage - 1, $query, $sort, $selectedLocations, $selectedTypes); ?>" 
+                       class="page-btn <?php echo $currentPage <= 1 ? 'disabled' : ''; ?>">&#8592; Prev</a>
+
+                    <?php
+                    // Start ellipsis logic
+                    if ($currentPage > $win + 2) {
+                        echo '<a href="' . buildUrl(1, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn">1</a>';
+                        if ($currentPage > $win + 3) echo '<span class="ellipsis">…</span>';
+                    }
+
+                    // Numbered buttons
+                    for ($p = max(1, $currentPage - $win); $p <= min($totalPages, $currentPage + $win); $p++) {
+                        $cls = $p === $currentPage ? 'active' : '';
+                        echo '<a href="' . buildUrl($p, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn ' . $cls . '">' . $p . '</a>';
+                    }
+
+                    // End ellipsis logic
+                    if ($currentPage < $totalPages - $win - 1) {
+                        if ($currentPage < $totalPages - $win - 2) echo '<span class="ellipsis">…</span>';
+                        echo '<a href="' . buildUrl($totalPages, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn">' . $totalPages . '</a>';
+                    }
+                    ?>
+
+                    <a href="<?php echo buildUrl($currentPage + 1, $query, $sort, $selectedLocations, $selectedTypes); ?>" 
+                       class="page-btn <?php echo $currentPage >= $totalPages ? 'disabled' : ''; ?>">Next &#8594;</a>
+
+                    <form method="GET" action="results.php">
+                        <input type="hidden" name="query" value="<?php echo htmlspecialchars($query); ?>">
+                        <input type="hidden" name="sort"  value="<?php echo htmlspecialchars($sort); ?>">
+                        <?php foreach ($selectedLocations as $l): ?>
+                            <input type="hidden" name="location[]" value="<?php echo htmlspecialchars($l); ?>">
+                        <?php endforeach; ?>
+                        <?php foreach ($selectedTypes as $t): ?>
+                            <input type="hidden" name="resource_type[]" value="<?php echo htmlspecialchars($t); ?>">
+                        <?php endforeach; ?>
+                        <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>"
+                               class="jump-input" placeholder="Go to…">
+                        <button type="submit" class="page-btn" style="padding:0 14px;">Go</button>
+                    </form>
+                </div>
+                <?php endif; 
+                // --- PAGINATION UI END ---
+
             } else {
-                echo "<p>No materials found.</p>";
+                echo "<p style='color:white'>No materials found.</p>";
             }
 
         ?>
     </div>
 </div>
 </div>
-</div>
 
-    <!-- Footer -->
     <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
     <?php require 'footer.php'; ?>
@@ -632,4 +828,3 @@
 
 
 </html>
-
