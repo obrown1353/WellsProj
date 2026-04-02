@@ -47,7 +47,6 @@
         });
     }
 
-    // ── PAGINATION LOGIC START ──
     $allResults = array_values($allResults); 
     $perPage     = 10; 
     $totalItems  = count($allResults);
@@ -66,7 +65,6 @@
         foreach ($types     as $t) $parts[] = 'resource_type[]=' . urlencode($t);
         return 'results.php?' . implode('&', $parts);
     }
-    // ── PAGINATION LOGIC END ──
 
     $notRoot = !$isAdmin;
 ?>
@@ -385,7 +383,7 @@
 
         .background-image { display: none; }
 
-        /* ── SIDEBAR (from viewMaterials) ─────────────────────────────────────── */
+
         .filter-sidebar {
             flex: 0 0 260px;
             width: 260px;
@@ -491,7 +489,6 @@
 
         .clear-link:hover { color: white; }
 
-        /* ── OUTER LAYOUT (matches viewMaterials) ─── */
         .outer {
             display: flex;
             gap: 36px;
@@ -501,7 +498,6 @@
             align-items: flex-start;
         }
 
-        /* ── PAGINATION STYLES ── */
         .pagination {
             display: flex;
             justify-content: center;
@@ -764,7 +760,6 @@
                         echo "</div>";
                 }
 
-                // --- PAGINATION UI START ---
                 if ($totalPages > 1):
                     $win = 2; 
                 ?>
@@ -773,7 +768,6 @@
                        class="page-btn <?php echo $currentPage <= 1 ? 'disabled' : ''; ?>">&#8592; Prev</a>
 
                     <?php
-                    // Start ellipsis logic
                     if ($currentPage > $win + 2) {
                         echo '<a href="' . buildUrl(1, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn">1</a>';
                         if ($currentPage > $win + 3) echo '<span class="ellipsis">…</span>';
@@ -785,7 +779,6 @@
                         echo '<a href="' . buildUrl($p, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn ' . $cls . '">' . $p . '</a>';
                     }
 
-                    // End ellipsis logic
                     if ($currentPage < $totalPages - $win - 1) {
                         if ($currentPage < $totalPages - $win - 2) echo '<span class="ellipsis">…</span>';
                         echo '<a href="' . buildUrl($totalPages, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn">' . $totalPages . '</a>';
@@ -810,7 +803,6 @@
                     </form>
                 </div>
                 <?php endif; 
-                // --- PAGINATION UI END ---
 
             } else {
                 echo "<p style='color:white'>No materials found.</p>";
