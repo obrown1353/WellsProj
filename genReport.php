@@ -20,13 +20,10 @@ include_once('database/dbReturns.php');
 include_once('database/dbMaterials.php');
 
 $accessLevel = (int) $_SESSION['access_level'];
-$isGuest  = ($accessLevel === 0);
 $isWorker = ($accessLevel === 1);
 $isAdmin  = ($accessLevel >= 2);
 
-if (!$isGuest && isset($_SESSION['_id'])) {
-    $person = retrieve_person($_SESSION['_id']);
-}
+
 
 // Handle filters
 $searchQuery = $_GET['search'] ?? '';
