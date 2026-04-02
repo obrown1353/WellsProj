@@ -120,17 +120,10 @@ document.addEventListener("DOMContentLoaded", function() {
 </head>
 <header>
 <?php
-// Worker Navbar
+// Staff Navbar
 $common_nav_links = '
       <div class="nav-item"><a href="index.php" class="nav-link">Home</a></div>
-      <div class="nav-item"><a href="viewMaterials.php" class="nav-link">Catalog</a></div>
-      <div class="nav-item">Worker
-        <div class="dropdown">
-          <a href="viewCheckouts.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>View Checkouts</span></div></a>
-          <a href="viewLogs.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>View Logs</span></div></a>
-          <a href="genReport.php" class="dropdown-link"><div class="in-nav"><img src="images/list-solid.svg"><span>Generate Report</span></div></a>
-        </div>
-      </div>';
+      <div class="nav-item"><a href="staffPage.php" class="nav-link">Staff</a></div>';
 
 $showing_login = false;
 
@@ -172,8 +165,8 @@ if (isset($permission_array[$current_page]) && $permission_array[$current_page] 
     die();
 }
 
-// Admin Navbar (access_level >= 2)
-if ($_SESSION['access_level'] >= 2) {
+// Staff Navbar (access_level >= 1)
+if ($_SESSION['access_level'] >= 1) {
 echo('
 <div class="navbar">
   <div class="left-section">
@@ -182,15 +175,7 @@ echo('
     </div>
     <div class="nav-links">'
       . $common_nav_links .
-      '<div class="nav-item">Admin
-        <div class="dropdown">
-          <a href="create-worker.php" style="text-decoration:none"><div class="in-nav"><img src="images/plus-solid.svg"><span>Create Account</span></div></a>
-          <a href="delete-worker.php" style="text-decoration:none"><div class="in-nav"><img src="images/users-solid.svg"><span>Delete Account</span></div></a>
-          <a href="view-worker.php" style="text-decoration:none"><div class="in-nav"><img src="images/list-solid.svg"><span>View Accounts</span></div></a>
-          <a href="importMaterials.php" style="text-decoration:none"><div class="in-nav"><img src="images/send.png"><span>Import Materials</span></div></a>
-        </div>
-      </div>
-    </div>
+    '</div>
   </div>
   <div class="right-section">
     <div class="nav-links">
@@ -208,33 +193,6 @@ echo('
 </div>');
 }
 
-// Worker Navbar (access_level == 1)
-else if ($_SESSION['access_level'] == 1) {
-echo('
-<div class="navbar">
-  <div class="left-section">
-    <div class="logo-container">
-      <a href="index.php"><img src="images/UMW_Eagles-logo.png" alt="Logo"></a>
-    </div>
-    <div class="nav-links">'
-      . $common_nav_links .
-    '</div>
-  </div>
-  <div class="right-section">
-    <div class="nav-links">
-      <div class="nav-item" style="outline:none;">
-        <div class="icon">
-          <img src="images/usaicon.png" alt="User Icon">
-          <div class="dropdown">
-            <a href="changePassword.php" style="text-decoration:none"><div>Change Password</div></a>
-            <a href="logout.php" style="text-decoration:none"><div>Log Out</div></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>');
-        }
     }
 ?>
 <script>
