@@ -33,21 +33,20 @@ $categories = $_GET['category'] ?? []; // multiple categories
 <html>
 <head>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
   <style>
-    * { font-family: StromaBold, 'Lucida Sans'; }
+    * { font-family: StromaBold, 'Inter'; }
    .title {
       font-size: 1.875rem; 
       line-height: 2.25rem;
       font-weight: 700; 
       margin-bottom: 0.5rem; 
       text-align: center; 
-      color: #bfe5ed;
-      text-shadow: 
-        1px 1px 0 black,
-        -1px -1px 0 black,
-        1px -1px 0 black,
-        -1px 1px 0 black;
+      color: white;
 }
     body {
 /*        background-color: #002D61; */
@@ -160,7 +159,7 @@ $categories = $_GET['category'] ?? []; // multiple categories
 
 .submit {
   width: 100%;                  
-  background-color: #3b82f6;    
+  background-color: #002D61;    
   color: #ffffff;               
   padding: 0.5rem 0;           
   border-radius: 0.25rem;       

@@ -71,11 +71,15 @@ function buildUrl($page, $query, $sort, $locations, $types) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
 <title>Seacobeck Curriculum Lab | Materials Catalog</title>
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body {
     /* background-color: #002D61; */
@@ -190,7 +194,7 @@ body {
     border: none !important;
     background: #8DC9F7 !important;
     color: #002D61 !important;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
@@ -248,7 +252,7 @@ body {
     outline: none;
     color: #0067A2;
     font-weight: 600;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     border: 1px solid #ccc;
 }
 
@@ -263,7 +267,7 @@ body {
     font-weight: 700;
     font-size: 15px;
     cursor: pointer;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     border: none;
 }
 
@@ -392,7 +396,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
     border: 2px solid #8DC9F7 !important;
     background: transparent !important;
     color: white !important;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 13px;
     cursor: pointer;
@@ -429,7 +433,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
     border: 2px solid #8DC9F7 !important;
     background: transparent !important;
     color: white !important;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 13px;
     text-align: center;
