@@ -10,6 +10,14 @@ but no code was taken from there. All of the code below is original code.
 
 
 /* Create variable fonts for standard and italics versions of the fontface used by the org (Montserrat by Google) */
+
+@font-face {
+  font-family: "Arimo", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+
 @font-face {
     font-family: 'Quicksand';
     src: url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
