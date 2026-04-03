@@ -80,9 +80,26 @@
 	<?php require_once('header.php') ?>
 
 	<style>
-	    body { background-color: #002D61; }
-	</style>
+	    body { 
+		/* background-color: #002D61; */
+		min-height: 100vh;
+		/* display: flex; */
+		/* flex-direction: column; */
+		justify-content: space-between;
+    		background-image: url('images/library.jpg');
+		background-size: cover;
+		background-position: center;
+		position: relative;
+	    }
 
+	    .overlay {
+		position: absolute;
+		inset: 0;
+		background: rgb(0, 45, 97, 0.88);
+		z-index: -1;
+	    }
+	</style>
+<div class="overlay"></div>
         <h1>Change Password</h1>
         <main class="login">
             <?php if (isset($error1)): ?>
