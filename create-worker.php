@@ -99,7 +99,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <style>
     
     body {
-	background-color: #002D61;
+	/* background-color: #002D61; */
+        min-height: 100vh;
+/*        display: flex; */
+/*        flex-direction: column; */
+        justify-content: space-between;
+        background-image: url('images/library.jpg');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgb(0, 45, 97, 0.88);
+        z-index: -1;
     }
 
     .page-wrap {
@@ -211,6 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .back-link:hover { text-decoration: underline; }
     .req { color: #e87; }
 </style>
+<div class="overlay"></div>
 
 <div class="page-wrap">
     <div class="page-title">Create Staff Account</div>
@@ -301,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
 
-        <a href="index.php" class="back-link">← Back to dashboard</a>
+        <a href="staffPage.php" class="back-link">← Back to dashboard</a>
     <?php endif; ?>
 </div>
 

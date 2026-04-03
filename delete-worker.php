@@ -74,7 +74,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 <style>
 
     body {
-        background-color: #002D61;
+	/* background-color: #002D61; */
+        min-height: 100vh;
+/*        display: flex; */
+/*        flex-direction: column; */
+        justify-content: space-between;
+        background-image: url('images/library.jpg');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgb(0, 45, 97, 0.88);
+        z-index: -1;
     }
 
     .page-wrap {
@@ -125,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
     .back-link { display: inline-block; margin-top: 16px; color: white; font-size: 14px; text-decoration: none; }
     .back-link:hover { text-decoration: underline; }
 </style>
+<div class="overlay"></div>
 
 <div class="page-wrap">
     <div class="page-title">Delete Account</div>
@@ -174,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 
         </div>
 
-        <a href="index.php" class="back-link">← Back to dashboard</a>
+        <a href="staffPage.php" class="back-link">← Back to dashboard</a>
     <?php endif; ?>
 </div>
 

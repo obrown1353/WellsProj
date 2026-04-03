@@ -112,7 +112,22 @@ $worker_count = $total_count - $admin_count;
 <style>
 
     body {
-        background-color: #002D61;
+	/* background-color: #002D61; */
+        min-height: 100vh;
+/*        display: flex; */
+/*        flex-direction: column; */
+        justify-content: space-between;
+        background-image: url('images/library.jpg');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgb(0, 45, 97, 0.88);
+        z-index: -1;
     }
 
     .page-wrap {
@@ -285,6 +300,8 @@ $worker_count = $total_count - $admin_count;
     .back-link:hover { text-decoration: underline; }
 </style>
 
+<div class="overlay"></div>
+
 <div class="page-wrap">
     <div class="page-title">View Accounts</div>
     <p class="subtitle">Admin panel &rsaquo; View accounts</p>
@@ -363,7 +380,7 @@ $worker_count = $total_count - $admin_count;
         <?php endif; ?>
     </div>
 
-    <a href="index.php" class="back-link">← Back to dashboard</a>
+    <a href="staffPage.php" class="back-link">← Back to dashboard</a>
 </div>
 
 <!-- Edit Modal -->

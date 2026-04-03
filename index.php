@@ -74,13 +74,28 @@
         }
 
         body {
-            font-family: Quicksand, sans-serif;
-            background-color: #002D61 !important;
+            font-family: 'Quicksand', sans-serif;
+	/*    background-color: #002D61 !important; */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-image: url('images/library.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
         }
 
         h2 {
             font-weight: normal;
             font-size: 30px;
+	}
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgb(0, 45, 97, 0.88);
+            z-index: -1;
         }
 
         .full-width-bar {
@@ -382,6 +397,7 @@
 <?php if ($isAdmin): ?>
 <body>
 <?php require 'header.php'; ?>
+    <div class="overlay"></div>
     <div style="margin-top: 0px; padding: 30px 20px;">
         <h2><b>Welcome to the Seacobeck Curriculum Lab, <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
     </div>
@@ -398,8 +414,9 @@
             </button>
             </div>
             </form>
-        </div>
+	</div>
     </div>
+
 
 
     <?php if (isset($_GET['pcSuccess'])): ?>
@@ -431,7 +448,7 @@
 <?php if ($isWorker): ?>
 <body>
 <?php require 'header.php'; ?>
-
+    <div class="overlay"></div>
     <div style="margin-top: 0px; padding: 30px 20px;">
         <h2><b>Welcome <?php echo $person->get_first_name() ?>!</b> Let's get started.</h2>
     </div>
@@ -466,7 +483,7 @@
 <?php if ($isGuest): ?>
 <body>
 <?php require 'header.php'; ?>
-
+    <div class="overlay"></div>
     <div style="margin-top: 0px; padding: 30px 20px;">
         <h2><b>Welcome to the Seacobeck Curriculum Lab!</b> Let's get started.</h2>
     </div>
