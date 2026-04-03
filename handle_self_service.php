@@ -84,27 +84,36 @@ header('Content-Length: 0');
 ob_end_flush();
 flush();
 
-// ── Scheduled emails ─
+// Scheduled emails 
 if ($do_scheduled) {
 
-    // ── start of demo ──
+    // start of demo 
     sleep(60);
-    $html  = reminderEmailHTML($full_name, $title, $email, $due_date_nice);
-    $plain = reminderEmailPlain($full_name, $title, $email, $due_date_nice);
-    sendEmail($email, $full_name, 'Reminder: Your library item is due in 1 week', $html, $plain);
+    $still_out = array_filter(fetch_checkout_by_material_id($id), fn($c) => strtolower($c->getEmail()) === strtolower($email));
+    if (!empty($still_out)) {
+        $html  = reminderEmailHTML($full_name, $title, $email, $due_date_nice);
+        $plain = reminderEmailPlain($full_name, $title, $email, $due_date_nice);
+        sendEmail($email, $full_name, 'Reminder: Your library item is due in 1 week', $html, $plain);
+    }
 
     sleep(60);
-    $html  = dueTodayEmailHTML($full_name, $title, $email, $due_date_nice);
-    $plain = dueTodayEmailPlain($full_name, $title, $email, $due_date_nice);
-    sendEmail($email, $full_name, 'Reminder: Your library item is due today', $html, $plain);
+    $still_out = array_filter(fetch_checkout_by_material_id($id), fn($c) => strtolower($c->getEmail()) === strtolower($email));
+    if (!empty($still_out)) {
+        $html  = dueTodayEmailHTML($full_name, $title, $email, $due_date_nice);
+        $plain = dueTodayEmailPlain($full_name, $title, $email, $due_date_nice);
+        sendEmail($email, $full_name, 'Reminder: Your library item is due today', $html, $plain);
+    }
 
     sleep(60);
-    $html  = overdueEmailHTML($full_name, $title, $email, $due_date_nice);
-    $plain = overdueEmailPlain($full_name, $title, $email, $due_date_nice);
-    sendEmail($email, $full_name, 'Notice: Your library item is overdue', $html, $plain);
-    // ── end of demo ──
+    $still_out = array_filter(fetch_checkout_by_material_id($id), fn($c) => strtolower($c->getEmail()) === strtolower($email));
+    if (!empty($still_out)) {
+        $html  = overdueEmailHTML($full_name, $title, $email, $due_date_nice);
+        $plain = overdueEmailPlain($full_name, $title, $email, $due_date_nice);
+        sendEmail($email, $full_name, 'Notice: Your library item is overdue', $html, $plain);
+    }
+    // end of demo
 
-    // ── replace demo with this for production (8am est on day 7 / 14 / 15) ──
+    // ── after demo replace with this (8am est on day 7 / 14 / 15) 
     // $tz = new DateTimeZone('America/New_York');
     // function seconds_until_8am(string $from, int $days, DateTimeZone $tz): int {
     //     $target = new DateTime($from, $tz);
