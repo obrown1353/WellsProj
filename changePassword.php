@@ -77,7 +77,12 @@
         <title>Whiskey Valor | Change Password</title>
     </head>
     <body>
-        <?php require_once('header.php') ?>
+	<?php require_once('header.php') ?>
+
+	<style>
+	    body { background-color: #002D61; }
+	</style>
+
         <h1>Change Password</h1>
         <main class="login">
             <?php if (isset($error1)): ?>
@@ -105,6 +110,7 @@
                     <a class="button cancel" href="index.php">Cancel</a>
                 <?php endif ?>
             </form>
-        </main>
+	</main>
+<?php require 'footer.php'; ?>
     </body>
 </html>

@@ -110,6 +110,11 @@ $worker_count = $total_count - $admin_count;
 <?php require 'header.php'; ?>
 
 <style>
+
+    body {
+        background-color: #002D61;
+    }
+
     .page-wrap {
         max-width: 980px;
         margin: 40px auto;
@@ -117,12 +122,12 @@ $worker_count = $total_count - $admin_count;
         color: white;
     }
     .page-title { margin-bottom: 6px; font-size: 28px; font-weight: 700; color: white; }
-    .subtitle   { color: #8DC9F7; font-size: 14px; margin-bottom: 28px; }
+    .subtitle   { color: white; font-size: 14px; margin-bottom: 28px; }
 
     .summary-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
     .stat-pill {
-        background: rgb(40,40,43);
-        border: 1px solid rgba(141,201,247,.2);
+        background: #0067A2;
+        border: 2px solid #8DC9F7;
         border-radius: 50px;
         padding: 8px 20px;
         font-size: 13px;
@@ -165,9 +170,9 @@ $worker_count = $total_count - $admin_count;
     .alert-success { background: rgba(22,163,74,.85);  color: white; }
 
     .table-wrap {
-        background: rgb(40,40,43);
+        background: #0067A2;
         border-radius: 14px;
-        border: 1px solid rgba(141,201,247,.2);
+        border: 2px solid #8DC9F7;
         overflow: hidden;
     }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -276,7 +281,7 @@ $worker_count = $total_count - $admin_count;
     }
     .btn-cancel:hover { background: rgba(255,255,255,.07); color: white; }
 
-    .back-link { display: inline-block; margin-top: 16px; color: #8DC9F7; font-size: 14px; text-decoration: none; }
+    .back-link { display: inline-block; margin-top: 16px; color: white; font-size: 14px; text-decoration: none; }
     .back-link:hover { text-decoration: underline; }
 </style>
 
