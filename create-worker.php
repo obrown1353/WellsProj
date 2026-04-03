@@ -97,6 +97,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php require 'header.php'; ?>
 
 <style>
+    
+    body {
+	background-color: #002D61;
+    }
+
     .page-wrap {
         max-width: 560px;
         margin: 40px auto;
@@ -104,13 +109,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         color: white;
     }
     .page-title { margin-bottom: 6px; font-size: 28px; font-weight: 700; color: white; }
-    .subtitle { color: #8DC9F7; font-size: 14px; margin-bottom: 30px; }
+    .subtitle { color: white; font-size: 14px; margin-bottom: 30px; }
 
     .card {
-        background: rgb(40, 40, 43);
+        background: #0067A2;
         border-radius: 14px;
         padding: 32px;
-        border: 1px solid rgba(141,201,247,.2);
+        border: 2px solid #8DC9F7;
     }
 
     .form-group {
@@ -124,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: .06em;
-        color: #8DC9F7;
+        color: white;
     }
     .form-input {
         width: 100%;
@@ -175,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         font-size: 15px;
         font-family: inherit;
         font-weight: 700;
-        background: #7b95e9;
+        background: #002D61;
         color: white;
         border: none;
         border-radius: 10px;
@@ -199,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .back-link {
         display: inline-block;
         margin-top: 16px;
-        color: #8DC9F7;
+        color: white;
         font-size: 14px;
         text-decoration: none;
     }
@@ -308,6 +313,8 @@ document.querySelectorAll('.role-option input[type="radio"]').forEach(radio => {
     });
 });
 </script>
+
+<?php require 'footer.php'; ?>
 
 </body>
 </html>

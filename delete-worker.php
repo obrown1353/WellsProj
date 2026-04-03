@@ -72,6 +72,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 <body>
 <?php require 'header.php'; ?>
 <style>
+
+    body {
+        background-color: #002D61;
+    }
+
     .page-wrap {
         max-width: 560px;
         margin: 40px auto;
@@ -79,15 +84,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
         color: white;
     }
     .page-title { margin-bottom: 6px; font-size: 28px; font-weight: 700; color: white; }
-    .subtitle { color: #8DC9F7; font-size: 14px; margin-bottom: 30px; }
+    .subtitle { color: white; font-size: 14px; margin-bottom: 30px; }
     .card {
-        background: rgb(40,40,43);
+        background: #0067A2;
         border-radius: 14px;
         padding: 32px;
-        border: 1px solid rgba(141,201,247,.2);
+        border: 2px solid #8DC9F7;
     }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
-    .form-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #8DC9F7; }
+    .form-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: white; }
     .form-input {
         width: 100%; padding: 11px 14px; font-size: 15px; font-family: inherit;
         background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.15);
@@ -98,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
     .form-input::placeholder { color: rgba(255,255,255,.3); }
     .btn { width: 100%; padding: 13px; font-size: 15px; font-family: inherit; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; transition: background .2s, transform .1s; margin-top: 4px; }
     .btn:active { transform: scale(.97); }
-    .btn-search { background: #7b95e9; color: white; }
+    .btn-search { background: #002D61; color: white; }
     .btn-search:hover { background: #0a1e61; }
     .btn-delete { background: #b91c1c; color: white; }
     .btn-delete:hover { background: #7f1d1d; }
@@ -117,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
     .user-card .uname { font-size: 13px; color: #8DC9F7; margin-top: 2px; }
     .user-card .role  { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 4px; text-transform: uppercase; letter-spacing: .05em; }
     .form-divider { border: none; border-top: 1px solid rgba(255,255,255,.1); margin: 20px 0; }
-    .back-link { display: inline-block; margin-top: 16px; color: #8DC9F7; font-size: 14px; text-decoration: none; }
+    .back-link { display: inline-block; margin-top: 16px; color: white; font-size: 14px; text-decoration: none; }
     .back-link:hover { text-decoration: underline; }
 </style>
 
@@ -172,5 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
         <a href="index.php" class="back-link">← Back to dashboard</a>
     <?php endif; ?>
 </div>
+
+<?php require 'footer.php'; ?>
+
 </body>
 </html>
