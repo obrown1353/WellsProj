@@ -82,10 +82,14 @@ $filteredReturns = array_filter($allReturns, fn($r) => matchesSearch($r, $materi
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
 <title>Seacobeck Curriculum Lab | View Checkouts</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body {
 /*   background-color: #002D61; */
@@ -153,7 +157,7 @@ body {
     border-radius: 20px;
     outline: none;
     color: #0067A2;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
 }
 .search-input::placeholder { color: #5aa5d4; }
@@ -167,7 +171,7 @@ body {
     background: #0067A2;
     color: white;
     font-size: 15px;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     cursor: pointer;
     transition: background 0.2s;

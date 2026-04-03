@@ -58,12 +58,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="./css/base.css" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet"> -->
 
-<!--    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
 
     <title>Seacobeck Curriculum Lab | Dashboard</title>
     <style>
@@ -74,7 +75,7 @@
         }
 
         body {
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Arimo', sans-serif;
 	/*    background-color: #002D61 !important; */
             min-height: 100vh;
             display: flex;
@@ -286,7 +287,7 @@
             background: transparent;
             border: none;
             font-size: 20px;
-            font-family: Quicksand, sans-serif;
+            font-family: 'Arimo', sans-serif;
             font-weight: bold;
             color: black;
             cursor: pointer;

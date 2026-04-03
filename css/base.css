@@ -12,13 +12,20 @@ but no code was taken from there. All of the code below is original code.
 /* Create variable fonts for standard and italics versions of the fontface used by the org (Montserrat by Google) */
 
 @font-face {
-  font-family: "Arimo", sans-serif;
+  font-family: 'Arimo', sans-serif;
   font-optical-sizing: auto;
-  font-weight: <weight>;
+  font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
+  font-family: 'Inter', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* @font-face {
     font-family: 'Quicksand';
     src: url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
     font-weight: 100 900;
@@ -30,6 +37,7 @@ but no code was taken from there. All of the code below is original code.
     font-weight: 100 900;
     font-style: italic;
 }
+*/
 
 @font-face {
     font-family: 'OpenDyslexic';
@@ -45,7 +53,7 @@ table, td, tr, th, form, fieldset, em, button, a {
     padding: 0;
     margin: 0;
     font-size: inherit;
-    font-family: inherit;
+    font-family: 'Inter', sans-serif;
     font-weight: inherit;
     text-decoration: none;
     font-style: normal;
@@ -92,7 +100,7 @@ table, td, tr, th, form, fieldset, em, button, a {
     --error-color: #0067A2;
     /* Global rules */
     font-size: 18px;
-    font-family: Quicksand;
+    font-family: 'Inter', sans-serif;
     font-weight: 300;
 }
 
@@ -136,7 +144,7 @@ header {
 body {
     background-color: var(--page-background-color);
     color: white;
-    font-family: Montserrat;
+    font-family: Arimo;
 }
 
 header > img {
@@ -144,6 +152,7 @@ header > img {
 }
 
 nav {
+    font-family: 'Arimo', sans-serif;
     font-size: 2rem;
     display: flex;
     flex-direction: row;

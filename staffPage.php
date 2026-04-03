@@ -33,9 +33,11 @@ $categories = $_GET['category'] ?? []; // multiple categories
 <html>
 <head>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   <style>
-    * { font-family: StromaBold, 'Lucida Sans'; }
+    * { font-family: StromaBold, 'Inter'; }
 .title {
   font-size: 1.875rem; 
   line-height: 2.25rem;
@@ -44,14 +46,14 @@ $categories = $_GET['category'] ?? []; // multiple categories
   text-align: center; 
   color: white;
 
-  text-shadow: 
+/*  text-shadow: 
     1px 1px 0 black,
     -1px -1px 0 black,
     1px -1px 0 black,
-    -1px 1px 0 black;
+    -1px 1px 0 black; */
 
-  background-color: #3b82f6;
-  border: 2px solid black;
+  background-color: #0067A2;
+  border: 2px solid #8DC9F7;
   border-radius: 12px;
   padding: 0.5rem 2.5rem;
 
@@ -87,20 +89,20 @@ body {
 
 
 .button {
-  background-color: #3b82f6;  
+  background-color: #0067A2;  
   color: white;
-  border: 2px solid black;
+  border: 2px solid #8DC9F7;
   border-radius: 8px;
   padding: 0.5rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  text-shadow: 1px 1px 0 black;
+  /* text-shadow: 1px 1px 0 black; */
   transition: transform 0.2s, background-color 0.2s;
 }
 
 .button:hover {
-  background-color: #ff6666;
+  background-color: #002D61;
   transform: scale(1.05);
 }
   </style>

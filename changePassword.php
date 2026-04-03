@@ -73,13 +73,22 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php require_once('universal.inc') ?>
+	<?php require_once('universal.inc') ?>
+	
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+
         <title>Whiskey Valor | Change Password</title>
     </head>
     <body>
 	<?php require_once('header.php') ?>
 
 	<style>
+
+* { font-family: StromaBold, 'Inter'; }
+
 	    body { 
 		/* background-color: #002D61; */
 		min-height: 100vh;
