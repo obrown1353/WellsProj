@@ -86,8 +86,16 @@
 
         body {
             font-family: Quicksand, sans-serif;
-            background-color: #002D61 !important;
-            padding-top: 95px;
+	/*    background-color: #002D61 !important; */
+	    padding-top: 95px;
+	/*    min-height: 100vh;
+            display: flex;
+	    flex-direction: column; */
+            justify-content: space-between;
+            background-image: url('images/library.jpg');
+            background-size: cover;
+            background-position: center;
+	    position: relative;
         }
 
         h2 {
@@ -103,6 +111,12 @@
             color: #8DC9F7;
         }
 
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgb(0, 45, 97, 0.88);
+            z-index: -1;
+        }
 
         .full-width-bar {
             width: 100%;
@@ -595,6 +609,7 @@
 
 <body>
 <?php require 'header.php'; ?>
+    <div class="overlay"></div>
 
     <div class="outer">
 

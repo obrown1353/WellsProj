@@ -50,11 +50,26 @@ $categories = $_GET['category'] ?? []; // multiple categories
         -1px 1px 0 black;
 }
     body {
-        background-color: #002D61;
+/*        background-color: #002D61; */
         min-height: 100vh;
         padding-top: 95px;
-        color: white;
+	color: white;
+/*        display: flex; */
+/*        flex-direction: column; */
+        justify-content: space-between;
+        background-image: url('images/library.jpg');
+        background-size: cover;
+        background-position: center;
+        position: relative;
     }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgb(0, 45, 97, 0.88);
+        z-index: -1;
+    }
+
     .page-wrapper {
         max-width: 1200px;
         margin: 0 auto;
@@ -162,6 +177,7 @@ $categories = $_GET['category'] ?? []; // multiple categories
 </head>
 <body>
 <?php require 'header.php'; ?>
+<div class="overlay"></div>
 
 <div class="page-wrapper text-center">
     <h1 class="title">

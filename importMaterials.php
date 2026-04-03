@@ -116,6 +116,20 @@ body {
     min-height: 100vh;
     padding-top: 95px;
     color: white;
+/*    display: flex; */
+/*    flex-direction: column; */
+    justify-content: space-between;
+    background-image: url('images/library.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(0, 45, 97, 0.88);
+    z-index: -1;
 }
 
 .page-wrapper {
@@ -196,6 +210,8 @@ button:hover {
 <body>
 
 <?php require 'header.php'; ?>
+
+<div class="overlay"></div>
 
 <div class="page-wrapper">
 

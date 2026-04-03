@@ -78,10 +78,25 @@ function buildUrl($page, $query, $sort, $locations, $types) {
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
 
 body {
-    background-color: #002D61;
+    /* background-color: #002D61; */
     min-height: 100vh;
     padding-top: 95px;
     color: white;
+/*    display: flex; */
+/*    flex-direction: column; */
+    justify-content: space-between;
+    background-image: url('images/library.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(0, 45, 97, 0.88);
+    z-index: -1;
 }
 
 /* ── LAYOUT ─────────────────────────────────────── */
@@ -428,7 +443,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
 
 <body>
 <?php require 'header.php'; ?>
-
+<div class="overlay"></div>
 <div class="outer">
 
     <!-- ── FILTER SIDEBAR ── -->
