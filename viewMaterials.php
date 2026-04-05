@@ -64,9 +64,19 @@ function buildUrl($page, $query, $sort, $locations, $types) {
     foreach ($types     as $t) $parts[] = 'resource_type[]=' . urlencode($t);
     return 'viewMaterials.php?' . implode('&', $parts);
 }
+
+
 ?>
 
 <!DOCTYPE html>
+    <script>
+        /* ── Function for Deletion Confirmation ──────────────────────────────── */
+        function confirmAndSubmit(formId, msg) {
+            if (confirm(msg)) {
+                document.getElementById(formId).submit();
+            }
+        }
+    </script>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -447,6 +457,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
 
 <body>
 <?php require 'header.php'; ?>
+
 <div class="overlay"></div>
 <div class="outer">
 
@@ -592,10 +603,12 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
         </form>
 
         <!-- Section heading -->
+        <form id="bulkDeleteForm" action="deleteMaterials.php" method="POST">
         <div class="section-heading">
             📚 Materials
             <span class="badge"><?php echo $totalItems; ?></span>
             <a href="addMaterial.php" class="badge">+ Add Material</a>
+            <button type="submit" name="bulk_delete" class="badge" onclick="return confirm('Delete selected materials?');">Delete Material(s)</button>
         </div>
 
         <p class="result-meta">
@@ -609,6 +622,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
             <table>
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Name</th>
                         <th>Author</th>
                         <th>Type</th>
@@ -620,12 +634,13 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
                 </thead>
                 <tbody>
                 <?php if (empty($pageMaterials)): ?>
-                    <tr><td colspan="7">
+                    <tr><td colspan="8">
                         <div class="empty-state">No materials found<?php echo $searchQuery ? ' matching your search' : ''; ?>.</div>
                     </td></tr>
                 <?php else: ?>
                     <?php foreach ($pageMaterials as $mat): ?>
                     <tr>
+                        <td><input type="checkbox" class="rowCheckbox" name="selected_materials[]" value="<?= $mat->getMaterialID() ?>"></td>
                         <td class="material-name"><?php echo htmlspecialchars($mat->getName()); ?></td>
                         <td><?php echo $mat->getAuthor() ? htmlspecialchars($mat->getAuthor()) : 'N/A'; ?></td>
                         <td><?php echo htmlspecialchars($mat->getResourceType()); ?></td>
@@ -639,6 +654,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
                 </tbody>
             </table>
         </div>
+        </form>
 
         <!-- Pagination -->
         <?php if ($totalPages > 1):

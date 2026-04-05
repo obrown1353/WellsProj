@@ -141,4 +141,13 @@ function add_material(Materials $material){
     mysqli_close($con);
     return $result;
 }
+
+function delete_materials_by_ids($ids) {
+    $con = connect();
+    $ids_str = implode(',', array_map('intval', $ids));
+    $query = "DELETE FROM dbmaterials WHERE material_id IN ($ids_str)";
+    $result = mysqli_query($con, $query);
+    mysqli_close($con);
+    return boolval($result);
+}
 ?>
