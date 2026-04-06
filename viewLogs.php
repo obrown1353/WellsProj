@@ -39,8 +39,30 @@ if (isset($_GET['type']) && $_GET['type'] != 'all') {
 ?>
 
 <!DOCTYPE html>
+
+
 <html lang="en">
 <head>
+    <script>
+        function toggleBulkActions() {
+            const checkboxes = document.querySelectorAll('.logCheckbox');
+            const bulkBar = document.getElementById('bulk-actions');
+            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+            bulkBar.style.display = anyChecked ? 'flex' : 'none';
+        }
+
+        function toggleSelectAll(masterCheckbox) {
+            const checkboxes = document.querySelectorAll('.logCheckbox');
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+            toggleBulkActions();
+        }
+
+        function confirmAndSubmit(formId, msg) {
+            if (confirm(msg)) {
+                document.getElementById(formId).submit();
+            }
+        }
+    </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -138,11 +160,13 @@ body {
 .badge {
     background: #8DC9F7;
     color: #002D61;
-    padding: 2px 10px;
+    padding: 2px 15px;
     border-radius: 20px;
     font-size: 13px;
     font-weight: 700;
 }
+
+.badge:hover { background: white; }
 
 .table-wrapper {
     overflow-x: auto;
@@ -232,10 +256,27 @@ tbody tr:hover {
     </div>
     </h2>
 
+    <div style="display: flex;">
+        <h2 class="section-heading" style="margin-right: 20px">
+            <form id = "dateDeleteForm" action="deleteLogs.php" method="POST">
+                Delete Logs Before Date:
+                
+                <input type="date" class="badge" name="selected_date">
+                <button type="submit" name="date_delete" class="badge" onclick="return confirm('Delete logs before date?');">Delete Logs Before Date</button>
+            </form>
+        </h2>
+        <h2 class="section-heading">
+        <form id="bulkDeleteForm" action="deleteLogs.php" method="POST">
+            Delete Logs By Selection:  
+            <button type="submit" name="bulk_delete" class="badge" onclick="return confirm('Delete selected logs?');">Delete Selected Log(s)</button>
+        </h2>
+    </div>
+        
     <div class="table-wrapper">
         <table>
             <thead>
                 <tr>
+                    <th><input type="checkbox" id="selectAll"></th>
                     <th>Log Type</th>
                     <th>Message</th>
                     <th>Log Time</th>
@@ -245,7 +286,7 @@ tbody tr:hover {
 
             <?php if (empty($logs)): ?>
                 <tr>
-                    <td colspan="3">
+                    <td colspan="4">
                         <div class="empty-state">
                             No logs found.
                         </div>
@@ -255,6 +296,7 @@ tbody tr:hover {
 
                 <?php foreach ($logs as $log): ?>
                 <tr>
+                    <td><input type="checkbox" class="rowCheckbox" name="selected_logs[]" value="<?= $log->getLogID() ?>"></td>
                     <td class="material-name" style="width:15%">
                         <?php echo htmlspecialchars($log->getLogType()); ?>
                     </td>
@@ -268,11 +310,28 @@ tbody tr:hover {
             </tbody>
         </table>
     </div>
+    </form>
 
 </div>
 </div> <!-- END page-wrapper -->
 
 <div class="divider"></div>
+        <script>
+            document.getElementById('selectAll').addEventListener('change', function () {
+                const checkboxes = document.querySelectorAll('.rowCheckbox');
+                checkboxes.forEach(cb => cb.checked = this.checked);
+                toggleBulkActions();
+            });
+
+            document.querySelectorAll('.rowCheckbox').forEach(cb => {
+                cb.addEventListener('change', toggleBulkActions);
+            });
+
+            function toggleBulkActions() {
+                const anyChecked = [...document.querySelectorAll('.rowCheckbox')].some(cb => cb.checked);
+                document.getElementById('bulk-actions').style.display = anyChecked ? 'block' : 'none';
+            }
+        </script>
 
 <?php require 'footer.php'; ?>
 

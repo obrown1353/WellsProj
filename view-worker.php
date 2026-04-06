@@ -109,7 +109,7 @@ $worker_count = $total_count - $admin_count;
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
-    <title>Seacobeck Library | View Accounts</title>
+    <title>Seacobeck Curriculum Lab | View Accounts</title>
 </head>
 <body>
 <?php require 'header.php'; ?>
