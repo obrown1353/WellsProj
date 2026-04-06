@@ -15,7 +15,7 @@ function prepare_log_object($log){
 //Fetchs all logs in dblogs, can return empty array
 function fetch_all_logs(){
     $con = connect();
-    $query = "SELECT * FROM dblogs";
+    $query = "SELECT * FROM dblogs ORDER BY log_time DESC";
     $result = mysqli_query($con, $query);
     $logs = [];
 
@@ -29,7 +29,7 @@ function fetch_all_logs(){
 //Fetchs all logs by type
 function fetch_logs_by_type($type){
     $con = connect();
-    $query = "SELECT * FROM dblogs WHERE log_type = '" . $type . "'";
+    $query = "SELECT * FROM dblogs WHERE log_type = '" . $type . "' ORDER BY log_time DESC";
     $result = mysqli_query($con, $query);
     $logs = [];
 
@@ -82,4 +82,22 @@ function remove_log($id){
     mysqli_close($con);
     return true;
 }
+
+function delete_logs_by_ids($ids) {
+    $con = connect();
+    $ids_str = implode(',', array_map('intval', $ids));
+    $query = "DELETE FROM dblogs WHERE log_id IN ($ids_str)";
+    $result = mysqli_query($con, $query);
+    mysqli_close($con);
+    return $result;
+}
+
+function delete_logs_before_date($date){
+    $con = connect();
+    $query = "DELETE FROM dblogs WHERE log_time < '" . $date . "'";
+    $result = mysqli_query($con, $query);
+    mysqli_close($con);
+    return $result;
+}
+
 ?>
