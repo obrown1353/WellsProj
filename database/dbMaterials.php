@@ -148,6 +148,6 @@ function delete_materials_by_ids($ids) {
     $query = "DELETE FROM dbmaterials WHERE material_id IN ($ids_str)";
     $result = mysqli_query($con, $query);
     mysqli_close($con);
-    return boolval($result);
+    return $result;
 }
 ?>

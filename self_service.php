@@ -29,6 +29,8 @@ include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
 if (isset($_GET['material_id'])){
   $id = $_GET['material_id'] ?? '';
+} else {
+  header('Location: results.php');
 }
 $material = fetch_material_by_id($id);
 

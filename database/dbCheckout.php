@@ -18,7 +18,7 @@ function prepare_checkout_object($checkout){
 //Fetchs all materials in dbcheckout, can return empty array
 function fetch_all_checkouts(){
     $con = connect();
-    $query = "SELECT * FROM dbcheckout";
+    $query = "SELECT * FROM dbcheckout ORDER BY checkout_date DESC";
     $result = mysqli_query($con, $query);
     $checkouts = [];
 
@@ -46,7 +46,7 @@ function fetch_checkout_by_checkout_id($id){
 //Fetchs a material by a given material id (multiple checkouts can have the same material id, in case a material has multiple copies)
 function fetch_checkout_by_material_id($id){
     $con = connect();
-    $query = "SELECT * FROM dbcheckout WHERE material_id = '" . $id . "'";
+    $query = "SELECT * FROM dbcheckout WHERE material_id = '" . $id . "' ORDER BY checkout_date DESC";
     $result = mysqli_query($con, $query);
     $checkouts = [];
 
