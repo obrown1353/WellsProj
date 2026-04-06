@@ -608,7 +608,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
             📚 Materials
             <span class="badge"><?php echo $totalItems; ?></span>
             <a href="addMaterial.php" class="badge">+ Add Material</a>
-            <button type="submit" name="bulk_delete" class="badge" onclick="return confirm('Delete selected materials?');">Delete Material(s)</button>
+            <button type="submit" name="bulk_delete" class="badge" onclick="return confirm('Delete selected materials?');">Delete Selected Material(s)</button>
         </div>
 
         <p class="result-meta">
