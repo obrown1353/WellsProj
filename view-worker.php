@@ -386,7 +386,6 @@ $worker_count = $total_count - $admin_count;
         </table>
         <?php endif; ?>
     </div>
-    </form>
 
     <a href="staffPage.php" class="back-link">← Back to dashboard</a>
 </div>
