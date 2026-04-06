@@ -22,7 +22,7 @@ function sendEmail($to_email, $to_name, $subject, $html_body, $plain_body) {
         $mail->XMailer      = ' ';
         $mail->addCustomHeader('X-Priority', '3');
         $mail->addCustomHeader('Precedence', 'bulk');
-        $mail->setFrom('fortega112005@gmail.com', 'Seacobeck Library');
+        $mail->setFrom('fortega112005@gmail.com', 'Seacobeck Cirruculum Lab');
         $mail->addAddress($to_email, $to_name);
         $mail->isHTML(true);
         $mail->CharSet  = 'UTF-8';
@@ -46,7 +46,7 @@ function _emailHeader() {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Seacobeck Library</title>
+<title>Seacobeck Curriculum Lab</title>
 <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
 </head>
 <body style="margin:0;padding:0;background-color:#ffffff;font-family:Georgia,'Times New Roman',serif;color:#000000;">
@@ -57,7 +57,7 @@ function _emailHeader() {
 <!-- Header -->
 <tr><td style="background-color:#ffffff;padding:32px 40px 24px;text-align:center;">
   <div style="display:inline-block;background-color:#bde0f7;border:3px solid #1a3a7c;border-radius:50%;width:66px;height:66px;line-height:66px;font-size:34px;text-align:center;margin-bottom:14px;">&#128218;</div>
-  <h1 style="color:#000000;font-size:22px;letter-spacing:2px;text-transform:uppercase;margin:0 0 6px 0;">Seacobeck Library</h1>
+  <h1 style="color:#000000;font-size:22px;letter-spacing:2px;text-transform:uppercase;margin:0 0 6px 0;">Seacobeck Curriculum Lab</h1>
   <p style="color:#000000;font-size:13px;letter-spacing:1px;margin:0;">University of Mary Washington &nbsp;&middot;&nbsp; Fredericksburg, VA</p>
 </td></tr>
 
@@ -72,10 +72,10 @@ function _emailFooter() {
 <!-- Footer -->
 <tr><td style="background-color:#ffffff;padding:24px 40px;text-align:center;border-top:3px solid #1a3a7c;">
   <p style="color:#000000;font-size:12.5px;line-height:2;margin:0;">
-    Questions? Contact <strong style="color:#000000;">Dr. Mellisa Wells</strong><br/>
+    Questions? Contact <strong style="color:#000000;">Dr. Melissa Wells</strong><br/>
     <a href="mailto:mwells@umw.edu" style="color:#000000;text-decoration:underline;">mwells@umw.edu</a>
   </p>
-  <p style="color:#000000;font-size:11.5px;margin:8px 0 0 0;">Seacobeck Library &middot; 1301 College Ave &middot; Fredericksburg, VA 22401</p>
+  <p style="color:#000000;font-size:11.5px;margin:8px 0 0 0;">Seacobeck Curriculum Lab &middot; 1301 College Ave &middot; Fredericksburg, VA 22401</p>
 </td></tr>
 
 </table>
@@ -132,7 +132,7 @@ function _emailBody($badge_bg, $badge_border, $badge_label, $badge_icon, $badge_
   <p style="font-size:15px;color:#000000;line-height:1.8;margin:0;">{$outro}</p>
   <div style="margin-top:28px;font-size:14.5px;color:#000000;border-top:3px solid #5b9bd5;padding-top:18px;">
     Warm regards,<br/>
-    <strong style="color:#000000;">The Seacobeck Library Team</strong><br/>
+    <strong style="color:#000000;">The Seacobeck Curriculum Lab Team</strong><br/>
     University of Mary Washington
   </div>
 </td></tr>
@@ -150,7 +150,7 @@ function checkoutEmailHTML($name, $title, $email_addr, $due_date) {
         'Please Return By', '&#128197;', $due_date,
         'Please return on or before this date. Checkout period is 2 weeks.',
         $name,
-        'We have received your confirmation! Thank you for visiting <strong>Seacobeck Library</strong>. Your checkout has been recorded &mdash; here is a summary.',
+        'We have received your confirmation! Thank you for visiting <strong>Seacobeck Curriculum Lab</strong>. Your checkout has been recorded &mdash; here is a summary.',
         $summary,
         'If you have any questions, please do not hesitate to reach out &mdash; we are always happy to help!'
     );
@@ -158,7 +158,7 @@ function checkoutEmailHTML($name, $title, $email_addr, $due_date) {
 }
 
 function checkoutEmailPlain($name, $title, $email_addr, $due_date) {
-    return "Hi {$name},\n\nThank you for checking out from Seacobeck Library!\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\nDue Date: {$due_date}\n\nPlease return the item on or before the due date. The checkout period is 2 weeks.\n\nWarm regards,\nThe Seacobeck Library Team\nUniversity of Mary Washington\nmwells@umw.edu";
+    return "Hi {$name},\n\nThank you for checking out from Seacobeck Curriculum Lab!\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\nDue Date: {$due_date}\n\nPlease return the item on or before the due date. The checkout period is 2 weeks.\n\nWarm regards,\nThe Seacobeck Curriculum Lab Team\nUniversity of Mary Washington\nmwells@umw.edu";
 }
 
 // One-week reminder
@@ -171,7 +171,7 @@ function reminderEmailHTML($name, $title, $email_addr, $due_date) {
         'Due Date Approaching', '&#9888;&#65039;', $due_date,
         'You have 1 week remaining — please return the item on or before this date.',
         $name,
-        'This is a friendly reminder that your borrowed item from <strong>Seacobeck Library</strong> is due in <strong>one week</strong>. Please plan to return it on time!',
+        'This is a friendly reminder that your borrowed item from <strong>Seacobeck Curriculum Lab</strong> is due in <strong>one week</strong>. Please plan to return it on time!',
         $summary,
         'If you have already returned this item, please disregard this message. If you have any questions, we are happy to help!'
     );
@@ -179,7 +179,7 @@ function reminderEmailHTML($name, $title, $email_addr, $due_date) {
 }
 
 function reminderEmailPlain($name, $title, $email_addr, $due_date) {
-    return "Hi {$name},\n\nThis is a friendly reminder that your item from Seacobeck Library is due in ONE WEEK.\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\nDue Date: {$due_date}\n\nPlease return the item on or before the due date.\n\nWarm regards,\nThe Seacobeck Library Team\nUniversity of Mary Washington\nmwells@umw.edu";
+    return "Hi {$name},\n\nThis is a friendly reminder that your item from Seacobeck Curriculum Lab is due in ONE WEEK.\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\nDue Date: {$due_date}\n\nPlease return the item on or before the due date.\n\nWarm regards,\nThe Seacobeck Curriculum Lab Team\nUniversity of Mary Washington\nmwells@umw.edu";
 }
 
 
@@ -191,9 +191,9 @@ function dueTodayEmailHTML($name, $title, $email_addr, $due_date) {
     $body = _emailBody(
         '#ffe8d0', '#f97316',
         'Due Today', '&#128197;', $due_date,
-        'Please return this item to the library today to avoid an overdue notice.',
+        'Please return this item to the Curriculum Lab today to avoid an overdue notice.',
         $name,
-        'This is a reminder that your borrowed item from <strong>Seacobeck Library</strong> is <strong>due today</strong>. Please return it before the library closes!',
+        'This is a reminder that your borrowed item from <strong>Seacobeck Curriculum Lab</strong> is <strong>due today</strong>. Please return it before the Curriculum Lab closes!',
         $summary,
         'If you have already returned this item, please disregard this message. If you have any questions, we are happy to help!'
     );
@@ -201,7 +201,7 @@ function dueTodayEmailHTML($name, $title, $email_addr, $due_date) {
 }
 
 function dueTodayEmailPlain($name, $title, $email_addr, $due_date) {
-    return "Hi {$name},\n\nThis is a reminder that your item from Seacobeck Library is DUE TODAY.\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\nDue Date: {$due_date}\n\nPlease return the item before the library closes today.\n\nWarm regards,\nThe Seacobeck Library Team\nUniversity of Mary Washington\nmwells@umw.edu";
+    return "Hi {$name},\n\nThis is a reminder that your item from Seacobeck Curriculum Lab is DUE TODAY.\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\nDue Date: {$due_date}\n\nPlease return the item before the Curriculum Lab closes today.\n\nWarm regards,\nThe Seacobeck Curriculum Lab Team\nUniversity of Mary Washington\nmwells@umw.edu";
 }
 
 
@@ -213,9 +213,9 @@ function overdueEmailHTML($name, $title, $email_addr, $due_date) {
     $body = _emailBody(
         '#ffe0e0', '#f87171',
         'Item Overdue', '&#128680;', "Was Due: {$due_date}",
-        'Please return this item to the library immediately.',
+        'Please return this item to the Curriculum Lab immediately.',
         $name,
-        'Our records show that the following item from <strong>Seacobeck Library</strong> was due on <strong>' . $due_date . '</strong> and has not yet been returned. Please return it as soon as possible.',
+        'Our records show that the following item from <strong>Seacobeck Curriculum Lab</strong> was due on <strong>' . $due_date . '</strong> and has not yet been returned. Please return it as soon as possible.',
         $summary,
         'If you have already returned this item, please disregard this notice. Otherwise, please return it at your earliest convenience or contact us with any concerns.'
     );
@@ -223,7 +223,7 @@ function overdueEmailHTML($name, $title, $email_addr, $due_date) {
 }
 
 function overdueEmailPlain($name, $title, $email_addr, $due_date) {
-    return "Hi {$name},\n\nOur records show that the following item was due on {$due_date} and has not yet been returned.\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\nDue Date: {$due_date}\n\nPlease return the item to Seacobeck Library as soon as possible.\n\nWarm regards,\nThe Seacobeck Library Team\nUniversity of Mary Washington\nmwells@umw.edu";
+    return "Hi {$name},\n\nOur records show that the following item was due on {$due_date} and has not yet been returned.\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\nDue Date: {$due_date}\n\nPlease return the item to Seacobeck Curriculum Lab as soon as possible.\n\nWarm regards,\nThe Seacobeck Curriculum Lab Team\nUniversity of Mary Washington\nmwells@umw.edu";
 }
 
 
@@ -237,7 +237,7 @@ function returnEmailHTML($name, $title, $email_addr) {
 <tr><td style="background-color:#ffffff;padding:36px 44px;">
   <p style="font-size:22px;color:#000000;font-weight:bold;margin:0 0 14px 0;border-left:5px solid #1a3a7c;padding-left:12px;">Hi {$name}!</p>
   <p style="font-size:15px;color:#000000;line-height:1.8;margin:0 0 4px 0;">
-    Thank you for returning your item to <strong>Seacobeck Library</strong>!
+    Thank you for returning your item to <strong>Seacobeck Curriculum Lab</strong>!
     We have recorded your return &mdash; here is a summary.
   </p>
   {$summary}
@@ -251,7 +251,7 @@ function returnEmailHTML($name, $title, $email_addr) {
   </p>
   <div style="margin-top:28px;font-size:14.5px;color:#000000;border-top:3px solid #5b9bd5;padding-top:18px;">
     Warm regards,<br/>
-    <strong style="color:#000000;">The Seacobeck Library Team</strong><br/>
+    <strong style="color:#000000;">The Seacobeck Curriculum Lab Team</strong><br/>
     University of Mary Washington
   </div>
 </td></tr>
@@ -260,5 +260,5 @@ HTML;
 }
 
 function returnEmailPlain($name, $title, $email_addr) {
-    return "Hi {$name},\n\nThank you for returning your item to Seacobeck Library!\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\n\nYour return has been successfully recorded.\n\nWarm regards,\nThe Seacobeck Library Team\nUniversity of Mary Washington\nmwells@umw.edu";
+    return "Hi {$name},\n\nThank you for returning your item to Seacobeck Curriculum Lab!\n\nItem: {$title}\nName: {$name}\nEmail: {$email_addr}\n\nYour return has been successfully recorded.\n\nWarm regards,\nThe Seacobeck Curriculum Lab Team\nUniversity of Mary Washington\nmwells@umw.edu";
 }
