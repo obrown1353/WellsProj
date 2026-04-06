@@ -40,7 +40,7 @@ $status = $_GET['status'] ?? '';
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-* { font-family: StromaBold, 'Lucida Sans'; }
+* { font-family: StromaBold, 'Inter', sans-serif; }
 .body{
   min-height: 100vh;       
   display: flex;             
@@ -115,19 +115,13 @@ $status = $_GET['status'] ?? '';
   font-weight: 700;          
   margin-bottom: 0.5rem;     
   text-align: center;       
-  color: #bfe5ed;            
-  text-shadow: 
-    1px 1px 0 black,
-   -1px -1px 0 black,
-    1px -1px 0 black,
-   -1px 1px 0 black;        
+  color: white;        
 }
  .subheading {
   font-size: 0.875rem;   
   color: white;           
   margin-bottom: 0.5rem;  
-  text-align: left;       
-  opacity: 0.8;           
+  text-align: left;            
 }
 .buttonsWrapper {
   display: flex;                     

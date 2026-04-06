@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             width: 100%;
             padding: 12px 16px;
             font-size: 1rem;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             border: 2px solid rgba(255,255,255,0.2);
             border-radius: 10px;
             background: rgba(255,255,255,0.12);
@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             border-radius: 12px;
             font-size: 0.95rem;
             font-weight: 700;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
             z-index: 9999;
             display: flex;
@@ -202,9 +202,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             width: 100%;
             padding: 13px;
             font-size: 1rem;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
-            background: #8DC9F7;
+            background: #0067A2;
             color: white;
             border: none;
             border-radius: 10px;
@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             width: 100%;
             padding: 13px;
             font-size: 1rem;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
             background: transparent;
             color: #8DC9F7;
