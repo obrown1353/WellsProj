@@ -10,10 +10,7 @@ if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
     die();
 }
 
-
 include_once('database/dbinfo.php');
-
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 $message = "";
 $details = [];
@@ -26,28 +23,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
     // Validate file type
     $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $allowed = ['xlsx', 'csv'];
-
-    if (!in_array($ext, $allowed)) {
-        $message = "❌ Only .xlsx or .csv files are allowed.";
+    if ($ext !== 'csv') {
+        $message = "Only CSV files are allowed.";
     } else {
 
         try {
-            $spreadsheet = IOFactory::load($fileTmpPath);
-            $sheet = $spreadsheet->getActiveSheet();
-            $rows = $sheet->toArray();
+            // Open CSV
+            $handle = fopen($fileTmpPath, "r");
+            if (!$handle) {
+                throw new Exception("Could not open CSV file.");
+            }
 
             $con = connect();
-
             $inserted = 0;
             $skipped  = 0;
 
-            // Skip header row
-            for ($i = 1; $i < count($rows); $i++) {
+            // Read header row
+            $header = fgetcsv($handle);
 
-                $row = $rows[$i];
+            // Expected CSV format:
+            // name, location, resource_type, isbn, author, description, capacity, instock
 
-                // Extract columns
+            while (($row = fgetcsv($handle)) !== false) {
+
+                // Normalize row
+                $row = array_map("trim", $row);
+
                 $name        = mysqli_real_escape_string($con, $row[0] ?? '');
                 $location    = mysqli_real_escape_string($con, $row[1] ?? '');
                 $type        = mysqli_real_escape_string($con, $row[2] ?? '');
@@ -70,11 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
                     continue;
                 }
 
+                // Insert row
                 $query = "
-                    INSERT INTO dbmaterials 
-                    (name, location, resource_type, isbn, author, description, copy_capacity, copy_instock)
+                    INSERT INTO dbmaterials
+                        (name, location, resource_type, isbn, author, description, copy_capacity, copy_instock)
                     VALUES 
-                    ('$name', '$location', '$type', '$isbn', '$author', '$description', $capacity, $instock)
+                        ('$name', '$location', '$type', '$isbn', '$author', '$description', $capacity, $instock)
                 ";
 
                 if (mysqli_query($con, $query)) {
@@ -84,16 +86,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
                 }
             }
 
+            fclose($handle);
             mysqli_close($con);
 
-            $message = "✅ Import complete!";
+            $message = "CSV import complete!";
             $details = [
                 "Inserted: $inserted",
                 "Skipped: $skipped"
             ];
 
         } catch (Exception $e) {
-            $message = "❌ Error: " . $e->getMessage();
+            $message = "Error: " . $e->getMessage();
         }
     }
 }
@@ -220,14 +223,23 @@ button:hover {
 
     <h1 class="page-heading">Import Materials</h1>
     <p class="page-subheading">
-        Upload an Excel (.xlsx) or CSV file to add materials to the catalog.
+        Upload a CSV file to add materials to the catalog.
     </p>
 
+    <!-- Download Template Button -->
+    <div style="text-align: left; margin-top: 10px; margin-bottom: 25px;">
+        <form method="GET" action="download_template.php" style="display:inline-block;">
+            <button type="submit" class="edit-submit">
+                Download CSV Template
+            </button>
+        </form>
+    </div>
+    
     <div class="upload-box">
         <form method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <br>
-            <button type="submit">Upload & Import</button>
+            <input type="file" name="file" accept=".csv" required>
+            <br><br>
+            <button type="submit" class="edit-submit">Upload & Import</button>
         </form>
 
         <?php if ($message): ?>
