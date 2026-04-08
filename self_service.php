@@ -247,9 +247,21 @@ $status = $_GET['status'] ?? '';
     <input type="email" name="email"      placeholder="Email"      class="input-field" required />
 
     <!-- Disclaimer -->
-    <p style="color: red; font-size: 0.7rem; margin-top: 4px; text-align: center;">
-  Make sure to check your junk folder for confirmation email(s).
-</p>
+    <div style="display: flex; justify-content: center;">
+  <p style="
+      background: white;
+      color: #B50000;
+      font-size: 0.7rem;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.15);
+      display: inline-block;
+  ">
+    Make sure to check your junk folder for confirmation email(s).
+  </p>
+</div>
 
 
     <input type="hidden" name="id" value="<?php echo (int)$id; ?>" />
