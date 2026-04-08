@@ -241,23 +241,28 @@ $status = $_GET['status'] ?? '';
 
       <!-- FORM -->
       <div class="w-full">
-        <form action="./handle_self_service.php?id=' . (<?php echo (int)$id; ?> ?? 0)" method="post">
-          <input type="text"  name="first_name" placeholder="First Name" class="input-field" required />
-          <input type="text"  name="last_name"  placeholder="Last Name"  class="input-field" required />
-          <input type="email" name="email"      placeholder="Email"      class="input-field" required />
-          <input type="hidden" name="id" value="<?php echo (int)$id; ?>" />
+  <form action="./handle_self_service.php?id=<?php echo (int)($id ?? 0); ?>" method="post">
+    <input type="text"  name="first_name" placeholder="First Name" class="input-field" required />
+    <input type="text"  name="last_name"  placeholder="Last Name"  class="input-field" required />
+    <input type="email" name="email"      placeholder="Email"      class="input-field" required />
 
-          <div id="checkout-btn">
-            <input type="submit" name="Checkout" value="Checkout"
-              class="checkoutButton">
-          </div>
+    <!-- Disclaimer -->
+    <p style="color: red; font-size: 0.7rem; margin-top: 4px; text-align: center;">
+  Make sure to check your junk folder for confirmation email(s).
+</p>
 
-          <div id="return-btn" style="display:none;">
-            <input type="submit" name="Return" value="Return"
-              class="returnButton">
-          </div>
-        </form>
-      </div>
+
+    <input type="hidden" name="id" value="<?php echo (int)$id; ?>" />
+
+    <div id="checkout-btn">
+      <input type="submit" name="Checkout" value="Checkout" class="checkoutButton">
+    </div>
+
+    <div id="return-btn" style="display:none;">
+      <input type="submit" name="Return" value="Return" class="returnButton">
+    </div>
+  </form>
+</div>
 
     </div>
   </div>
