@@ -12,7 +12,7 @@ class Checkout {
     function __construct($checkout_id, $material_id, $first_name, $last_name, $email, $checkout_date, $due_date) {
         $this->checkout_id = $checkout_id;
         $this->material_id = $material_id;
-        $this->first_name = $last_name;
+        $this->first_name = $first_name;
         $this->last_name = $last_name;
         $this->email = $email;
         $this->checkout_date = $checkout_date;
