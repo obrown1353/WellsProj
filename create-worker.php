@@ -265,7 +265,7 @@ body {
 <div class="overlay"></div>
 
 <div class="page-wrapper">
-    <h1 class="page-heading">Create Staff Account</h1>
+    <h1 class="page-heading">Create Account</h1>
     <p class="page-subheading">Admin panel &rsaquo; New account</p>
 
     <?php if ($success): ?>
