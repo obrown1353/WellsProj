@@ -46,7 +46,7 @@ $accessLevel = (int) $_SESSION['access_level'];
       z-index: -1;
     }
 
-    /* ✅ RESPONSIVE GRID */
+  /* Default - mobile*/
     .columnContainer {
       display: grid;
       grid-template-columns: 1fr;
@@ -56,13 +56,13 @@ $accessLevel = (int) $_SESSION['access_level'];
       max-width: 1100px;
       margin: 0 auto;
     }
-
+  /* Tablets*/
     @media (min-width: 640px) {
       .columnContainer {
         grid-template-columns: repeat(2, 1fr);
       }
     }
-
+  /* Desktop*/
     @media (min-width: 1024px) {
       .columnContainer {
         grid-template-columns: repeat(3, 1fr);
@@ -115,7 +115,6 @@ $accessLevel = (int) $_SESSION['access_level'];
       transform: scale(1.03);
     }
 
-    /* mobile spacing tweaks */
     @media (min-width: 768px) {
       body {
         padding-top: 95px;
