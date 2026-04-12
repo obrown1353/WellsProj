@@ -161,8 +161,8 @@ $accessLevel = (int) $_SESSION['access_level'];
         <div class="title">Admin</div>
         <div class="button-group">
             <a href="view-worker.php" class="button">View Accounts</a>
-            <a href="create-worker.php" class="button">Create Worker</a>
-            <a href="delete-worker.php" class="button">Delete Worker</a>
+            <a href="create-worker.php" class="button">Create Account</a>
+            <a href="delete-worker.php" class="button">Delete Account</a>
         </div>
     </div>
     <?php endif; ?>
