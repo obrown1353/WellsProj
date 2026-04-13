@@ -495,27 +495,44 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
     background: rgba(0,0,0,0.55);
     z-index: 199;
     opacity: 0;
-    transition: opacity 0.25s;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s, visibility 0.25s;
 }
 
 .drawer-overlay.overlay-visible {
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 /* ── MOBILE STYLES ────────────────────────────────── */
 @media (max-width: 768px) {
 
+    /* Remove the background photo on mobile — solid brand color instead */
     body {
-        padding-top: 70px; /* slightly less if header is shorter on mobile */
+        padding-top: 70px;
+        background-image: none !important;
+        background-color: #002D61 !important;
     }
+
+    .overlay { display: none; }
 
     .outer {
         flex-direction: column;
         gap: 0;
         padding: 20px 14px 60px;
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
     }
 
-    /* Sidebar becomes a slide-in drawer */
+    .main {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
     .filter-sidebar {
         position: fixed;
         top: 0;
@@ -529,7 +546,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
         border-right: 2px solid #8DC9F7;
         z-index: 200;
         transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-        padding-top: 56px; /* space for close button area */
+        padding-top: 56px;
         overflow-y: auto;
     }
 
@@ -621,25 +638,33 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
         margin-bottom: 10px;
     }
 
-    /* Table: allow horizontal scroll, tighten cells */
+    /* TABLE FIX — hard-clamp wrapper to viewport, scroll inside */
     .table-wrapper {
         border-radius: 10px;
+        width: 100%;
+        max-width: calc(100vw - 28px);
+        overflow-x: auto;
+        overflow-y: visible;
+        display: block;
+        -webkit-overflow-scrolling: touch;
     }
 
     table {
-        min-width: 700px; /* forces scroll rather than squishing */
+        min-width: 680px;
+        width: max-content;
+        table-layout: auto;
     }
 
     th, td {
-        padding: 10px 10px;
+        padding: 9px 10px;
         font-size: 13px;
         white-space: nowrap;
     }
 
     .material-name {
         white-space: normal;
-        min-width: 120px;
-        max-width: 180px;
+        min-width: 110px;
+        max-width: 160px;
         word-break: break-word;
     }
 
@@ -672,6 +697,10 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
 @media (max-width: 420px) {
     .outer {
         padding: 14px 10px 50px;
+    }
+
+    .table-wrapper {
+        max-width: calc(100vw - 20px);
     }
 
     .page-heading {
