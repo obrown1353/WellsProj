@@ -512,11 +512,19 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
     /* Remove the background photo on mobile — solid brand color instead */
     body {
         padding-top: 70px;
-        background-image: none !important;
+        background-image: url('images/library.jpg');
+        background-size: cover;
+        background-position: center;
+        position: relative;
         background-color: #002D61 !important;
     }
 
-    .overlay { display: none; }
+    .overlay { 
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 45, 97, 0.88);
+        z-index: -1;
+    }
 
     .outer {
         flex-direction: column;
