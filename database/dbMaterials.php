@@ -1,6 +1,7 @@
 <?php
 include_once('dbinfo.php');
 include_once(dirname(__FILE__).'/../domain/Materials.php');
+include_once(dirname(__FILE__).'/../database/dbStats.php');
 
 //encapsulates row information from query into a materials object for function access.
 function prepare_material_object($material){
@@ -137,8 +138,10 @@ function add_material(Materials $material){
             '" . $material->getCopyCapacity() . "',
             '" . $material->getCopyInstock() . "')";
     $result = mysqli_query($con, $query);
+    $last_id = mysqli_insert_id($con);
     mysqli_commit($con);
     mysqli_close($con);
+    create_new_stats($last_id); //add corresponding stats
     return $result;
 }
 
@@ -148,6 +151,7 @@ function delete_materials_by_ids($ids) {
     $query = "DELETE FROM dbmaterials WHERE material_id IN ($ids_str)";
     $result = mysqli_query($con, $query);
     mysqli_close($con);
+    delete_stats($ids_str); //delete corresponding stats
     return $result;
 }
 ?>

@@ -7,6 +7,7 @@ require('include/input-validation.php');
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
 include_once "database/dbLogs.php";
+include_once "database/dbstats.php";
 
 $args = sanitize($_POST);
 
@@ -33,7 +34,7 @@ if (isset($_POST['Checkout'])) {
         $success = new_checkout($id, $first_name, $last_name, $email, $checkout_date, $due_date);
         if ($success) {
             self_service_update($id, true);
-
+            update_for_checkout($id); //updates stats
             $html  = checkoutEmailHTML($full_name, $title, $email, $due_date_nice);
             $plain = checkoutEmailPlain($full_name, $title, $email, $due_date_nice);
             $emailSent = sendEmail($email, $full_name, 'Seacobeck Library – Checkout Confirmation', $html, $plain);
@@ -57,6 +58,7 @@ if (isset($_POST['Checkout'])) {
         $success = remove_checkout($id, $email);
         if ($success) {
             self_service_update($id, false);
+            update_for_return($id); //updates stats
 
             $html  = returnEmailHTML($full_name, $title, $email);
             $plain = returnEmailPlain($full_name, $title, $email);
