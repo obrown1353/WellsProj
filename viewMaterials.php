@@ -67,8 +67,6 @@ function buildUrl($page, $query, $sort, $locations, $types) {
     foreach ($types     as $t) $parts[] = 'resource_type[]=' . urlencode($t);
     return 'viewMaterials.php?' . implode('&', $parts);
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -77,6 +75,22 @@ function buildUrl($page, $query, $sort, $locations, $types) {
         function confirmAndSubmit(formId, msg) {
             if (confirm(msg)) {
                 document.getElementById(formId).submit();
+            }
+        }
+
+        /* ── Mobile filter drawer toggle ──────────────────────────────────────── */
+        function toggleFilterDrawer() {
+            var sidebar = document.getElementById('filterSidebar');
+            var overlay = document.getElementById('drawerOverlay');
+            var isOpen  = sidebar.classList.contains('drawer-open');
+            if (isOpen) {
+                sidebar.classList.remove('drawer-open');
+                overlay.classList.remove('overlay-visible');
+                document.body.style.overflow = '';
+            } else {
+                sidebar.classList.add('drawer-open');
+                overlay.classList.add('overlay-visible');
+                document.body.style.overflow = 'hidden';
             }
         }
     </script>
@@ -95,18 +109,14 @@ function buildUrl($page, $query, $sort, $locations, $types) {
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body {
-    /* background-color: #002D61; */
     min-height: 100vh;
     padding-top: 95px;
     color: white;
-/*    display: flex; */
-/*    flex-direction: column; */
     justify-content: space-between;
     background-image: url('images/library.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
-
 }
 
 .overlay {
@@ -328,6 +338,9 @@ body {
     font-weight: 700;
     text-decoration: none;
     transition: background 0.2s;
+    cursor: pointer;
+    border: none !important;
+    font-family: 'Inter', sans-serif;
 }
 
 .badge:hover { background: white; }
@@ -343,6 +356,7 @@ body {
     overflow-x: auto;
     border-radius: 14px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -455,6 +469,225 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
 }
 
 .jump-input::placeholder { color: rgba(255,255,255,0.45); }
+
+/* ── MOBILE FILTER TOGGLE BUTTON ─────────────────── */
+.mobile-filter-btn {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: #0067A2;
+    border: 2px solid #8DC9F7;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 18px;
+    cursor: pointer;
+    margin-bottom: 18px;
+}
+
+/* ── DRAWER OVERLAY ───────────────────────────────── */
+.drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 199;
+    opacity: 0;
+    transition: opacity 0.25s;
+}
+
+.drawer-overlay.overlay-visible {
+    opacity: 1;
+}
+
+/* ── MOBILE STYLES ────────────────────────────────── */
+@media (max-width: 768px) {
+
+    body {
+        padding-top: 70px; /* slightly less if header is shorter on mobile */
+    }
+
+    .outer {
+        flex-direction: column;
+        gap: 0;
+        padding: 20px 14px 60px;
+    }
+
+    /* Sidebar becomes a slide-in drawer */
+    .filter-sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 85%;
+        max-width: 320px;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0 14px 14px 0;
+        border: none;
+        border-right: 2px solid #8DC9F7;
+        z-index: 200;
+        transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        padding-top: 56px; /* space for close button area */
+        overflow-y: auto;
+    }
+
+    .filter-sidebar.drawer-open {
+        left: 0;
+    }
+
+    /* Close button inside drawer */
+    .drawer-close-btn {
+        display: flex;
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        font-size: 20px;
+        font-weight: 700;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .drawer-overlay {
+        display: block;
+    }
+
+    /* Show mobile filter toggle button */
+    .mobile-filter-btn {
+        display: flex;
+    }
+
+    /* Heading */
+    .page-heading {
+        font-size: 22px;
+    }
+
+    .page-subheading {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Search card */
+    .search-card {
+        padding: 14px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+    }
+
+    .search-input {
+        padding: 10px 100px 10px 13px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        width: 90px;
+        font-size: 13px;
+    }
+
+    /* Sort row – wraps into a tighter 2-column-ish grid */
+    .sort-row {
+        gap: 10px 14px;
+        margin-bottom: 14px;
+    }
+
+    .sort-row .sort-label {
+        width: 100%;
+        font-size: 13px;
+        margin-bottom: -4px;
+    }
+
+    /* Section heading badges stack cleanly */
+    .section-heading {
+        font-size: 17px;
+        gap: 8px;
+    }
+
+    .badge {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    .result-meta {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    /* Table: allow horizontal scroll, tighten cells */
+    .table-wrapper {
+        border-radius: 10px;
+    }
+
+    table {
+        min-width: 700px; /* forces scroll rather than squishing */
+    }
+
+    th, td {
+        padding: 10px 10px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .material-name {
+        white-space: normal;
+        min-width: 120px;
+        max-width: 180px;
+        word-break: break-word;
+    }
+
+    /* Pagination: smaller buttons, jump form stacks below */
+    .pagination {
+        gap: 5px;
+        margin-top: 20px;
+    }
+
+    .page-btn {
+        min-width: 34px;
+        height: 34px;
+        font-size: 12px;
+        padding: 0 8px;
+    }
+
+    .pagination form {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0 !important;
+        margin-top: 6px;
+    }
+
+    .jump-input {
+        width: 66px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 420px) {
+    .outer {
+        padding: 14px 10px 50px;
+    }
+
+    .page-heading {
+        font-size: 19px;
+    }
+
+    .search-input {
+        padding-right: 85px;
+        font-size: 13px;
+    }
+
+    .search-btn {
+        width: 80px;
+        font-size: 12px;
+    }
+}
 </style>
 </head>
 
@@ -462,10 +695,18 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
 <?php require 'header.php'; ?>
 
 <div class="overlay"></div>
+
+<!-- Drawer overlay (tap to close) -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="toggleFilterDrawer()"></div>
+
 <div class="outer">
 
-    <!-- ── FILTER SIDEBAR ── -->
-    <div class="filter-sidebar">
+    <!-- ── FILTER SIDEBAR (desktop sticky / mobile drawer) ── -->
+    <div class="filter-sidebar" id="filterSidebar">
+
+        <!-- Close button – only visible on mobile -->
+        <button class="drawer-close-btn" onclick="toggleFilterDrawer()" aria-label="Close filters">✕</button>
+
         <h3>🔍 Filters</h3>
         <hr>
 
@@ -542,7 +783,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
                 </div>
             </details>
 
-            <button type="submit" class="apply-btn">✓ Apply Filters</button>
+            <button type="submit" class="apply-btn" onclick="if(window.innerWidth<=768)toggleFilterDrawer()">✓ Apply Filters</button>
             <?php if (!empty($selectedLocations) || !empty($selectedTypes)): ?>
                 <a href="viewMaterials.php?query=<?php echo urlencode($searchQuery); ?>&sort=<?php echo urlencode($sort); ?>" class="clear-link">Clear filters</a>
             <?php endif; ?>
@@ -554,6 +795,16 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
 
         <h1 class="page-heading">Materials Catalog</h1>
         <p class="page-subheading">Browse all available materials. Search by Title, Author, Description, or ISBN.</p>
+
+        <!-- Mobile filter toggle -->
+        <button class="mobile-filter-btn" onclick="toggleFilterDrawer()" aria-label="Open filters">
+            ☰ Filters
+            <?php if (!empty($selectedLocations) || !empty($selectedTypes)): ?>
+                <span style="background:#8DC9F7;color:#002D61;padding:1px 8px;border-radius:20px;font-size:12px;">
+                    <?php echo count($selectedLocations) + count($selectedTypes); ?>
+                </span>
+            <?php endif; ?>
+        </button>
 
         <!-- Search -->
         <div class="search-card">
@@ -611,7 +862,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
             📚 Materials
             <span class="badge"><?php echo $totalItems; ?></span>
             <a href="addMaterial.php" class="badge">+ Add Material</a>
-            <button type="submit" name="bulk_delete" class="badge" onclick="return confirm('Delete selected materials?');">Delete Selected Material(s)</button>
+            <button type="submit" name="bulk_delete" class="badge" onclick="return confirm('Delete selected materials?');">Delete Selected</button>
         </div>
 
         <p class="result-meta">
@@ -632,8 +883,8 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
                         <th>Location</th>
                         <th>ISBN</th>
                         <th>Available</th>
-                        <th>Times Checked Out</th>
-                        <th>Last Checkout</th>
+                        <th>Checkouts</th>
+                        <th>Last Out</th>
                         <th>Last Return</th>
                         <th>Edit</th>
                     </tr>
