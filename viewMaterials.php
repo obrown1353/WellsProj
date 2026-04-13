@@ -12,6 +12,9 @@ include_once('database/dbPersons.php');
 include_once('domain/Person.php');
 include_once('database/dbMaterials.php');
 include_once('domain/Materials.php');
+include_once('database/dbstats.php');
+include_once('domain/Stats.php');
+
 
 if (!isset($_SESSION['access_level'])) {
     header('Location: login.php');
@@ -629,16 +632,20 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
                         <th>Location</th>
                         <th>ISBN</th>
                         <th>Available</th>
+                        <th>Times Checked Out</th>
+                        <th>Last Checkout</th>
+                        <th>Last Return</th>
                         <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php if (empty($pageMaterials)): ?>
-                    <tr><td colspan="8">
+                    <tr><td colspan="11">
                         <div class="empty-state">No materials found<?php echo $searchQuery ? ' matching your search' : ''; ?>.</div>
                     </td></tr>
                 <?php else: ?>
                     <?php foreach ($pageMaterials as $mat): ?>
+                        <?php $stat = fetch_stats_by_id($mat->getMaterialID()); ?>
                     <tr>
                         <td><input type="checkbox" class="rowCheckbox" name="selected_materials[]" value="<?= $mat->getMaterialID() ?>"></td>
                         <td class="material-name"><?php echo htmlspecialchars($mat->getName()); ?></td>
@@ -647,6 +654,9 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
                         <td><?php echo htmlspecialchars($mat->getLocation()); ?></td>
                         <td><?php echo $mat->getISBN() ? htmlspecialchars($mat->getISBN()) : 'N/A'; ?></td>
                         <td><?php echo $mat->getCopyInstock(); ?> / <?php echo $mat->getCopyCapacity(); ?></td>
+                        <td><?php echo $stat->getTimesCheckedOut()?></td>
+                        <td><?php echo $stat->getLastCheckout() ? htmlspecialchars($stat->getLastCheckout()) : 'N/A'; ?></td>
+                        <td><?php echo $stat->getLastReturn() ? htmlspecialchars($stat->getLastReturn()) : 'N/A'; ?></td>
                         <td><a href="editMaterial.php?material_id=<?php echo $mat->getMaterialID(); ?>" class="edit-btn">Edit</a></td>
                     </tr>
                     <?php endforeach; ?>
