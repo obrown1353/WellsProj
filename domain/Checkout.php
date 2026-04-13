@@ -44,5 +44,15 @@ class Checkout {
     function getDueDate() {
         return $this->due_date;
     }
+
+    function isOverdue(){
+        $today = new DateTime();
+        $due = new DateTime($this->getDueDate());
+        if ($due < $today) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 ?>

@@ -3,14 +3,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require('include/input-validation.php');
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
 include_once "database/dbLogs.php";
 
-$id         = $_POST["id"];
-$first_name = $_POST["first_name"] ?? '';
-$last_name  = $_POST["last_name"]  ?? '';
-$email      = $_POST["email"]      ?? '';
+$args = sanitize($_POST);
+
+$id         = $args["id"];
+$first_name = $args["first_name"] ?? '';
+$last_name  = $args["last_name"]  ?? '';
+$email      = $args["email"]      ?? '';
 $full_name  = trim($first_name . ' ' . $last_name);
 
 $checkout_date = date('Y-m-d H:i:s');
