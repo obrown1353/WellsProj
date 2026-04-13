@@ -1,7 +1,7 @@
 <?php
 include_once('dbinfo.php');
 include_once(dirname(__FILE__).'/../domain/Materials.php');
-include_once(dirname(__FILE__).'/../database/dbStats.php');
+include_once(dirname(__FILE__).'/../database/dbstats.php');
 
 //encapsulates row information from query into a materials object for function access.
 function prepare_material_object($material){

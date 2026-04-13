@@ -63,11 +63,12 @@ $accessLevel = (int) $_SESSION['access_level'];
       }
     }
   /* Desktop*/
-    @media (min-width: 1024px) {
-      .columnContainer {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
+@media (min-width: 1024px) {
+  .columnContainer {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    justify-content: center;
+  }
+}
 
     .column {
       text-align: center;
