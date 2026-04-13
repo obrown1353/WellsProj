@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 27, 2026 at 02:05 AM
+-- Generation Time: Apr 13, 2026 at 05:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -338,6 +338,28 @@ CREATE TABLE `dblogs` (
   `message` text NOT NULL,
   `log_time` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `dblogs`
+--
+
+INSERT INTO `dblogs` (`log_id`, `log_type`, `message`, `log_time`) VALUES
+(3, 'checkouts', 'Hannah Lydell has checked out Hoop Kings', '2026-04-12'),
+(4, 'checkouts', 'Hannah\'s Lydell has checked out Hoop Kings', '2026-04-12'),
+(5, 'checkouts', 'Hannah\'s Lydell has returned Hoop Kings', '2026-04-12'),
+(6, 'catalog', 'Material: test has been added to catalog', '2026-04-12'),
+(7, 'catalog', 'Material: test has been added to catalog', '2026-04-12'),
+(8, 'catalog', 'Material: a has been added to catalog', '2026-04-12'),
+(9, 'catalog', 'Material: a has been added to catalog', '2026-04-12'),
+(10, 'catalog', 'Material: test has been added to catalog', '2026-04-12'),
+(11, 'catalog', 'Material: a has been added to catalog', '2026-04-12'),
+(12, 'checkouts', 'Hannah Lydell has checked out Hoop Kings', '2026-04-12'),
+(13, 'checkouts', 'Hannah Lydell has returned Hoop Kings', '2026-04-12'),
+(14, 'checkouts', 'Hannah Lydell has checked out Hoop Kings', '2026-04-12'),
+(15, 'checkouts', 'Hannah Lydell has returned Hoop Kings', '2026-04-12'),
+(16, 'catalog', 'Material: test1 has been added to catalog', '2026-04-12'),
+(17, 'catalog', 'Material: test2 has been added to catalog', '2026-04-12'),
+(18, 'catalog', 'Material: a has been added to catalog', '2026-04-12');
 
 -- --------------------------------------------------------
 
@@ -804,6 +826,7 @@ INSERT INTO `dbpersons` (`id`, `start_date`, `first_name`, `last_name`, `street_
 ('fakename', '2025-12-10', 'fake', 'name', NULL, 'realtown', 'VA', NULL, '5555555555', 0, '', '', '', '', 'fakeemail@email.email.com', 'true', '', '', '', '', '', '', '', '$2y$10$4h8ImkaTyMprwU3SzWrWx./NBI7yClMoqCkEbYJuA1/9cb0tSlUI.', 'Civilian', 'Marine Corp', NULL, ''),
 ('firstName', '2025-12-10', 'firstName', 'lastName', NULL, 'homeTown', 'TX', NULL, '5555555555', 0, '', '', '', '', 'realemail@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$og/aLBzrg195Qph9d2M/DuX2DIPhP.0sVT3vtu/WUpGCse8B.k71m', 'Civilian', 'Navy', NULL, ''),
 ('gabriel', '2026-02-02', 'Gabriel', 'Courtney', NULL, 'King George', 'VA', NULL, '5404295285', 0, '', '', '', '', 'gabrielcourtney04@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$4uvfLFyFy9Ui1i8Q1r0MWuFRGYfgvVh4.iUtvXksfVJm4pZpxxtSq', 'Active duty', 'Space Force', NULL, ''),
+('hlydell', '2026-04-06', 'Hannah', 'Lydell', NULL, '', '', NULL, '', 0, '', '', '', '', 'lydellhannah@gmail.com', 'false', '', '', '', '', 'worker', 'Active', '', '$2y$10$yulnbB.fTRyym3FHwF75qOiLOEWbe3f3QMcr3kBy4Ca1aDIkib2WK', '', '', NULL, ''),
 ('japper', '2026-02-02', 'Jennifer', 'Polack', NULL, 'Fredericksburg', 'VA', NULL, '5406541318', 0, '', '', '', '', 'jenniferpolack@gmail.com', 'true', '', '', '', '', '', '', '', '$2y$10$mJzI.UGPGUmYgo7HxTamkeKlsmajzLwXM6su4NdxuHYHZXIGnb0xm', 'Family', 'Marine Corp', NULL, ''),
 ('Jlipinsk', '2025-12-03', 'Jake', 'Lipinski', NULL, 'Williamsburg', 'VA', NULL, '7577903325', 0, '', '', '', '', 'jlipinsk@mail.umw.edu', 'true', '', '', '', '', '', '', '', '$2y$10$qz33T0Sq760IITyYajCYOeWlHR/7sRJH.U609EUkF3R5zRiWWddkG', 'Civilian', 'Army', NULL, ''),
 ('johnDoe123', '2026-02-07', 'John', 'Doe', NULL, 'Fredericksburg', 'VA', NULL, '2345678910', 0, '', '', '', '', 'test@email.com', 'false', '', '', '', '', '', '', '', '$2y$10$LTVIuLeSZ4ferdNOe0JdTedaFHqFuEOAz7HDCQuZ4PG9kZrRJc7xS', 'Active duty', 'Navy', NULL, ''),
@@ -978,6 +1001,32 @@ CREATE TABLE `dbstaff` (
 
 INSERT INTO `dbstaff` (`staff_id`, `first_name`, `last_name`, `email`, `password`, `is_admin`) VALUES
 (1, 'Hannah', 'Lydell', 'lydellhannah@gmail.com', '$2y$10$zFykO7gBNWzNmxIEnuVpruwA7IlXGVM9nlznzE6ngH1gx49vZarlW', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dbstats`
+--
+
+CREATE TABLE `dbstats` (
+  `material_id` int(11) NOT NULL,
+  `times_checkedout` int(11) NOT NULL,
+  `last_checkout` date DEFAULT NULL,
+  `last_return` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `dbstats`
+--
+
+INSERT INTO `dbstats` (`material_id`, `times_checkedout`, `last_checkout`, `last_return`) VALUES
+(1, 2, '2026-04-12', '2026-04-12'),
+(2, 0, NULL, NULL),
+(3, 0, NULL, NULL),
+(4, 0, NULL, NULL),
+(5, 0, NULL, NULL),
+(6, 0, NULL, NULL),
+(7, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1226,6 +1275,12 @@ ALTER TABLE `dbstaff`
   ADD PRIMARY KEY (`staff_id`);
 
 --
+-- Indexes for table `dbstats`
+--
+ALTER TABLE `dbstats`
+  ADD PRIMARY KEY (`material_id`);
+
+--
 -- Indexes for table `dbsuggestions`
 --
 ALTER TABLE `dbsuggestions`
@@ -1279,7 +1334,7 @@ ALTER TABLE `dbattendance`
 -- AUTO_INCREMENT for table `dbcheckout`
 --
 ALTER TABLE `dbcheckout`
-  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `dbdrafts`
@@ -1303,13 +1358,13 @@ ALTER TABLE `dbevents`
 -- AUTO_INCREMENT for table `dblogs`
 --
 ALTER TABLE `dblogs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `dbmaterials`
 --
 ALTER TABLE `dbmaterials`
-  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `dbmessages`

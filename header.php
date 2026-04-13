@@ -29,7 +29,29 @@ h2 { font-weight: normal; font-size: 30px; }
 .logo-container { background: rgb(31,31,33); padding: 10px 20px; border-radius: 50px; box-shadow: 0px 4px 4px rgba(0,0,0,.25) inset; }
 .logo-container img { width: 52px; height: auto; }
 .nav-links { display: flex; gap: 2vw; }
-.nav-links div { font-size: 1.75vw; font-weight: 700; color: white; cursor: pointer; }
+.nav-links div {
+  font-size: 30px;
+  font-weight: 700; 
+  color: white; 
+  cursor: pointer; 
+}
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 20px; 
+  }
+}
+@media (max-width: 900px) {
+  .nav-links div {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-links div {
+    font-size: 20px;
+  }
+}
 .right-section { margin-left: auto; display: flex; align-items: center; gap: 20px; }
 .nav-item { position: relative; cursor: pointer; padding: 0px; transition: color 0.3s, outline 0.3s; }
 .dropdown { display: none; position: absolute; top: calc(100% + 6px); right: 0; background-color: rgb(31,31,33); border: 1px solid rgb(31,31,33); box-shadow: 0 2px 5px rgba(0,0,0,.1); border-radius: 5px; padding: 10px; color: white; font-size: 2vw; width: max-content; max-width: 50vw;}

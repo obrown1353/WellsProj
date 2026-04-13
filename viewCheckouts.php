@@ -320,6 +320,14 @@ tbody td {
         </div>
     </div>
 
+    <h2 class="section-heading">
+        <form action="export-checkout.php" method="POST";>
+            Export Checkout Data: 
+            <button type="submit" class="badge" name="export-type" value="csv">CSV</button>
+            <button type="submit" class="badge" name="export-type" value="excel">Excel</button>
+        </form>
+    </h2>
+
     <!-- Overdue -->
     <h2 class="section-heading overdue-heading">
         ⚠ Overdue

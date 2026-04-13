@@ -3,9 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-session_cache_expire(30);
 session_start();
-
 date_default_timezone_set("America/New_York");
 
 if (!isset($_SESSION['access_level'])) {
@@ -13,134 +11,164 @@ if (!isset($_SESSION['access_level'])) {
     exit();
 }
 
-include_once('database/dbPersons.php');
-include_once('domain/Person.php');
-include_once('database/dbCheckout.php');
-include_once('database/dbReturns.php');
-include_once('database/dbMaterials.php');
-
 $accessLevel = (int) $_SESSION['access_level'];
-$isWorker = ($accessLevel === 1);
-$isAdmin  = ($accessLevel >= 2);
-
-
-
-// Handle filters
-$searchQuery = $_GET['search'] ?? '';
-$categories = $_GET['category'] ?? []; // multiple categories
 ?>
 <!DOCTYPE html>
 <html>
 <head>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    * { font-family: StromaBold, 'Inter'; }
-.title {
-  font-size: 1.875rem; 
-  line-height: 2.25rem;
-  font-weight: 700; 
-  margin: 5rem auto 0 auto;  /* top margin pushes it down, auto centers horizontally */
-  text-align: center; 
-  color: white;
-
-/*  text-shadow: 
-    1px 1px 0 black,
-    -1px -1px 0 black,
-    1px -1px 0 black,
-    -1px 1px 0 black; */
-
-  background-color: #0067A2;
-  border: 2px solid #8DC9F7;
-  border-radius: 12px;
-  padding: 0.5rem 2.5rem;
-
-  display: block;
-  width: fit-content;
-}
-body {
-/*    background-color: #002D61; */
-    min-height: 100vh;
-    padding-top: 95px;
-    color: white;
-    flex-direction: column;
-    justify-content: space-between;
-    background-image: url('images/library.jpg');
-    background-size: cover;
-    background-position: center;
-    position: relative;
+    * {
+      font-family: 'Inter', sans-serif;
     }
 
-.overlay {
-    position: absolute;
-    inset: 0;
-    background: rgb(0, 45, 97, 0.88);
-    z-index: -1;
-}
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding-top: 70px;
+      color: white;
 
-.button-group {
-  display: flex;               
-  justify-content: center;      
-  gap: 1rem;                    
-  margin-top: 2rem;            
-}
+      background-image: url('images/library.jpg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
 
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 45, 97, 0.88);
+      z-index: -1;
+    }
 
-.button {
-  background-color: #0067A2;  
-  color: white;
-  border: 2px solid #8DC9F7;
-  border-radius: 8px;
-  padding: 0.5rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  /* text-shadow: 1px 1px 0 black; */
-  transition: transform 0.2s, background-color 0.2s;
-}
+  /* Default - mobile*/
+    .columnContainer {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 1rem;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+  /* Tablets*/
+    @media (min-width: 640px) {
+      .columnContainer {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  /* Desktop*/
+    @media (min-width: 1024px) {
+      .columnContainer {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
 
-.button:hover {
-  background-color: #002D61;
-  transform: scale(1.05);
-}
+    .column {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+    }
+
+    /* ✅ TITLE LOOKS LIKE HEADER (NOT BUTTON) */
+    .title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #8DC9F7;
+    }
+
+    /* ✅ BUTTON STACK */
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .button {
+      width: 100%;
+      max-width: 260px;
+      padding: 0.75rem 1rem;
+
+      background-color: #0067A2;
+      color: white;
+      border: 2px solid #8DC9F7;
+      border-radius: 8px;
+
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+
+      transition: 0.2s ease;
+    }
+
+    .button:hover {
+      background-color: #002D61;
+      transform: scale(1.03);
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding-top: 95px;
+      }
+
+      .title {
+        font-size: 1.875rem;
+      }
+    }
+
   </style>
 
-  <title>Seacobeck Curriculum Lab | Staff Page</title>
+  <title>Staff Dashboard</title>
 </head>
+
 <body>
 <?php require 'header.php'; ?>
-    <div class="overlay"></div>
+<div class="overlay"></div>
 
-    <div>
-        <h1 class="title"> Manage Checkouts</h1> 
+<div class="columnContainer">
+
+    <!-- CHECKOUTS -->
+    <div class="column">
+        <div class="title">Manage Checkouts</div>
         <div class="button-group">
-            <a href="viewCheckouts.php" class="button">View Checkouts</a>           
-            <a href="importMaterials.php" class="button">Import Materials</a> 
+            <a href="viewCheckouts.php" class="button">View Checkouts</a>
+            <a href="importMaterials.php" class="button">Import Materials</a>
         </div>
-        <h1 class="title"> Manage Inventory</h1>
-        <div class="button-group">
-            <a href="viewMaterials.php" class="button">Catalog</a>
-            <a href="viewLogs.php" class="button">View Logs</a>  
-            <a href="genReport.php" class="button">Generate Reports</a>         
-        </div>
-    <?php
-    //Admin only features
-    if (!isset($_SESSION['logged_in']) || $_SESSION['access_level'] === 2) {
-    echo('
-        
-        <h1 class="title"> Admin</h1>
-        <div class="button-group">
-            <a href="view-worker.php" class="button">View Accounts</a>           
-            <a href="create-worker.php" class="button">Create worker</a> 
-            <a href="delete-worker.php" class="button">Delete worker</a> 
-        </div>');
-    }
-    ?>
     </div>
 
-<?php require 'footer.php'; ?>
+    <!-- INVENTORY -->
+    <div class="column">
+        <div class="title">Manage Inventory</div>
+        <div class="button-group">
+            <a href="viewMaterials.php" class="button">Catalog</a>
+            <a href="viewLogs.php" class="button">View Logs</a>
+            <a href="genReport.php" class="button">Generate Reports</a>
+        </div>
+    </div>
 
+    <!-- ADMIN (only for level >= 2) -->
+    <?php if ($accessLevel >= 2): ?>
+    <div class="column">
+        <div class="title">Admin</div>
+        <div class="button-group">
+            <a href="view-worker.php" class="button">View Accounts</a>
+            <a href="create-worker.php" class="button">Create Account</a>
+            <a href="delete-worker.php" class="button">Delete Account</a>
+        </div>
+    </div>
+    <?php endif; ?>
+
+</div>
+
+<?php require 'footer.php'; ?>
 </body>
 </html>

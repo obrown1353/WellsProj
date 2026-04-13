@@ -257,23 +257,11 @@ button:hover {
 
 <div class="divider"></div>
 
-<footer class="footer">
-    <div>
-        <img src="images/UMW_Eagles-logo.png" width="150">
-    </div>
+<div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
 
-    <div class="footer-section">
-        <div><strong>Connect</strong></div>
-        <a href="https://www.instagram.com/umw_coe/">Instagram</a><br>
-        <a href="https://education.umw.edu/">Website</a>
-    </div>
+    <?php require 'footer.php'; ?>
 
-    <div class="footer-section">
-        <div><strong>Contact</strong></div>
-        <div>mwells@umw.edu</div>
-        <div>(540) 654-1290</div>
-    </div>
-</footer>
+    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
 
 </body>
 </html>
