@@ -73,9 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (add_person($person)) {
             $success = true;
             $log = new Log(
-                null, 
-                $log_type = "system", 
-                $message = $username . " has been added as a " . $type, 
+                null,
+                $log_type = "system",
+                $message = $username . " has been added as a " . $type,
                 $log_time = date('Y-m-d H:i:s')
             );
             new_log($log);
@@ -90,159 +90,190 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <title>Seacobeck Library | Create Account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <title>Seacobeck Curriculum Lab | Create Account</title>
 </head>
 <body>
-
 <?php require 'header.php'; ?>
 
 <style>
-    * { font-family: StromaBold, 'Inter'; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
-    body {
-	/* background-color: #002D61; */
-        min-height: 100vh;
-/*        display: flex; */
-/*        flex-direction: column; */
-        justify-content: space-between;
-        background-image: url('images/library.jpg');
-        background-size: cover;
-        background-position: center;
-        position: relative;
+body {
+    min-height: 100vh;
+    padding-top: 95px;
+    color: white;
+    background-image: url('images/library.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
 
-    }
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 45, 97, 0.88);
+    z-index: -1;
+}
 
-    .overlay {
-        position: absolute;
-        inset: 0;
-        background: rgb(0, 45, 97, 0.88);
-        z-index: -1;
-    }
+.page-wrapper {
+    max-width: 580px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
 
-    .page-wrap {
-        max-width: 560px;
-        margin: 40px auto;
-        padding: 0 20px 60px;
-        color: white;
-    }
-    .page-title { margin-bottom: 6px; font-size: 28px; font-weight: 700; color: white; }
-    .subtitle { color: white; font-size: 14px; margin-bottom: 30px; }
+.page-heading {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: white;
+}
+.page-subheading {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 32px;
+}
 
-    .card {
-        background: #0067A2;
-        border-radius: 14px;
-        padding: 32px;
-        border: 2px solid #8DC9F7;
-    }
+.alert {
+    padding: 13px 18px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.alert-error   { background: rgba(180,30,30,0.85); color: white; }
+.alert-success { background: rgba(22,163,74,0.85);  color: white; }
 
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-bottom: 18px;
-    }
-    .form-label {
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .06em;
-        color: white;
-    }
-    .form-input {
-        width: 100%;
-        padding: 11px 14px;
-        font-size: 15px;
-        font-family: inherit;
-        background: rgba(255,255,255,.07);
-        border: 1.5px solid rgba(255,255,255,.15);
-        border-radius: 8px;
-        color: white;
-        outline: none;
-        transition: border-color .2s;
-        box-sizing: border-box;
-    }
-    .form-input:focus { border-color: #8DC9F7; }
-    .form-input::placeholder { color: rgba(255,255,255,.3); }
-    .form-input option { background: rgb(40,40,43); }
+/* Card — exact same as table-wrapper from view-worker */
+.card {
+    background: rgba(141,201,247,0.08);
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    overflow: hidden;
+}
 
-    .name-row { display: flex; gap: 14px; }
-    .name-row .form-group { flex: 1; }
+.form-inner {
+    padding: 32px;
+}
 
-    .role-row { display: flex; gap: 12px; }
-    .role-option {
-        flex: 1;
-        border: 2px solid rgba(255,255,255,.15);
-        border-radius: 10px;
-        padding: 12px;
-        cursor: pointer;
-        text-align: center;
-        transition: border-color .2s, background .2s;
-        user-select: none;
-        color: white;
-    }
-    .role-option input[type="radio"] { display: none; }
-    .role-title { font-weight: 700; font-size: 15px; }
-    .role-desc  { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 3px; }
-    .role-option.selected { border-color: #8DC9F7; background: rgba(141,201,247,.1); }
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
 
-    .form-divider {
-        border: none;
-        border-top: 1px solid rgba(255,255,255,.1);
-        margin: 22px 0;
-    }
+/* Labels — same #8DC9F7 as view-worker thead */
+.form-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #8DC9F7;
+}
 
-    .btn-submit {
-        width: 100%;
-        padding: 13px;
-        font-size: 15px;
-        font-family: inherit;
-        font-weight: 700;
-        background: #002D61;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: background .2s, transform .1s;
-        margin-top: 4px;
-    }
-    .btn-submit:hover  { background: #0a1e61; }
-    .btn-submit:active { transform: scale(.97); }
+/* Inputs — same glassy style as view-worker modal */
+.form-input {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    background: rgba(141,201,247,0.07);
+    border: 1.5px solid rgba(141,201,247,0.2);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    transition: border-color .2s;
+    box-sizing: border-box;
+}
+.form-input:focus { border-color: #8DC9F7; }
+.form-input::placeholder { color: rgba(255,255,255,.3); }
 
-    .alert {
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-    .alert-error   { background: rgba(180,30,30,.85); color: white; }
-    .alert-success { background: rgba(22,163,74,.85);  color: white; }
+.name-row { display: flex; gap: 12px; }
+.name-row .form-group { flex: 1; }
 
-    .back-link {
-        display: inline-block;
-        margin-top: 16px;
-        color: white;
-        font-size: 14px;
-        text-decoration: none;
-    }
-    .back-link:hover { text-decoration: underline; }
-    .req { color: #e87; }
+/* Role toggle */
+.role-row { display: flex; gap: 12px; }
+.role-option {
+    flex: 1;
+    border: 1.5px solid rgba(141,201,247,.2);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color .2s, background .2s;
+    user-select: none;
+    color: white;
+    background: rgba(141,201,247,0.05);
+}
+.role-option input[type="radio"] { display: none; }
+.role-title { font-weight: 700; font-size: 15px; }
+.role-desc  { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 3px; }
+.role-option.selected { border-color: #8DC9F7; background: rgba(141,201,247,.12); }
+.role-option:hover:not(.selected) { border-color: rgba(141,201,247,.4); }
+
+.form-divider {
+    border: none;
+    border-top: 1px solid rgba(141,201,247,0.15);
+    margin: 22px 0;
+}
+
+/* Submit — matches thead background from view-worker */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    background: #8DC9F7;
+    color: #002D61;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    margin-top: 0;
+    display: block;
+}
+.btn-submit:hover  { background: #0067A2; color: white; }
+.btn-submit:active { transform: scale(.98); }
+
+.req { color: #f87171; }
+
+.back-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: #8DC9F7;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 600;
+}
+.back-link:hover { text-decoration: underline; color: white; }
+
+/* Mobile */
+@media (max-width: 600px) {
+    body { padding-top: 70px; }
+    .page-wrapper { padding: 24px 16px 60px; }
+    .page-heading { font-size: 22px; }
+    .name-row { flex-direction: column; gap: 0; }
+    .role-row { flex-direction: column; }
+    .form-inner { padding: 24px 18px; }
+}
 </style>
+
 <div class="overlay"></div>
 
-<div class="page-wrap">
-    <div class="page-title">Create Staff Account</div>
-    <p class="subtitle">Admin panel &rsaquo; New account</p>
+<div class="page-wrapper">
+    <h1 class="page-heading">Create Account</h1>
+    <p class="page-subheading">Admin panel &rsaquo; New account</p>
 
     <?php if ($success): ?>
         <div class="alert alert-success">
             ✓ Account created! The user can now log in at <a href="login.php" style="color:white;text-decoration:underline">login.php</a>.
         </div>
-        <a href="create-worker.php" class="back-link">+ Create another account</a><br>
-        <a href="index.php" class="back-link">← Back to dashboard</a>
+        <a href="create-worker.php" class="back-link" style="display:block">+ Create another account</a>
+        <a href="staffPage.php" class="back-link">← Back to dashboard</a>
 
     <?php else: ?>
         <?php if ($error): ?>
@@ -251,72 +282,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="card">
             <form method="POST" action="create-worker.php">
+                <div class="form-inner">
 
-                <div class="form-group">
-                    <label class="form-label" for="username">Username <span class="req">*</span></label>
-                    <input class="form-input" type="text" id="username" name="username"
-                           placeholder="e.g. jsmith"
-                           value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
-                           required>
-                </div>
-
-                <div class="name-row">
                     <div class="form-group">
-                        <label class="form-label" for="first_name">First Name <span class="req">*</span></label>
-                        <input class="form-input" type="text" id="first_name" name="first_name"
-                               placeholder="Jane"
-                               value="<?php echo htmlspecialchars($_POST['first_name'] ?? ''); ?>"
+                        <label class="form-label" for="username">Username <span class="req">*</span></label>
+                        <input class="form-input" type="text" id="username" name="username"
+                               placeholder="e.g. jsmith"
+                               value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
                                required>
                     </div>
+
+                    <div class="name-row">
+                        <div class="form-group">
+                            <label class="form-label" for="first_name">First Name <span class="req">*</span></label>
+                            <input class="form-input" type="text" id="first_name" name="first_name"
+                                   placeholder="Jane"
+                                   value="<?php echo htmlspecialchars($_POST['first_name'] ?? ''); ?>"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="last_name">Last Name <span class="req">*</span></label>
+                            <input class="form-input" type="text" id="last_name" name="last_name"
+                                   placeholder="Smith"
+                                   value="<?php echo htmlspecialchars($_POST['last_name'] ?? ''); ?>"
+                                   required>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label class="form-label" for="last_name">Last Name <span class="req">*</span></label>
-                        <input class="form-input" type="text" id="last_name" name="last_name"
-                               placeholder="Smith"
-                               value="<?php echo htmlspecialchars($_POST['last_name'] ?? ''); ?>"
-                               required>
+                        <label class="form-label" for="email">Email <span style="color:rgba(255,255,255,.4);font-size:10px;font-weight:400;text-transform:none;">(optional)</span></label>
+                        <input class="form-input" type="email" id="email" name="email"
+                               placeholder="jsmith@umw.edu"
+                               value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="email">Email <span style="color:rgba(255,255,255,.4)">(optional)</span></label>
-                    <input class="form-input" type="email" id="email" name="email"
-                           placeholder="jsmith@umw.edu"
-                           value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
-                </div>
+                    <hr class="form-divider">
 
-                <hr class="form-divider">
-
-                <div class="form-group">
-                    <label class="form-label">Role <span class="req">*</span></label>
-                    <div class="role-row">
-                        <label class="role-option <?php echo (($_POST['role'] ?? 'worker') === 'worker') ? 'selected' : ''; ?>">
-                            <input type="radio" name="role" value="worker"
-                                   <?php echo (($_POST['role'] ?? 'worker') === 'worker') ? 'checked' : ''; ?>>
-                            <div class="role-title">👤 Student Worker</div>
-                            <div class="role-desc">Access level 1</div>
-                        </label>
-                        <label class="role-option <?php echo (($_POST['role'] ?? '') === 'admin') ? 'selected' : ''; ?>">
-                            <input type="radio" name="role" value="admin"
-                                   <?php echo (($_POST['role'] ?? '') === 'admin') ? 'checked' : ''; ?>>
-                            <div class="role-title">🔑 Admin</div>
-                            <div class="role-desc">Access level 2</div>
-                        </label>
+                    <div class="form-group">
+                        <label class="form-label">Role <span class="req">*</span></label>
+                        <div class="role-row">
+                            <label class="role-option <?php echo (($_POST['role'] ?? 'worker') === 'worker') ? 'selected' : ''; ?>">
+                                <input type="radio" name="role" value="worker"
+                                       <?php echo (($_POST['role'] ?? 'worker') === 'worker') ? 'checked' : ''; ?>>
+                                <div class="role-title">👤 Student Worker</div>
+                                <div class="role-desc">Access level 1</div>
+                            </label>
+                            <label class="role-option <?php echo (($_POST['role'] ?? '') === 'admin') ? 'selected' : ''; ?>">
+                                <input type="radio" name="role" value="admin"
+                                       <?php echo (($_POST['role'] ?? '') === 'admin') ? 'checked' : ''; ?>>
+                                <div class="role-title">🔑 Admin</div>
+                                <div class="role-desc">Access level 2</div>
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                <hr class="form-divider">
+                    <hr class="form-divider">
 
-                <div class="form-group">
-                    <label class="form-label" for="password">Password <span class="req">*</span></label>
-                    <input class="form-input" type="password" id="password" name="password"
-                           placeholder="Min 6 characters" required>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password <span class="req">*</span></label>
+                        <input class="form-input" type="password" id="password" name="password"
+                               placeholder="Min 6 characters" required>
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="confirm">Confirm Password <span class="req">*</span></label>
-                    <input class="form-input" type="password" id="confirm" name="confirm"
-                           placeholder="Re-enter password" required>
-                </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label class="form-label" for="confirm">Confirm Password <span class="req">*</span></label>
+                        <input class="form-input" type="password" id="confirm" name="confirm"
+                               placeholder="Re-enter password" required>
+                    </div>
+
+                </div><!-- /form-inner -->
 
                 <button type="submit" class="btn-submit">Create Account</button>
             </form>
@@ -336,6 +370,5 @@ document.querySelectorAll('.role-option input[type="radio"]').forEach(radio => {
 </script>
 
 <?php require 'footer.php'; ?>
-
 </body>
 </html>

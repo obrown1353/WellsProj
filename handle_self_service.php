@@ -3,14 +3,18 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require('include/input-validation.php');
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
 include_once "database/dbLogs.php";
+include_once "database/dbstats.php";
 
-$id         = $_POST["id"];
-$first_name = $_POST["first_name"] ?? '';
-$last_name  = $_POST["last_name"]  ?? '';
-$email      = $_POST["email"]      ?? '';
+$args = sanitize($_POST);
+
+$id         = $args["id"];
+$first_name = $args["first_name"] ?? '';
+$last_name  = $args["last_name"]  ?? '';
+$email      = $args["email"]      ?? '';
 $full_name  = trim($first_name . ' ' . $last_name);
 
 $checkout_date = date('Y-m-d H:i:s');
@@ -30,7 +34,7 @@ if (isset($_POST['Checkout'])) {
         $success = new_checkout($id, $first_name, $last_name, $email, $checkout_date, $due_date);
         if ($success) {
             self_service_update($id, true);
-
+            update_for_checkout($id); //updates stats
             $html  = checkoutEmailHTML($full_name, $title, $email, $due_date_nice);
             $plain = checkoutEmailPlain($full_name, $title, $email, $due_date_nice);
             $emailSent = sendEmail($email, $full_name, 'Seacobeck Library – Checkout Confirmation', $html, $plain);
@@ -54,6 +58,7 @@ if (isset($_POST['Checkout'])) {
         $success = remove_checkout($id, $email);
         if ($success) {
             self_service_update($id, false);
+            update_for_return($id); //updates stats
 
             $html  = returnEmailHTML($full_name, $title, $email);
             $plain = returnEmailPlain($full_name, $title, $email);
