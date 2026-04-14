@@ -506,6 +506,10 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
     pointer-events: auto;
 }
 
+.drawer-close-btn {
+    display: none;
+}
+
 /* ── MOBILE STYLES ────────────────────────────────── */
 @media (max-width: 768px) {
 
