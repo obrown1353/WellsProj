@@ -96,8 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
         }
 
         .logo {
-            width: 160px;
-            margin-bottom: 24px;
+            width: 110px;
+            margin-bottom: 20px;
             border-radius: 8px;
         }
 
