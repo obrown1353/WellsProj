@@ -1,3 +1,4 @@
+
 <footer class="footer" style=" margin-top: 60px;">
     <div class="footer-left">
         <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
