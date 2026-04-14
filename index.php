@@ -319,22 +319,9 @@
             font-weight: bold;
         }
 
-        .footer {
-            width: 100%;
-            background: #8DC9F7;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 30px 50px;
-            flex-wrap: wrap;
-        }
-
-        .footer-left { display: flex; flex-direction: column; align-items: center; }
-        .footer-logo { width: 150px; margin-bottom: 15px; }
         .social-icons { display: flex; gap: 15px; }
         .social-icons a { color: white; font-size: 20px; transition: color 0.3s ease; }
         .social-icons a:hover { color: #dcdcdc; }
-        .footer-right { display: flex; gap: 50px; flex-wrap: wrap; align-items: flex-start; }
         .footer-section { display: flex; flex-direction: column; justify-content: center; gap: 10px; color: #8DC9F7; font-family: Inter, sans-serif; font-size: 16px; font-weight: 500; }
         .footer-topic { font-size: 18px; font-weight: bold; }
         .footer a { color: white; text-decoration: none; transition: background 0.2s ease, color 0.2s ease; padding: 5px 10px; border-radius: 5px; }
