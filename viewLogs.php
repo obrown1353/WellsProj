@@ -35,40 +35,14 @@ if (isset($_GET['type']) && $_GET['type'] != 'all') {
 } else {
     $logs = fetch_all_logs();
 }
-
 ?>
 
 <!DOCTYPE html>
-
-
 <html lang="en">
 <head>
-    <script>
-        function toggleBulkActions() {
-            const checkboxes = document.querySelectorAll('.logCheckbox');
-            const bulkBar = document.getElementById('bulk-actions');
-            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-            bulkBar.style.display = anyChecked ? 'flex' : 'none';
-        }
 
-        function toggleSelectAll(masterCheckbox) {
-            const checkboxes = document.querySelectorAll('.logCheckbox');
-            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
-            toggleBulkActions();
-        }
-
-        function confirmAndSubmit(formId, msg) {
-            if (confirm(msg)) {
-                document.getElementById(formId).submit();
-            }
-        }
-    </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
 <title>Seacobeck Curriculum Lab | System Logs</title>
 
@@ -80,13 +54,12 @@ body {
     min-height: 100vh;
     padding-top: 95px;
     color: white;
-/*    display: flex; */
-/*    flex-direction: column; */
     justify-content: space-between;
     background-image: url('images/library.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
+    overflow-x: hidden;
 }
 
 .overlay {
@@ -107,48 +80,11 @@ body {
     font-weight: 700;
     margin-bottom: 6px;
 }
+
 .page-subheading {
     font-size: 14px;
     color: rgba(255,255,255,0.65);
     margin-bottom: 32px;
-}
-
-.search-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 36px;
-}
-.search-box {
-    width: 100%;
-    max-width: 700px;
-    border: 3px solid #0067A2;
-    border-radius: 16px;
-    padding: 18px 24px;
-    background-color: #8DC9F7;
-}
-.search-inner {
-    position: relative;
-    width: 100%;
-}
-.search-input {
-    width: 100%;
-    padding: 11px 130px 11px 16px;
-    font-size: 15px;
-    border-radius: 20px;
-    outline: none;
-    color: #0067A2;
-    font-weight: 600;
-}
-.search-btn {
-    position: absolute;
-    right: 0; top: 0;
-    height: 100%;
-    width: 120px;
-    border-radius: 0 20px 20px 0;
-    background: #0067A2;
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
 }
 
 .section-heading {
@@ -157,6 +93,7 @@ body {
     color: #8DC9F7;
     margin-bottom: 14px;
 }
+
 .badge {
     background: #8DC9F7;
     color: #002D61;
@@ -166,26 +103,28 @@ body {
     font-weight: 700;
 }
 
-.badge:hover { background: white; }
-
 .table-wrapper {
     overflow-x: auto;
     border-radius: 14px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.25);
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
     background: rgba(141,201,247,0.08);
 }
+
 thead {
     background: #8DC9F7;
     color: #002D61;
 }
+
 th, td {
     padding: 12px;
     text-align: left;
 }
+
 tbody tr:hover {
     background: rgba(141,201,247,0.12);
 }
@@ -201,137 +140,159 @@ tbody tr:hover {
     color: rgba(255,255,255,0.5);
 }
 
-.edit-button{
-    background: #8DC9F7;
-    color: #002D61;
-    padding: 10px 10px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 700; 
+/* ================= MOBILE FIXES ================= */
+@media (max-width: 768px) {
+
+    .page-wrapper {
+        padding: 20px 12px 60px;
+    }
+
+    .page-heading {
+        font-size: 22px;
+        text-align: center;
+    }
+
+    .page-subheading {
+        text-align: center;
+    }
+
+    form[method="GET"] {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px !important;
+    }
+
+    div[style*="display: flex"] {
+        flex-direction: column !important;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .section-heading form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        text-align: center;
+    }
+
+    input[type="date"] {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    .badge,
+    button {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    input[type="radio"] {
+        transform: scale(1.2);
+    }
 }
 </style>
+
 </head>
 
 <body>
 
 <?php require 'header.php'; ?>
 <div class="overlay"></div>
+
 <div class="page-wrapper">
 
-    <h1 class="page-heading">Logs</h1>
-    <p class="page-subheading">
-        Browse all logs.
-    </p>
+<h1 class="page-heading">Logs</h1>
+<p class="page-subheading">Browse all logs.</p>
 
-    <!-- Materials Table -->
-    <h2 class="section-heading">
-        📚 Logs
-        <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
+<h2 class="section-heading">
+📚 Logs
 
-        <form action="viewLogs.php?" method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-        <span style="font-weight: bold; white-space: nowrap;">Filter by: </span>
+<div style="display: flex; justify-content: center; margin-top: -20px;">
+<form method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+<span style="font-weight: bold;">Filter by:</span>
 
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="type" value="all" onchange="this.form.submit()"
-                <?php if ($type === 'all') echo 'checked'; ?>> All
-        </label>
+<label><input type="radio" name="type" value="all" onchange="this.form.submit()" <?php if ($type === 'all') echo 'checked'; ?>> All</label>
+<label><input type="radio" name="type" value="system" onchange="this.form.submit()" <?php if ($type === 'system') echo 'checked'; ?>> System</label>
+<label><input type="radio" name="type" value="checkouts" onchange="this.form.submit()" <?php if ($type === 'checkouts') echo 'checked'; ?>> Checkouts</label>
+<label><input type="radio" name="type" value="catalog" onchange="this.form.submit()" <?php if ($type === 'catalog') echo 'checked'; ?>> Catalog</label>
 
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="type" value="system" onchange="this.form.submit()"
-                <?php if ($type === 'system') echo 'checked'; ?>> System
-        </label>
+</form>
+</div>
+</h2>
 
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="type" value="checkouts" onchange="this.form.submit()"
-                <?php if ($type === 'checkouts') echo 'checked'; ?>> Checkouts
-        </label>
+<div style="display: flex;">
 
-        <label style="color:white; white-space: nowrap;">
-            <input type="radio" name="type" value="catalog" onchange="this.form.submit()"
-                <?php if ($type === 'catalog') echo 'checked'; ?>> Catalog
-        </label>
-        </form>
+<h2 class="section-heading" style="margin-right: 20px">
+<form action="deleteLogs.php" method="POST">
+Delete Logs Before Date:
+<input type="date" class="badge" name="selected_date">
+<button type="submit" name="date_delete" class="badge">Delete</button>
+</form>
+</h2>
 
-    </div>
-    </h2>
-
-    <div style="display: flex;">
-        <h2 class="section-heading" style="margin-right: 20px">
-            <form id = "dateDeleteForm" action="deleteLogs.php" method="POST">
-                Delete Logs Before Date:
-                
-                <input type="date" class="badge" name="selected_date">
-                <button type="submit" name="date_delete" class="badge" onclick="return confirm('Delete logs before date?');">Delete Logs Before Date</button>
-            </form>
-        </h2>
-        <h2 class="section-heading">
-        <form id="bulkDeleteForm" action="deleteLogs.php" method="POST">
-            Delete Logs By Selection:  
-            <button type="submit" name="bulk_delete" class="badge" onclick="return confirm('Delete selected logs?');">Delete Selected Log(s)</button>
-        </h2>
-    </div>
-        
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th><input type="checkbox" id="selectAll"></th>
-                    <th>Log Type</th>
-                    <th>Message</th>
-                    <th>Log Time</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            <?php if (empty($logs)): ?>
-                <tr>
-                    <td colspan="4">
-                        <div class="empty-state">
-                            No logs found.
-                        </div>
-                    </td>
-                </tr>
-            <?php else: ?>
-
-                <?php foreach ($logs as $log): ?>
-                <tr>
-                    <td><input type="checkbox" class="rowCheckbox" name="selected_logs[]" value="<?= $log->getLogID() ?>"></td>
-                    <td class="material-name" style="width:15%">
-                        <?php echo htmlspecialchars($log->getLogType()); ?>
-                    </td>
-                    <td style="width:70%"><?php echo htmlspecialchars($log->getMessage()); ?></td>
-                    <td style="width:15%"><?php echo htmlspecialchars($log->getLogTime()); ?></td>
-                </tr>
-                <?php endforeach; ?>
-
-            <?php endif; ?>
-
-            </tbody>
-        </table>
-    </div>
-    </form>
+<h2 class="section-heading">
+<form id="bulkDeleteForm" action="deleteLogs.php" method="POST">
+Delete Logs By Selection:
+<button type="submit" name="bulk_delete" class="badge">Delete Selected</button>
+</form>
+</h2>
 
 </div>
-</div> <!-- END page-wrapper -->
 
-<div class="divider"></div>
-        <script>
-            document.getElementById('selectAll').addEventListener('change', function () {
-                const checkboxes = document.querySelectorAll('.rowCheckbox');
-                checkboxes.forEach(cb => cb.checked = this.checked);
-                toggleBulkActions();
-            });
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th><input type="checkbox" id="selectAll"></th>
+<th>Log Type</th>
+<th>Message</th>
+<th>Log Time</th>
+</tr>
+</thead>
 
-            document.querySelectorAll('.rowCheckbox').forEach(cb => {
-                cb.addEventListener('change', toggleBulkActions);
-            });
+<tbody>
+<?php if (empty($logs)): ?>
+<tr>
+<td colspan="4">
+<div class="empty-state">No logs found.</div>
+</td>
+</tr>
+<?php else: ?>
+<?php foreach ($logs as $log): ?>
+<tr>
+<td><input type="checkbox" class="rowCheckbox" name="selected_logs[]" value="<?= $log->getLogID() ?>"></td>
+<td class="material-name"><?= htmlspecialchars($log->getLogType()); ?></td>
+<td><?= htmlspecialchars($log->getMessage()); ?></td>
+<td><?= htmlspecialchars($log->getLogTime()); ?></td>
+</tr>
+<?php endforeach; ?>
+<?php endif; ?>
+</tbody>
 
-            function toggleBulkActions() {
-                const anyChecked = [...document.querySelectorAll('.rowCheckbox')].some(cb => cb.checked);
-                document.getElementById('bulk-actions').style.display = anyChecked ? 'block' : 'none';
-            }
-        </script>
+</table>
+</div>
+
+</div>
+
+<script>
+document.getElementById('selectAll').addEventListener('change', function () {
+    const checkboxes = document.querySelectorAll('.rowCheckbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
+
+document.querySelectorAll('.rowCheckbox').forEach(cb => {
+    cb.addEventListener('change', () => {});
+});
+</script>
 
 <?php require 'footer.php'; ?>
 

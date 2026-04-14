@@ -150,9 +150,8 @@ $accessLevel = (int) $_SESSION['access_level'];
     <div class="column">
         <div class="title">Manage Inventory</div>
         <div class="button-group">
-            <a href="viewMaterials.php" class="button">Catalog</a>
+            <a href="viewMaterials.php" class="button">View Catalog</a>
             <a href="viewLogs.php" class="button">View Logs</a>
-            <a href="genReport.php" class="button">Generate Reports</a>
         </div>
     </div>
 
