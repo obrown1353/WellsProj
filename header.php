@@ -69,17 +69,6 @@ h2 { font-weight: normal; font-size: 30px; }
 .nav-button:hover .arrow { transform: translateX(5px); }
 .arrow-button { position: absolute; bottom: 24px; right: 16px; background: transparent; border: none; font-size: 23px; font-weight: bold; color: black; cursor: pointer; transition: transform 0.3s ease; padding: 0; }
 .arrow-button:hover { transform: translateX(5px); background: transparent; }
-.footer { width: 100%; background: #8DC9F7; display: flex; justify-content: space-between; align-items: flex-start; padding: 30px 50px; flex-wrap: wrap; }
-.footer-left { display: flex; flex-direction: column; align-items: center; }
-.footer-logo { width: 150px; margin-bottom: 15px; }
-.social-icons { display: flex; gap: 15px; }
-.social-icons a { color: white; font-size: 20px; transition: color 0.3s ease; }
-.social-icons a:hover { color: rgb(31,31,33); }
-.footer-right { display: flex; gap: 50px; flex-wrap: wrap; }
-.footer-section { display: flex; flex-direction: column; gap: 10px; color: white; font-family: Inter, sans-serif; font-size: 16px; font-weight: 500; }
-.footer-topic { font-size: 18px; font-weight: bold; }
-.footer a { color: white; text-decoration: none; transition: background 0.2s ease, color 0.2s ease; padding: 5px 10px; border-radius: 5px; }
-.footer a:hover { background: rgba(255,255,255,.1); color: #dcdcdc; }
 .background-image { width: 100%; border-radius: 17px; }
 .icon-overlay { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); background: rgb(31,31,33); padding: 10px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
 .icon-overlay img { width: 40px; height: 40px; opacity: 0.9; filter: invert(1); }

@@ -318,15 +318,6 @@
             border-radius: 5px;
             font-weight: bold;
         }
-
-        .social-icons { display: flex; gap: 15px; }
-        .social-icons a { color: white; font-size: 20px; transition: color 0.3s ease; }
-        .social-icons a:hover { color: #dcdcdc; }
-        .footer-section { display: flex; flex-direction: column; justify-content: center; gap: 10px; color: #8DC9F7; font-family: Inter, sans-serif; font-size: 16px; font-weight: 500; }
-        .footer-topic { font-size: 18px; font-weight: bold; }
-        .footer a { color: white; text-decoration: none; transition: background 0.2s ease, color 0.2s ease; padding: 5px 10px; border-radius: 5px; }
-        .footer a:hover { background: rgba(255, 255, 255, 0.1); color: #dcdcdc; }
-
         .background-image { width: 100%; border-radius: 10px; }
 
         .icon-overlay {
