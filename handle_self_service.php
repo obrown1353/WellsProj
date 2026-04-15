@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require('include/input-validation.php');
+require_once('include/input-validation.php');
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
 include_once "database/dbLogs.php";
@@ -65,7 +65,7 @@ if (isset($_POST['Checkout'])) {
             $emailSent = sendEmail($email, $full_name, 'Seacobeck Library – Return Confirmation', $html, $plain);
             $status = $emailSent ? 'return_success' : 'return_no_email';
 
-            $log = new Log(null, "checkouts", $full_name . " has returned " . $title, date('Y-m-d H:i:s'));
+            $log = new Log(null, "checkouts", ($full_name . " has returned " . $title), date('Y-m-d H:i:s'));
             new_log($log);
 
         } else {
