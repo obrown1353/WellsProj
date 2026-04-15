@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 13, 2026 at 05:34 AM
+-- Generation Time: Apr 15, 2026 at 06:06 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -359,7 +359,13 @@ INSERT INTO `dblogs` (`log_id`, `log_type`, `message`, `log_time`) VALUES
 (15, 'checkouts', 'Hannah Lydell has returned Hoop Kings', '2026-04-12'),
 (16, 'catalog', 'Material: test1 has been added to catalog', '2026-04-12'),
 (17, 'catalog', 'Material: test2 has been added to catalog', '2026-04-12'),
-(18, 'catalog', 'Material: a has been added to catalog', '2026-04-12');
+(18, 'catalog', 'Material: a has been added to catalog', '2026-04-12'),
+(19, 'catalog', 'Material: a has been added to catalog', '2026-04-14'),
+(20, 'catalog', 'Material: test has been added to catalog', '2026-04-14'),
+(21, 'catalog', 'Material: a has been added to catalog', '2026-04-15'),
+(22, 'checkouts', 'Hannah Lydell has returned Let\'s Read Biography: Barbara Jordan', '2026-04-15'),
+(23, 'checkouts', 'Hannah Lydell has checked out Let\'s Read Biography: Barbara Jordan', '2026-04-15'),
+(24, 'checkouts', 'Hannah Lydell has returned Let\'s Read Biography: Barbara Jordan', '2026-04-15');
 
 -- --------------------------------------------------------
 
@@ -390,7 +396,10 @@ INSERT INTO `dbmaterials` (`material_id`, `name`, `location`, `resource_type`, `
 (4, 'Buried Alive!', 'General Nonfiction', 'Children\'s Literature', '9780547707785', 'Scott, Elaine', NULL, 1, 1),
 (5, 'Let\'s Read Biography: Barbara Jordan', 'General Nonfiction', 'Children\'s Literature', '9780395813362', NULL, NULL, 1, 1),
 (6, 'Let\'s Read Biography: Benito Juárez', 'General Nonfiction', 'Children\'s Literature', ' 9780395813379', NULL, NULL, 1, 1),
-(7, 'Let\'s Read Biography: Antonia Novello', 'General Nonfiction', 'Children\'s Literature', '9780395813423', NULL, NULL, 1, 1);
+(7, 'Let\'s Read Biography: Antonia Novello', 'General Nonfiction', 'Children\'s Literature', '9780395813423', NULL, NULL, 1, 1),
+(20, 'a', 'aa', 'a', 'a', '', '', 1, 1),
+(21, 'test', 'test', 'test', '', '', '', 1, 1),
+(22, 'a', 'a', 'a', 'a', '', '', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1010,7 +1019,7 @@ INSERT INTO `dbstaff` (`staff_id`, `first_name`, `last_name`, `email`, `password
 
 CREATE TABLE `dbstats` (
   `material_id` int(11) NOT NULL,
-  `times_checkedout` int(11) NOT NULL,
+  `times_checkedout` int(11) NOT NULL DEFAULT 0,
   `last_checkout` date DEFAULT NULL,
   `last_return` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -1024,9 +1033,12 @@ INSERT INTO `dbstats` (`material_id`, `times_checkedout`, `last_checkout`, `last
 (2, 0, NULL, NULL),
 (3, 0, NULL, NULL),
 (4, 0, NULL, NULL),
-(5, 0, NULL, NULL),
+(5, 2, '2026-04-15', '2026-04-15'),
 (6, 0, NULL, NULL),
-(7, 0, NULL, NULL);
+(7, 0, NULL, NULL),
+(20, 0, NULL, NULL),
+(21, 0, NULL, NULL),
+(22, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1334,7 +1346,7 @@ ALTER TABLE `dbattendance`
 -- AUTO_INCREMENT for table `dbcheckout`
 --
 ALTER TABLE `dbcheckout`
-  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `dbdrafts`
@@ -1358,13 +1370,13 @@ ALTER TABLE `dbevents`
 -- AUTO_INCREMENT for table `dblogs`
 --
 ALTER TABLE `dblogs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `dbmaterials`
 --
 ALTER TABLE `dbmaterials`
-  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `dbmessages`
