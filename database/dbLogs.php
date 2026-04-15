@@ -1,6 +1,7 @@
 <?php
 include_once('dbinfo.php');
 include_once(dirname(__FILE__).'/../domain/Log.php');
+require_once('include/input-validation.php');
 
 //encapsulates row information from query into a log object for function access.
 function prepare_log_object($log){
@@ -60,7 +61,7 @@ function new_log(Log $log){
     $con = connect();
     $query = "INSERT INTO `dblogs` (`log_type`, `message`, `log_time`)
     VALUES ('" . $log->getLogType() . "', 
-            '" . $log->getMessage() . "',
+            '" . _sanitize($con, $log->getMessage()) . "',
             '" . $log->getLogTime() . "')";
     $result = mysqli_query($con, $query);
     mysqli_commit($con);
