@@ -17,22 +17,18 @@ $accessLevel = (int) $_SESSION['access_level'];
 <html>
 <head>
   <script src="https://cdn.tailwindcss.com"></script>
-
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      font-family: 'Inter', sans-serif;
-    }
+    * { font-family: 'Inter', sans-serif; }
 
     body {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
       margin: 0;
-      padding-top: 70px;
+      padding-top: 100px;
       color: white;
-
       background-image: url('images/library.jpg');
       background-size: cover;
       background-position: center;
@@ -46,8 +42,8 @@ $accessLevel = (int) $_SESSION['access_level'];
       z-index: -1;
     }
 
-  /* Default - mobile*/
     .columnContainer {
+      flex: 1;
       display: grid;
       grid-template-columns: 1fr;
       gap: 1.5rem;
@@ -55,20 +51,19 @@ $accessLevel = (int) $_SESSION['access_level'];
       width: 100%;
       max-width: 1100px;
       margin: 0 auto;
+      align-content: center;
     }
-  /* Tablets*/
+
     @media (min-width: 640px) {
+      .columnContainer { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
       .columnContainer {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        justify-content: center;
       }
     }
-  /* Desktop*/
-@media (min-width: 1024px) {
-  .columnContainer {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    justify-content: center;
-  }
-}
 
     .column {
       text-align: center;
@@ -77,7 +72,6 @@ $accessLevel = (int) $_SESSION['access_level'];
       border-radius: 12px;
     }
 
-    /* ✅ TITLE LOOKS LIKE HEADER (NOT BUTTON) */
     .title {
       font-size: 1.6rem;
       font-weight: 700;
@@ -85,7 +79,6 @@ $accessLevel = (int) $_SESSION['access_level'];
       color: #8DC9F7;
     }
 
-    /* ✅ BUTTON STACK */
     .button-group {
       display: flex;
       flex-direction: column;
@@ -98,16 +91,13 @@ $accessLevel = (int) $_SESSION['access_level'];
       width: 100%;
       max-width: 260px;
       padding: 0.75rem 1rem;
-
       background-color: #0067A2;
       color: white;
       border: 2px solid #8DC9F7;
       border-radius: 8px;
-
       font-size: 1rem;
       font-weight: 600;
       text-align: center;
-
       transition: 0.2s ease;
     }
 
@@ -117,15 +107,21 @@ $accessLevel = (int) $_SESSION['access_level'];
     }
 
     @media (min-width: 768px) {
-      body {
-        padding-top: 95px;
-      }
-
-      .title {
-        font-size: 1.875rem;
-      }
+      .title { font-size: 1.875rem; }
     }
 
+    .footer,
+    .footer-section,
+    .footer-topic,
+    .footer a,
+    .footer p,
+    .footer span,
+    .footer div {
+      font-family: Inter, sans-serif !important;
+      font-size: 16px !important;
+      font-weight: 500 !important;
+    }
+    .footer-topic { font-size: 18px !important; font-weight: 700 !important; color: white !important; }
   </style>
 
   <title>Staff Dashboard</title>
@@ -137,7 +133,6 @@ $accessLevel = (int) $_SESSION['access_level'];
 
 <div class="columnContainer">
 
-    <!-- CHECKOUTS -->
     <div class="column">
         <div class="title">Manage Checkouts</div>
         <div class="button-group">
@@ -146,7 +141,6 @@ $accessLevel = (int) $_SESSION['access_level'];
         </div>
     </div>
 
-    <!-- INVENTORY -->
     <div class="column">
         <div class="title">Manage Inventory</div>
         <div class="button-group">
@@ -155,7 +149,6 @@ $accessLevel = (int) $_SESSION['access_level'];
         </div>
     </div>
 
-    <!-- ADMIN (only for level >= 2) -->
     <?php if ($accessLevel >= 2): ?>
     <div class="column">
         <div class="title">Admin</div>
