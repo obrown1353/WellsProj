@@ -151,10 +151,10 @@ session_write_close();
 
         <div class="spinner-wrap">
             <div class="spinner"></div>
-            <span class="redirect-text">Redirecting to home…</span>
+            <span class="redirect-text">Redirecting to login…</span>
         </div>
 
-        <a href="index.php" class="btn-login">Return to Home</a>
+        <a href="index.php" class="btn-login">Return to Login</a>
     </div>
 
     <footer>
