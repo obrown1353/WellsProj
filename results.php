@@ -83,11 +83,11 @@ $filterCount = count($selectedLocations) + count($selectedTypes);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 <link href="./css/base.css" rel="stylesheet">
 <title>Seacobeck Curriculum Lab | Search Results</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: Quicksand, sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body {
     padding-top: 95px;
@@ -137,7 +137,7 @@ body {
     outline: none !important;
     color: #0067A2 !important;
     font-weight: 600 !important;
-    font-family: Quicksand, sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
     border: 1px solid #ccc !important;
     box-shadow: none !important;
     margin: 0 !important;
@@ -157,7 +157,7 @@ body {
     font-weight: 700 !important;
     font-size: 14px !important;
     cursor: pointer !important;
-    font-family: Quicksand, sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
     border: none !important;
     transition: background 0.2s;
     margin: 0 !important;
@@ -221,7 +221,7 @@ body {
     border: 2px solid #8DC9F7 !important;
     border-radius: 20px !important;
     color: white !important;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 700;
     padding: 5px 14px !important;
@@ -318,7 +318,7 @@ body {
     border: none;
     background: #8DC9F7;
     color: #002D61;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
@@ -334,7 +334,7 @@ body {
     cursor: pointer;
     background: none;
     border: none;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     padding: 0;
 }
 
@@ -394,7 +394,7 @@ body {
     border: 2px solid #8DC9F7;
     background: transparent;
     color: white;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 13px;
     cursor: pointer;
@@ -415,7 +415,7 @@ body {
     border: 2px solid #8DC9F7;
     background: transparent;
     color: white;
-    font-family: Quicksand, sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 13px;
     text-align: center;

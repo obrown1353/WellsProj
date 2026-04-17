@@ -62,7 +62,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Arimo', sans-serif;
+	    font-family: 'Arimo', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -81,31 +81,6 @@
             inset: 0;
             background: rgb(0, 45, 97, 0.88);
             z-index: -1;
-        }
-
-        .navbar {
-            background: #002D61 !important;
-            height: 100px !important;
-            box-shadow: 0px 2px 10px rgba(0,0,0,0.3) !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-
-        .navbar .logo-container {
-            background: transparent !important;
-            padding: 0 !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-        }
-
-        .navbar .logo-container img {
-            width: 64px !important;
-            height: auto !important;
-        }
-
-        .navbar .nav-links div,
-        .navbar .nav-links a {
-            color: white !important;
         }
     </style>
 </head>

@@ -218,7 +218,7 @@ tbody tr:hover {
 
 <div style="display: flex; justify-content: center; margin-top: -20px;">
 <form method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-<span style="font-weight: bold;">Filter by:</span>
+<span style="font-weight: bold;">Filter by Log Type:</span>
 
 <label><input type="radio" name="type" value="all" onchange="this.form.submit()" <?php if ($type === 'all') echo 'checked'; ?>> All</label>
 <label><input type="radio" name="type" value="system" onchange="this.form.submit()" <?php if ($type === 'system') echo 'checked'; ?>> System</label>
