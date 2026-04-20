@@ -51,7 +51,8 @@ $accessLevel = (int) $_SESSION['access_level'];
       width: 100%;
       max-width: 1100px;
       margin: 0 auto;
-      align-content: center;
+      align-content: start;
+      align-items: stretch;
     }
 
     @media (min-width: 640px) {
@@ -60,8 +61,10 @@ $accessLevel = (int) $_SESSION['access_level'];
 
     @media (min-width: 1024px) {
       .columnContainer {
+        display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         justify-content: center;
+        gap: 1.5rem;
       }
     }
 
@@ -72,22 +75,26 @@ $accessLevel = (int) $_SESSION['access_level'];
       border-radius: 12px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
+      min-height: 260px;
     }
 
-    .title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: #8DC9F7;
-    }
+  .title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #8DC9F7;
+    min-height: 2.5rem; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
     .button-group {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1rem;
-      margin-top: 1rem;
     }
 
     .button {
@@ -154,7 +161,7 @@ $accessLevel = (int) $_SESSION['access_level'];
 
     <?php if ($accessLevel >= 2): ?>
     <div class="column">
-        <div class="title">Admin</div>
+        <div class="title">Manage Accounts</div>
         <div class="button-group">
             <a href="view-worker.php" class="button">View Accounts</a>
             <a href="create-worker.php" class="button">Create Account</a>
