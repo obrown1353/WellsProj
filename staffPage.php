@@ -70,6 +70,9 @@ $accessLevel = (int) $_SESSION['access_level'];
       padding: 1.5rem;
       background: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .title {
