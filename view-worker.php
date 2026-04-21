@@ -77,6 +77,7 @@ usort($workers, fn($a, $b) => strcasecmp($a->get_last_name(), $b->get_last_name(
 $total_count  = count($workers);
 $admin_count  = count(array_filter($workers, fn($p) => $p->get_type() === 'admin'));
 $worker_count = $total_count - $admin_count;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

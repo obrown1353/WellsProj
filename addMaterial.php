@@ -21,7 +21,7 @@ $args = sanitize($_POST);
 
 if (!empty($_POST)) {
     $new_material = new materials(
-        $id, 
+        0, 
         ($args['name']), 
         ($args['location']), 
         ($args['resource_type']),
