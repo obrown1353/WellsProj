@@ -226,6 +226,7 @@ body {
 
 <?php require 'header.php'; ?>
 <div class="overlay"></div>
+
 <div class="page-wrapper">
 
     <h1 class="page-heading">Edit <?php echo htmlspecialchars($material->getName())?></h1>
@@ -283,6 +284,8 @@ body {
         </form>
         </div>
     </div>
+
+</div>
 
 <?php require 'footer.php'; ?>
 </body>
