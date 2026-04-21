@@ -268,9 +268,7 @@
             </div>
 
             <input type="submit" id="submit" name="submit" value="Change Password" class="btn-submit">
-            <?php if (!$forced): ?>
-                <a class="btn-cancel" href="index.php">Cancel</a>
-            <?php endif; ?>
+
         </form>
     </div>
 
