@@ -28,24 +28,42 @@ if (!$isGuest && isset($_SESSION['_id'])) {
     $person = retrieve_person($_SESSION['_id']);
 }
 
-$type = $_GET['type'] ?? '';
+$type = $_GET['type'] ?? 'all';
 $logs = [];
 if (isset($_GET['type']) && $_GET['type'] != 'all') {
     $logs = fetch_logs_by_type($_GET['type']);
 } else {
     $logs = fetch_all_logs();
 }
+
+$logs = array_values($logs);
+
+$perPage     = 10;
+$totalItems  = count($logs);
+$totalPages  = max(1, ceil($totalItems / $perPage));
+$currentPage = max(1, min((int)($_GET['page'] ?? 1), $totalPages));
+$offset      = ($currentPage - 1) * $perPage;
+$pageLogs = array_slice($logs, $offset, $perPage);
+
+function buildUrl($page, $type) {
+    $parts = [
+        'page='  . $page,
+        'type=' . urlencode($type),
+    ];
+    return 'viewLogs.php?' . implode('&', $parts);
+}
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Seacobeck Curriculum Lab | System Logs</title>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+<title>Seacobeck Curriculum Lab | Materials Catalog</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
@@ -140,6 +158,56 @@ tbody tr:hover {
     color: rgba(255,255,255,0.5);
 }
 
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 2px solid #8DC9F7;
+    background: transparent;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s;
+}
+
+.page-btn:hover { background: #8DC9F7; color: #002D61; }
+.page-btn.active { background: #8DC9F7; color: #002D61; pointer-events: none; }
+.page-btn.disabled { opacity: 0.3; pointer-events: none; }
+
+.ellipsis { color: white; align-self: center; font-weight: 700; font-size: 16px; padding: 0 2px; }
+
+.jump-input {
+    width: 76px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 2px solid #8DC9F7;
+    background: transparent;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-align: center;
+}
+
+.jump-input::placeholder { color: rgba(255,255,255,0.45); }
+
+
 /* ================= MOBILE FIXES ================= */
 @media (max-width: 768px) {
 
@@ -208,79 +276,112 @@ tbody tr:hover {
 <?php require 'header.php'; ?>
 <div class="overlay"></div>
 
-<div class="page-wrapper">
+    <div class="page-wrapper">
 
-<h1 class="page-heading">Logs</h1>
-<p class="page-subheading">Browse all logs.</p>
+        <h1 class="page-heading">Logs</h1>
+        <p class="page-subheading">Browse all logs.</p>
 
-<h2 class="section-heading">
-📚 Logs
+        <h2 class="section-heading">
+        📚 Logs
 
-<div style="display: flex; justify-content: center; margin-top: -20px;">
-<form method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-<span style="font-weight: bold;">Filter by Log Type:</span>
+            <div style="display: flex; justify-content: center; margin-top: -20px;">
+            <form method="GET" style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
+            <span style="font-weight: bold;">Filter by Log Type:</span>
 
-<label><input type="radio" name="type" value="all" onchange="this.form.submit()" <?php if ($type === 'all') echo 'checked'; ?>> All</label>
-<label><input type="radio" name="type" value="system" onchange="this.form.submit()" <?php if ($type === 'system') echo 'checked'; ?>> System</label>
-<label><input type="radio" name="type" value="checkouts" onchange="this.form.submit()" <?php if ($type === 'checkouts') echo 'checked'; ?>> Checkouts</label>
-<label><input type="radio" name="type" value="catalog" onchange="this.form.submit()" <?php if ($type === 'catalog') echo 'checked'; ?>> Catalog</label>
+            <label><input type="radio" name="type" value="all" onchange="this.form.submit()" <?php if ($type === 'all') echo 'checked'; ?>> All</label>
+            <label><input type="radio" name="type" value="system" onchange="this.form.submit()" <?php if ($type === 'system') echo 'checked'; ?>> System</label>
+            <label><input type="radio" name="type" value="checkouts" onchange="this.form.submit()" <?php if ($type === 'checkouts') echo 'checked'; ?>> Checkouts</label>
+            <label><input type="radio" name="type" value="catalog" onchange="this.form.submit()" <?php if ($type === 'catalog') echo 'checked'; ?>> Catalog</label>
 
-</form>
-</div>
-</h2>
+            </form>
+            </div>
+        </h2>
 
 <div style="display: flex;">
 
-<h2 class="section-heading" style="margin-right: 20px">
-<form action="deleteLogs.php" method="POST">
-Delete Logs Before Date:
-<input type="date" class="badge" name="selected_date">
-<button type="submit" name="date_delete" class="badge">Delete</button>
-</form>
-</h2>
+    <h2 class="section-heading" style="margin-right: 20px">
+        <form action="deleteLogs.php" method="POST">
+        Delete Logs Before Date:
+        <input type="date" class="badge" name="selected_date">
+        <button type="submit" name="date_delete" class="badge">Delete</button>
+        </form>
+    </h2>
 
-<h2 class="section-heading">
-<form id="bulkDeleteForm" action="deleteLogs.php" method="POST">
-Delete Logs By Selection:
-<button type="submit" name="bulk_delete" class="badge">Delete Selected</button>
-</form>
-</h2>
+    <h2 class="section-heading">
+        <form id="bulkDeleteForm" action="deleteLogs.php" method="POST">
+        Delete Logs By Selection:
+        <button type="submit" name="bulk_delete" class="badge">Delete Selected</button>
+        </form>
+    </h2>
 
 </div>
 
 <div class="table-wrapper">
-<table>
-<thead>
-<tr>
-<th><input type="checkbox" id="selectAll"></th>
-<th>Log Type</th>
-<th>Message</th>
-<th>Log Time</th>
-</tr>
-</thead>
+    <table>
+        <thead>
+        <tr>
+        <th><input type="checkbox" id="selectAll"></th>
+        <th>Log Type</th>
+        <th>Message</th>
+        <th>Log Time</th>
+        </tr>
+        </thead>
 
-<tbody>
-<?php if (empty($logs)): ?>
-<tr>
-<td colspan="4">
-<div class="empty-state">No logs found.</div>
-</td>
-</tr>
-<?php else: ?>
-<?php foreach ($logs as $log): ?>
-<tr>
-<td><input type="checkbox" class="rowCheckbox" name="selected_logs[]" value="<?= $log->getLogID() ?>"></td>
-<td class="material-name"><?= htmlspecialchars($log->getLogType()); ?></td>
-<td><?= htmlspecialchars($log->getMessage()); ?></td>
-<td><?= htmlspecialchars($log->getLogTime()); ?></td>
-</tr>
-<?php endforeach; ?>
-<?php endif; ?>
-</tbody>
+    <tbody>
+        <?php if (empty($pageLogs)): ?>
+        <tr>
+        <td colspan="4">
+        <div class="empty-state">No logs found.</div>
+        </td>
+        </tr>
+        <?php else: ?>
+            <?php foreach ($pageLogs as $log): ?>
+            <tr>
+            <td><input type="checkbox" class="rowCheckbox" name="selected_logs[]" value="<?= $log->getLogID() ?>"></td>
+            <td class="material-name"><?= htmlspecialchars($log->getLogType()); ?></td>
+            <td><?= htmlspecialchars($log->getMessage()); ?></td>
+            <td><?= htmlspecialchars($log->getLogTime()); ?></td>
+            </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </tbody>
 
-</table>
+    </table>
 </div>
 
+    <?php if ($totalPages > 1):
+        $win = 2;
+    ?>
+    <div class="pagination">
+        <a href="<?php echo buildUrl($currentPage - 1, $type); ?>"
+           class="page-btn <?php echo $currentPage <= 1 ? 'disabled' : ''; ?>">&#8592; Prev</a>
+
+        <?php
+        if ($currentPage > $win + 2) {
+            echo '<a href="' . buildUrl(1, $type) . '" class="page-btn">1</a>';
+            if ($currentPage > $win + 3) echo '<span class="ellipsis">…</span>';
+        }
+        for ($p = max(1, $currentPage - $win); $p <= min($totalPages, $currentPage + $win); $p++) {
+            $cls = $p === $currentPage ? 'active' : '';
+            echo '<a href="' . buildUrl($p, $type) . '" class="page-btn ' . $cls . '">' . $p . '</a>';
+        }
+        if ($currentPage < $totalPages - $win - 1) {
+            if ($currentPage < $totalPages - $win - 2) echo '<span class="ellipsis">…</span>';
+            echo '<a href="' . buildUrl($totalPages, $type) . '" class="page-btn">' . $totalPages . '</a>';
+        }
+        ?>
+
+        <a href="<?php echo buildUrl($currentPage + 1, $type); ?>"
+           class="page-btn <?php echo $currentPage >= $totalPages ? 'disabled' : ''; ?>">Next &#8594;</a>
+
+        <form method="GET" action="viewLogs.php" style="display:flex; align-items:center; gap:6px; margin-left:8px;">
+            <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
+            <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>"
+                   class="jump-input" placeholder="Go to…">
+            <button type="submit" class="page-btn" style="padding:0 14px;">Go</button>
+        </form>
+    </div>
+    <?php endif; ?>
 </div>
 
 <script>

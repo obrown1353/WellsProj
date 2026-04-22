@@ -72,19 +72,15 @@ $material = fetch_material_by_id($id);
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-
 <title>Seacobeck Curriculum Lab | Materials Catalog</title>
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body {
-/*    background-color: #002D61; */
     min-height: 100vh;
     padding-top: 95px;
     color: white;
-/*    display: flex; */
-/*    flex-direction: column; */
     justify-content: space-between;
     background-image: url('images/library.jpg');
     background-size: cover;
@@ -111,17 +107,13 @@ body {
     margin-bottom: 25px;
     text-align: center;
 }
-.page-subheading {
-    font-size: 14px;
-    color: rgba(255,255,255,0.65);
-    margin-bottom: 32px;
-}
 
 .edit-wrapper {
     display: flex;
     justify-content: center;
     margin-bottom: 36px;
 }
+
 .edit-box {
     width: 100%;
     max-width: 1000px;
@@ -130,46 +122,111 @@ body {
     padding: 18px 24px;
     background-color: #8DC9F7;
 }
+
 .edit-inner {
-    position: relative;
     width: 100%;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
 }
-.edit-input {
-    width: 100%;
-    padding: 11px 24px 11px 190px;
-    font-size: 15px;
-    border-radius: 20px;
-    outline: none;
-    color: #0067A2;
-    font-weight: 600;
+
+@media (min-width: 600px) {
+    .edit-inner {
+        position: relative;
+    }
+    .edit-label {
+        position: absolute;
+        height: 100%;
+        width: 180px;
+        border-radius: 20px 0 0 20px;
+        padding: 11px 11px 11px 18px;
+        background: #0067A2;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+    .edit-input {
+        width: 100%;
+        padding: 11px 24px 11px 196px;
+        font-size: 15px;
+        border-radius: 20px;
+        border: none;
+        outline: none;
+        color: #0067A2;
+        font-weight: 600;
+    }
+    .edit-submit {
+        border-radius: 20px;
+        background: #0067A2;
+        color: white;
+        font-weight: 700;
+        width: 120px;
+        padding: 11px;
+        font-size: 15px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .edit-submit:hover {
+        background: #005080;
+    }
 }
-.edit-label {
-    position: absolute;
-    height: 100%;
-    width: 180px;
-    border-radius: 20px 0 0 20px;
-    padding: 11px 11px 11px 18px;
-    background: #0067A2;
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-}
-.edit-submit{
-    border-radius: 20px 20px 20px 20px;
-    background: #0067A2;
-    color: white;
-    font-weight: 700;
-    width: 100px;
-    padding: 11px 11px 11px 11px;
+
+/* Mobile: stacked label above input */
+@media (max-width: 599px) {
+    .edit-box {
+        padding: 14px 12px;
+    }
+    .edit-label {
+        display: block;
+        width: 100%;
+        border-radius: 10px 10px 0 0;
+        padding: 7px 14px;
+        background: #0067A2;
+        color: white;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+    }
+    .edit-input {
+        display: block;
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 15px;
+        border-radius: 0 0 10px 10px;
+        border: none;
+        outline: none;
+        color: #0067A2;
+        font-weight: 600;
+    }
+    .edit-submit {
+        display: block;
+        width: 100%;
+        padding: 13px;
+        border-radius: 12px;
+        background: #0067A2;
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        margin-top: 4px;
+        transition: background 0.2s;
+    }
+    .edit-submit:hover {
+        background: #005080;
+    }
 }
 </style>
 </head>
 
 <body>
 
+
 <?php require 'header.php'; ?>
 <div class="overlay"></div>
+
 <div class="page-wrapper">
 
     <h1 class="page-heading">Edit <?php echo htmlspecialchars($material->getName())?></h1>
@@ -228,4 +285,8 @@ body {
         </div>
     </div>
 
+</div>
+
+<?php require 'footer.php'; ?>
+</body>
 </html>

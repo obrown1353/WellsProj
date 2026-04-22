@@ -199,8 +199,10 @@ $status = $_GET['status'] ?? '';
 #toast.error   { background: #002D61; border-left: 5px solid #f87171; }
 #toast.warning { background: #002D61; border-left: 5px solid #fbbf24; }
 </style>
+
 <title>Seacobeck Curriculum Lab | Self Service</title>
 </head>
+
 <body class="body"
   style="background-image: url('images/library.jpg'); padding-top: 95px;">
 
