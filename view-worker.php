@@ -4,7 +4,6 @@ session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Admins only
 if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
     header('Location: index.php');
     die();
@@ -16,7 +15,6 @@ require_once('domain/Person.php');
 $error        = '';
 $edit_success = '';
 
-// Handle inline edit form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_worker'])) {
     $username     = strtolower(trim($_POST['username']     ?? ''));
     $new_username = strtolower(trim($_POST['new_username'] ?? ''));
@@ -74,10 +72,38 @@ if ($all_persons) {
 }
 usort($workers, fn($a, $b) => strcasecmp($a->get_last_name(), $b->get_last_name()));
 
+// ── Server-side search & role filter ────────────────────────────────────────
+$search      = trim($_GET['search'] ?? '');
+$role_filter = $_GET['role'] ?? 'all';
+
+if ($search !== '' || $role_filter !== 'all') {
+    $workers = array_filter($workers, function($p) use ($search, $role_filter) {
+        $matchRole = $role_filter === 'all' || $p->get_type() === $role_filter;
+        if (!$matchRole) return false;
+        if ($search === '') return true;
+        $hay = strtolower($p->get_first_name() . ' ' . $p->get_last_name() . ' ' . $p->get_id() . ' ' . $p->get_email());
+        return str_contains($hay, strtolower($search));
+    });
+    $workers = array_values($workers);
+}
+
 $total_count  = count($workers);
 $admin_count  = count(array_filter($workers, fn($p) => $p->get_type() === 'admin'));
 $worker_count = $total_count - $admin_count;
 
+// ── Pagination ───────────────────────────────────────────────────────────────
+$perPage     = 10;
+$totalPages  = max(1, ceil($total_count / $perPage));
+$currentPage = max(1, min((int)($_GET['page'] ?? 1), $totalPages));
+$offset      = ($currentPage - 1) * $perPage;
+$pageWorkers = array_slice($workers, $offset, $perPage);
+
+function buildUrl(int $page, string $search = '', string $role = 'all'): string {
+    $parts = ['page=' . $page];
+    if ($search !== '') $parts[] = 'search=' . urlencode($search);
+    if ($role !== 'all') $parts[] = 'role=' . urlencode($role);
+    return 'view-worker.php?' . implode('&', $parts);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -126,7 +152,6 @@ $worker_count = $total_count - $admin_count;
             margin-bottom: 32px;
         }
 
-        /* Alert banners */
         .alert {
             padding: 13px 18px;
             border-radius: 10px;
@@ -140,7 +165,6 @@ $worker_count = $total_count - $admin_count;
         .alert-error   { background: rgba(180,30,30,0.85); color: white; }
         .alert-success { background: rgba(22,163,74,0.85);  color: white; }
 
-        /* Summary pills */
         .summary-bar {
             display: flex;
             gap: 10px;
@@ -158,7 +182,6 @@ $worker_count = $total_count - $admin_count;
         }
         .stat-pill span { color: white; margin-left: 5px; }
 
-        /* Search & filter row */
         .controls-row {
             display: flex;
             gap: 10px;
@@ -187,7 +210,7 @@ $worker_count = $total_count - $admin_count;
         }
         .search-input {
             width: 100%;
-            padding: 10px 120px 10px 16px;
+            padding: 10px 16px;
             font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 20px;
@@ -197,6 +220,7 @@ $worker_count = $total_count - $admin_count;
             font-weight: 600;
         }
         .search-input::placeholder { color: #5aa5d4; }
+
         .filter-select {
             padding: 10px 14px;
             font-size: 14px;
@@ -212,7 +236,39 @@ $worker_count = $total_count - $admin_count;
         }
         .filter-select option { background: #002D61; }
 
-        /* Section heading */
+        .btn-apply {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            background: #0067A2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            align-self: center;
+            transition: background .2s;
+            white-space: nowrap;
+        }
+        .btn-apply:hover { background: #8DC9F7; color: #002D61; }
+
+        .btn-clear {
+            padding: 10px 16px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            background: transparent;
+            color: rgba(255,255,255,.5);
+            border: 1.5px solid rgba(255,255,255,.15);
+            border-radius: 10px;
+            cursor: pointer;
+            align-self: center;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background .2s, color .2s;
+        }
+        .btn-clear:hover { background: rgba(255,255,255,.07); color: white; }
+
         .section-heading {
             font-size: 20px;
             font-weight: 700;
@@ -231,12 +287,11 @@ $worker_count = $total_count - $admin_count;
             border-radius: 20px;
         }
 
-        /* Table */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
             border-radius: 14px;
-            margin-bottom: 48px;
+            margin-bottom: 28px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.25);
         }
         table {
@@ -300,8 +355,50 @@ $worker_count = $total_count - $admin_count;
         }
         .empty-state svg { width: 44px; height: 44px; margin-bottom: 10px; opacity: 0.3; display: block; margin-left: auto; margin-right: auto; }
 
-        .no-results-row { display: none; }
-        .no-results-row td { text-align: center; padding: 40px; color: rgba(255,255,255,.35); }
+        /* ── Pagination ── */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            height: 38px;
+            padding: 0 12px;
+            border-radius: 8px;
+            border: 2px solid #8DC9F7;
+            background: transparent;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s, color 0.18s;
+        }
+        .page-btn:hover  { background: #8DC9F7; color: #002D61; }
+        .page-btn.active { background: #8DC9F7; color: #002D61; pointer-events: none; }
+        .page-btn.disabled { opacity: 0.3; pointer-events: none; }
+        .ellipsis { color: white; align-self: center; font-weight: 700; font-size: 16px; padding: 0 2px; }
+        .jump-input {
+            width: 76px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 2px solid #8DC9F7;
+            background: transparent;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            text-align: center;
+        }
+        .jump-input::placeholder { color: rgba(255,255,255,0.45); }
 
         /* Modal */
         .modal-backdrop {
@@ -371,7 +468,6 @@ $worker_count = $total_count - $admin_count;
         .back-link { display: inline-block; margin-top: 16px; color: #8DC9F7; font-size: 14px; text-decoration: none; font-weight: 600; }
         .back-link:hover { text-decoration: underline; color: white; }
 
-        /* Mobile */
         @media (max-width: 600px) {
             body { padding-top: 70px; }
             .page-wrapper { padding: 24px 16px 60px; }
@@ -379,6 +475,7 @@ $worker_count = $total_count - $admin_count;
             .controls-row { flex-direction: column; }
             .search-wrapper { width: 100%; }
             .filter-select { width: 100%; }
+            .btn-apply, .btn-clear { width: 100%; text-align: center; }
             .name-row { flex-direction: column; gap: 0; }
             .modal { padding: 24px 20px; }
         }
@@ -406,18 +503,26 @@ $worker_count = $total_count - $admin_count;
     </div>
 
     <div class="controls-row">
-        <div class="search-wrapper">
-            <div class="search-box">
-                <div class="search-inner">
-                    <input class="search-input" type="text" id="searchInput" placeholder="Search by name, username, or email…">
+        <form method="GET" action="view-worker.php" id="searchForm" style="display:contents;">
+            <div class="search-wrapper">
+                <div class="search-box">
+                    <div class="search-inner">
+                        <input class="search-input" type="text" name="search" id="searchInput"
+                               placeholder="Search by name, username, or email…"
+                               value="<?php echo htmlspecialchars($search); ?>">
+                    </div>
                 </div>
             </div>
-        </div>
-        <select class="filter-select" id="roleFilter">
-            <option value="all">All Roles</option>
-            <option value="admin">Admin</option>
-            <option value="worker">Student Worker</option>
-        </select>
+            <select class="filter-select" name="role" id="roleFilter" onchange="this.form.submit()">
+                <option value="all"    <?php echo $role_filter === 'all'    ? 'selected' : ''; ?>>All Roles</option>
+                <option value="admin"  <?php echo $role_filter === 'admin'  ? 'selected' : ''; ?>>Admin</option>
+                <option value="worker" <?php echo $role_filter === 'worker' ? 'selected' : ''; ?>>Student Worker</option>
+            </select>
+            <button type="submit" class="btn-apply">Apply</button>
+            <?php if ($search !== '' || $role_filter !== 'all'): ?>
+                <a href="view-worker.php" class="btn-clear">✕ Clear</a>
+            <?php endif; ?>
+        </form>
     </div>
 
     <h2 class="section-heading">
@@ -446,13 +551,8 @@ $worker_count = $total_count - $admin_count;
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($workers as $w): ?>
-                <tr
-                    data-name="<?php echo strtolower(htmlspecialchars($w->get_first_name() . ' ' . $w->get_last_name())); ?>"
-                    data-username="<?php echo strtolower(htmlspecialchars($w->get_id())); ?>"
-                    data-email="<?php echo strtolower(htmlspecialchars($w->get_email())); ?>"
-                    data-role="<?php echo strtolower(htmlspecialchars($w->get_type())); ?>"
-                >
+                <?php foreach ($pageWorkers as $w): ?>
+                <tr>
                     <td><?php echo htmlspecialchars($w->get_first_name()); ?></td>
                     <td><?php echo htmlspecialchars($w->get_last_name()); ?></td>
                     <td class="td-email"><?php echo htmlspecialchars($w->get_email() ?: '—'); ?></td>
@@ -474,13 +574,45 @@ $worker_count = $total_count - $admin_count;
                     </td>
                 </tr>
                 <?php endforeach; ?>
-                <tr class="no-results-row" id="noResultsRow">
-                    <td colspan="6">No accounts match your search.</td>
-                </tr>
             </tbody>
         </table>
         <?php endif; ?>
     </div>
+
+    <?php if ($totalPages > 1):
+        $win = 2;
+    ?>
+    <div class="pagination">
+        <a href="<?php echo buildUrl($currentPage - 1, $search, $role_filter); ?>"
+           class="page-btn <?php echo $currentPage <= 1 ? 'disabled' : ''; ?>">&#8592; Prev</a>
+
+        <?php
+        if ($currentPage > $win + 2) {
+            echo '<a href="' . buildUrl(1, $search, $role_filter) . '" class="page-btn">1</a>';
+            if ($currentPage > $win + 3) echo '<span class="ellipsis">…</span>';
+        }
+        for ($p = max(1, $currentPage - $win); $p <= min($totalPages, $currentPage + $win); $p++) {
+            $cls = $p === $currentPage ? 'active' : '';
+            echo '<a href="' . buildUrl($p, $search, $role_filter) . '" class="page-btn ' . $cls . '">' . $p . '</a>';
+        }
+        if ($currentPage < $totalPages - $win - 1) {
+            if ($currentPage < $totalPages - $win - 2) echo '<span class="ellipsis">…</span>';
+            echo '<a href="' . buildUrl($totalPages, $search, $role_filter) . '" class="page-btn">' . $totalPages . '</a>';
+        }
+        ?>
+
+        <a href="<?php echo buildUrl($currentPage + 1, $search, $role_filter); ?>"
+           class="page-btn <?php echo $currentPage >= $totalPages ? 'disabled' : ''; ?>">Next &#8594;</a>
+
+        <form method="GET" action="view-worker.php" style="display:flex; align-items:center; gap:6px; margin-left:8px;">
+            <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+            <input type="hidden" name="role"   value="<?php echo htmlspecialchars($role_filter); ?>">
+            <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>"
+                   class="jump-input" placeholder="Go to…">
+            <button type="submit" class="page-btn" style="padding:0 14px;">Go</button>
+        </form>
+    </div>
+    <?php endif; ?>
 
     <a href="staffPage.php" class="back-link">← Back to dashboard</a>
 </div>
@@ -544,29 +676,9 @@ document.getElementById('editModalBackdrop').addEventListener('click', function(
     if (e.target === this) closeEditModal();
 });
 
-const searchInput  = document.getElementById('searchInput');
-const roleFilter   = document.getElementById('roleFilter');
-const noResultsRow = document.getElementById('noResultsRow');
-
-function filterTable() {
-    const q    = searchInput.value.toLowerCase().trim();
-    const role = roleFilter.value;
-    const rows = document.querySelectorAll('#workersTable tbody tr:not(.no-results-row)');
-    let visible = 0;
-    rows.forEach(row => {
-        const matchSearch = !q ||
-            row.dataset.name.includes(q) ||
-            row.dataset.username.includes(q) ||
-            row.dataset.email.includes(q);
-        const matchRole = role === 'all' || row.dataset.role === role;
-        if (matchSearch && matchRole) { row.style.display = ''; visible++; }
-        else { row.style.display = 'none'; }
-    });
-    if (noResultsRow) noResultsRow.style.display = visible === 0 ? 'table-row' : 'none';
-}
-
-searchInput.addEventListener('input', filterTable);
-roleFilter.addEventListener('change', filterTable);
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); this.closest('form').submit(); }
+});
 </script>
 
 <?php require 'footer.php'; ?>
