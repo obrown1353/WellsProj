@@ -34,24 +34,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
             while (($row = fgetcsv($handle)) !== false) {
                 $row = array_map("trim", $row);
-                $name        = mysqli_real_escape_string($con, $row[0] ?? '');
-                $location    = mysqli_real_escape_string($con, $row[1] ?? '');
-                $type        = mysqli_real_escape_string($con, $row[2] ?? '');
-                $isbn        = mysqli_real_escape_string($con, $row[3] ?? '');
-                $author      = mysqli_real_escape_string($con, $row[4] ?? '');
-                $description = mysqli_real_escape_string($con, $row[5] ?? '');
-                $capacity    = (int)($row[6] ?? 0);
-                $instock     = (int)($row[7] ?? 0);
+                $name = mysqli_real_escape_string($con, $row[0] ?? '');
 
+                $new_material = new materials(
+                    0, 
+                    mysqli_real_escape_string($con, $row[0] ?? ''), //name
+                    mysqli_real_escape_string($con, $row[1] ?? ''), //location 
+                    mysqli_real_escape_string($con, $row[2] ?? ''), //type
+                    mysqli_real_escape_string($con, $row[3] ?? null), //isbn
+                    mysqli_real_escape_string($con, $row[4] ?? null), //author
+                    mysqli_real_escape_string($con, $row[5] ?? null), //description
+                    (int)($row[6] ?? 0), //capacity
+                    (int)($row[7] ?? 0), //instock
+                );
+        
                 if (!$name || $capacity < 0 || $instock < 0) { $skipped++; continue; }
 
                 $check = mysqli_query($con, "SELECT material_id FROM dbmaterials WHERE name='$name'");
                 if (mysqli_num_rows($check) > 0) { $skipped++; continue; }
-
-                $query = "INSERT INTO dbmaterials (name, location, resource_type, isbn, author, description, copy_capacity, copy_instock)
-                          VALUES ('$name', '$location', '$type', '$isbn', '$author', '$description', $capacity, $instock)";
-
-                if (mysqli_query($con, $query)) { $inserted++; } else { $skipped++; }
+                
+                if (add_material($new_material)) { $inserted++; } else { $skipped++; }
             }
 
             fclose($handle);
