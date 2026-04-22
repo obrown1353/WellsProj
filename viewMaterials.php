@@ -572,7 +572,7 @@ tbody tr:hover { background: rgba(141,201,247,0.1); }
                     <th>Location</th>
                     <th>ISBN</th>
                     <th>Available</th>
-                    <th>Times Checked Out</th>
+                    <th>Times Loaned</th>
                     <th>Last Checkout</th>
                     <th>Last Return</th>
                     <th>Edit</th>
