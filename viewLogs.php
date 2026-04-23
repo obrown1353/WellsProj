@@ -311,7 +311,7 @@ tbody tr:hover {
         <form id="bulkDeleteForm" action="deleteLogs.php" method="POST">
         Delete Logs By Selection:
         <button type="submit" name="bulk_delete" class="badge">Delete Selected</button>
-        </form>
+        
     </h2>
 
 </div>
@@ -348,6 +348,7 @@ tbody tr:hover {
 
     </table>
 </div>
+            </form>
 
     <?php if ($totalPages > 1):
         $win = 2;
