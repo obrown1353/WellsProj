@@ -22,7 +22,7 @@ function sendEmail($to_email, $to_name, $subject, $html_body, $plain_body) {
         $mail->XMailer      = ' ';
         $mail->addCustomHeader('X-Priority', '3');
         $mail->addCustomHeader('Precedence', 'bulk');
-        $mail->setFrom('seacobeckcurriculumlab@gmail.com', 'Seacobeck Cirruculum Lab');
+        $mail->setFrom('seacobeckcurriculumlab@gmail.com', 'Seacobeck Curriculum Lab');
         $mail->addAddress($to_email, $to_name);
         $mail->isHTML(true);
         $mail->CharSet  = 'UTF-8';
