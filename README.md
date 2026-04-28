@@ -6,13 +6,15 @@ Crook Campbell
 Hugo Manrique-Pinell
 Hannah Lydell
 
-
-# Fredericksburg SPCA Volunteer Management Web Application 
+#  Seacobeck Curriculum Lab Web Application 
 
 ## Purpose
-This project is the result of a semester's worth of collaboration among UMW students. The goal of the project was to create a web application that better suits the needs of Fredericksburg SPCA, specifically as a system to manage their volunteers. The system allows volunteers to check-in and out of shifts on site, view their hours volunteered and sign up for events. For the Fred SPCA staff the system allows them to keep track of volunteer hours, create events, share announcements, and managed volunteer accounts.
+The Seacobeck Curriculum Lab Web Application works to improve the checkout and record keeping process for the Seacobeck Curriculum Lab team, moving them away from their previous Google Sheet/Forms system. This web application allows for borrowers to independently search for and checkout/return materials. Staff members (Admins and Student Workers) are able to keep track of checkouts, materials and their stats, logs and staff accounts. 
 
 ## Authors
+The Seacobeck Curriculum lab system code was modified during the Spring 2026 semester, and works off the foundation of multiple semesters of work. The codebase's previous authors and contributions are listed unchanged below, with additional mention to the Whisky Valor team. The Seacobeck Curriculum lab's current implementation is mostly rewritten, but some foundational work remains such as the dbpersons database, login/logout systems, base CSS, etc. The team responsible for the Spring 2026 work includes Oliver Brown, Fernando Ortega, Madison Hinston, Crook Campbell, Hugo Manrique-Pinell, and Hannah Lydell.
+
+## Previous Semester's Authors
 The ODHS Medicine Tracker is based on an old open source project named "Homebase". [Homebase](https://a.link.will.go.here/) was originally developed for the Ronald McDonald Houses in Maine and Rhode Island by Oliver Radwan, Maxwell Palmer, Nolan McNair, Taylor Talmage, and Allen Tucker.
 
 Modifications to the original Homebase code were made by the Fall 2022 semester's group of students. That team consisted of Jeremy Buechler, Rebecca Daniel, Luke Gentry, Christopher Herriott, Ryan Persinger, and Jennifer Wells.
@@ -26,79 +28,66 @@ The ODHS Medicine Tracker code was modified in the Fall of 2024, changing the co
 In Spring 2025, the Step VA Volunteer Management code was adapted to develop the Fredericksburg SCPA Volunteer Management Web Application. Numerous existing database tables were retained with modifications or renamed, while new tables were introduced as needed. Certain files and functionalities from the original system were integrated, while additional features were designed specifically for the Fredericksburg SCPA Volunteer Management system. The team responsible for these updates and enhancements included Yalda Alemy, Luke Blair, Madison Van Buren, Sean Foley, Luke Gibson, Aiden Meyer, and Israel Ortiz.
 
 ## User Types
-There are two types of users (also referred to as 'roles') within FredSPCA.
+This system assumes 3 different types of users:
 * Admins
-* Volunteers
+* Student Workers
+* Borrowers
 
-Admins can create and edit events, view and approve sign-ups, and view sign-ups and volunteer hours.
+Borrowers are able to independently search for and checkout/return materials. Student Workers have the ability to manage the material catalog, view checkouts and logs, import materials, and export checkouts. Admins are able to do all prior mentioned functions of a Student Worker, and additionally manage Worker accounts. 
 
-Volunteers can create and edit their profile, sign up for events, check-in and check-out of events, and view their hours. Volunteer accounts can be archived by the Admin if the account is no longer in use.
-
-There is also a root admin account with username 'vmsroot'. The default password for this account is 'vmsroot'. This account has hardcoded Admin privileges. It is crucial that this account be given a strong password and that the password be easily remembered, as it cannot easily be reset. This account should be used for system administration purposes only.
+The root admin account is:
+Username: vmsroot
+Password: vmsroot
 
 ## Features
-Below is an in-depth list of features that were implemented within the system
-* User registration and log in
-* Dashboard
-* Volunteer Management
-  * Change own password
-  * View volunteer hours (print-friendly)
-  * Change hours
-  * Modify profile
-  * Reset password
-  * User Search
-* Events and Event Management
-  * Calendar with event listings
-  * Calendar day view with event listings
-  * Event search
-  * Event details page
-  * Volunteer event sign up
-  * View Upcoming Events
-  * View Volunteer Event Roster
-  * Modify event details
-  * Create new event
-  * Delete event
-  * Complete event
-  * Check-in and check-out for event
-* Reports (print-friendly)
-  * Volunteer Hour Reports
-* Notification system, with notifications generated when
-  * A volunteer has requested sign-up
-  * A user has canceled their sign-up
-  * Approved sign-up
+Below is an in-depth list of system features:
 
-## Design Documentation
-Several types of diagrams describing the design of the Step VA, including sequence diagrams and use case diagrams, are available. Please contact Dr. Polack for access.
+* Staff Member Login/Logout
+* Staff Member Dashboard
+* Material Search
+  * Filter/Sort Materials
+* Self Service (Material Checkout/Return)
+  * View up-to date Material information
+  * Checkout Material
+  * Return Material
+  * Receive Confirmation Emails for Checkout/Return
+  * Receive Status Reminders for Loans
+* View/Export Checkouts
+  * Export Checkout Report in Either .CSV or XLS format
+* Import Materials
+* View Materials
+  * Delete/Mass Delete Materials
+  * View Statistics about Materials
+  * Add Materials
+  * Edit Materials
+* View Logs
+  * Delete Logs
+* View Workers
+  * Create New Worker
+  * Edit Worker
+  * Delete Worker
+* Change Password
 
 ## "localhost" Installation
-Below are the steps required to run the project on your local machine for development and/or testing purposes.
+Below are the steps required to run the project on your local machine for development and/or testing purposes. This installation procedure is updated from previous semester's steps to contain up-to date information specific to the Seacobeck Curriculum Lab Web Application.
+
 1. [Download and install XAMPP](https://www.apachefriends.org/download.html)
 2. Open a terminal/command prompt and change directory to your XAMPP install's htdocs folder
   * For Mac, the htdocs path is `/Applications/XAMPP/xamppfiles/htdocs`
   * For Ubuntu, the htdocs path is `/opt/lampp/htdocs/`
   * For Windows, the htdocs path is `C:\xampp\htdocs`
-3. Clone the Step VA repo by running the following command: 'https://github.com/aidanmeyer32/FredSPCA.git'
-4. Start the XAMPP MySQL server and Apache server
+3. Clone the WellsProj repo into the htdocs folder from the github repo: 'https://github.com/obrown1353/WellsProj'
+4. Start the MySQL server and Apache server via XAMPP
 5. Open the PHPMyAdmin console by navigating to [http://localhost/phpmyadmin/](http://localhost/phpmyadmin/)
-6. Create a new database named `stepvadb`. With the database created, navigate to it by clicking on it in the lefthand pane
-7. Import the `FredSPCA.sql` file located in `FredSPCA/sql` into this new database
+6. Create a new database named `wellsdb` via the left sidepanel and open it. 
+7. Import the `wellsdb.sql` file located in `WellsProj/sql` into this new database
 8. Create a new user by navigating to `Privileges -> New -> Add user account`
 9. Enter the following credentials for the new user:
-  * Name: `stepvadb`
-  * Hostname: `Local`
-  * Password: `stepvadb`
-  * Leave everything else untouched
-10. Navigate to [http://localhost/ODHS-Animal/](http://localhost/ODHS-Animal/) 
+  * Name: `wellsdb`
+  * Password: `wellsdb`
+  * Check Global Privileges 
+10. Navigate to [http://localhost/WellsProj/](http://localhost/WellsProj/) 
 11. Log into the root user account using the username `vmsroot` with password `vmsroot`
-
-Installation is now complete.
-
-## Reset root user credentials
-In the event of being locked out of the root user, the following steps will allow resetting the root user's login credentials:
-1. Using the PHPMyAdmin console, delete the `vmsroot` user row from the `dbPersons` table
-2. Clear the SiteGround dynamic cache [using the steps outlined below](#clearing-the-siteground-cache)
-3. Navigate to gwyneth/insertAdmin.php. You should see a message that says `ROOT USER CREATION SUCCESS`
-4. You may now log in with the username and password `vmsroot`
 
 ## Platform
 Dr. Polack chose SiteGrounds as the platform on which to host the project. Below are some guides on how to manage the live project.
@@ -107,57 +96,44 @@ Dr. Polack chose SiteGrounds as the platform on which to host the project. Below
 Access to the SiteGround Dashboard requires a SiteGround account with access. Access is managed by Dr. Polack.
 
 ### Localhost to Siteground
-Follow these steps to transfter your localhost version of the Step VA code to Siteground. For a video tutorial on how to complete these steps, contact Dr. Polack.
-1. Create an FTP Account on Siteground, giving you the necessary FTP credentials. (Hostname, Username, Password, Port)
-2. Use FTP File Transfer Software (Filezilla, etc.) to transfer the files from your localhost folders to your siteground folders using the FTP credentials from step 1.
-3. Create the following database-related credentials on Siteground under the MySQL tab:
-  - Database - Create the database for the siteground version under the Databases tab in the MySQL Manager by selecting the 'Create Database' button. Database name is auto-generated and can be changed if you like.
-  - User - Create a user for the database by either selecting the 'Create User' button under the Users tab, or by selecting the 'Add New User' button from the newly created database under the Databases tab. User name is auto-generated and can be changed  if you like.
-  - Password - Created when user is created. Password is auto generated and can be changed if you like.
-4. Access the newly created database by navigating to the PHPMyAdmin tab and selecting the 'Access PHPMyAdmin' button. This will redirect you to the PHPMyAdmin page for the database you just created. Navigate to the new database by selecting it from the database list on the left side of the page.
-5. Select the 'Import' option from the database options at the top of the page. Select the 'Choose File' button and import the "vms.sql" file from your software files.
-  - Ensure that you're keeping your .sql file up to date in order to reduce errors in your Siteground code. Keep in mind that Siteground is case-sensitive, and your database names in the Siteground files must be identical to the database names in the database.
-6. Navigate to the 'dbInfo.php' page in your Siteground files. Inside the connect() function, you will see a series of PHP variables. ($host, $database, $user, $pass) Change the server name in the 'if' statement to the name of your server, and change the $database, $user, and $pass variables to the database name, user name, and password that you created in step 3. 
+Follow these steps to transfter your localhost version of the Seacobeck Curriculum Lab code to Siteground. For a video tutorial on how to complete these steps, contact Dr. Polack. This installation procedure is updated from previous semester's steps to contain up-to date information specific to the Seacobeck Curriculum Lab Web Application.
 
-### Clearing the SiteGround cache
-#### Chrome
-1. Open Chrome and click on the three-dot menu icon in the top-right corner.
-2. Navigate to **More Tools** > **Clear Browsing Data**.
-3. In the pop-up window:
-   - Select the **Time Range** (e.g., "Last 24 hours" or "All time").
-   - Check the box for **Cached images and files**.
-4. Click **Clear Data**.
+1. Via Siteground's FileManager, access the public_html folder
+2. Import all local host files directly into the public_html folder via the upload feature, ensuring index.php (and other files) are at the base of this folder
+3. Create the following database-related credentials on Siteground under the MySQL tab (Note this information down for later steps):
+  * Database - Create the database for the siteground version under the Databases tab in the MySQL Manager by selecting the 'Create Database' button. Database name is auto-generated and can be changed if you like.
+  * User - Create a user for the database by either selecting the 'Create User' button under the Users tab, or by selecting the 'Add New User' button from the newly created database under the Databases tab. User name is auto-generated and can be changed  if you like.
+  * Password - Created when user is created. Password is auto generated and can be changed if you like.
+4. Assign the newly created user to the database via the User Management tab.
+5. Access the newly created database by navigating to the PHPMyAdmin tab and selecting the 'Access PHPMyAdmin' button. This will redirect you to the PHPMyAdmin page for the database you just created. Navigate to the new database by selecting it from the database list on the left side of the page.
+6. Select the 'Import' option from the database options at the top of the page. Select the 'Choose File' button and import the "wellsdb.sql" file from your software files.
+  * If any changes are made to the structure of the databases locally, make sure the siteground databases are kept up-to date by dropping and reimporting the updated wellsdb.sql file
+7. Navigate to the '/database/dbinfo.php' page via the Siteground FileManager. Inside the connect() function, assuming the server is "jenniferp236.sg-host.com" add the following lines above the line that starts with $con = ... replacing the information in brackets with the information from step 3. 
 
-#### Safari
-1. Open Safari and click on **Safari** in the menu bar at the top of the screen.
-2. Select **Preferences** > **Privacy**.
-3. Click the **Manage Website Data** button.
-4. In the pop-up window, click **Remove All**, then confirm by selecting **Remove Now**.
+    if ($_SERVER['SERVER_NAME'] == 'jenniferp215.sg-host.com') {
+        $user = '{User from step 3}';
+        $database = '{Database from step 3}';
+        $pass = '{Password from step 3}';
+    }
 
-Clearing your cache will help ensure that you're seeing the latest updates to the application. If you continue experiencing issues, consider reaching out for further support.
-
-# TODO just tailwind?
 ### External Libraries and APIs
-The only outside library utilized by the Step VA is the jQuery library. The version of jQuery used by the system is stored locally within the repo, within the lib folder. jQuery was used to implement form validation and the hiding/showing of certain page elements. Additionally, the Font Awesome library was used for some of the icon pictures. This library is linked in the headers of some files "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css".
+The Seacobeck Curriculum Lab System uses the PHPMailer library in order to automate the sending of loan status emails. All required files for this library are contained within the PHPMailer folder and should not need an additional download. However, if problems do arise with this 
+version of PHPMailer, an updated version with additional installation steps can be accessed at the [PHPMailer Github Page](https://github.com/phpmailer/phpmailer). 
 
-# TODO make sure we didn't already fix any of these, add any new
+The given installation reccomendation of PHPMailer is via the PHP dependency manager [Composer](https://getcomposer.org) and can be installed with the command:
+composer require phpmailer/phpmailer
+
 ### Potential Improvements
-Below is a list of improvements that could be made to the system in subsequent semesters.
-* Rename the database
-* Adding special buttons across pages (e.g. ‘View and Change Hours’ may have a ‘Return to My Hours’ option rather than only ‘Return to Dashboard’)
-* Added functionality for users who are participants, some participant functionality code exists within the current code, only it is commented out
-* Link calendar to Google calendar, add links to Google forms
-* Edits so screen size may no longer affect alignment of headers and tables
-* Remove the admin's ability to sign up admin account for an event
-* Increase password security
-* Ensure volunteers cannot sign up for events during time frames in which they will be signed up for another event
-* If an admin creates conflicting events, bring it to their attention while allowing the option to continue
-* If an admin exceeds the occupancy limit, bring it to their attention while allowing the option to continue
-* Notifications: add delete functionality to the button, add a ‘view message’ functionality when a message is selected
-* Additonal items related to volunteer training
+The following are potential improvements that can expanded on for the Seacobeck Curriculum Lab System at any later time. 
+  * Forgot password
+  * Mark optional and required fields for forms (e.g. add material)
+  * Ensure email system actually works (overdue warning)
+  * Material images (book cover retrieval)
+  * Accessibility button to change font style and size
+  * Bread crumbs → clickable links for a path
 
 ## License
 The project remains under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl.txt).
 
 ## Acknowledgements
-Thank you to Dr. Polack and Fredericksburg SPCA for the opportunity to work on this project.
+Thank you to Dr. Jennifer Polack and Dr. Melissa Wells for all the help with this system throughout this semester. Working for the Curriculum Lab has been a pleasure. 
