@@ -27,7 +27,11 @@ if (!$isGuest && isset($_SESSION['_id'])) {
 
 include_once "database/dbMaterials.php";
 include_once "database/dbCheckout.php";
-$id = 1; //change this to update on id sent to page
+if (isset($_GET['material_id'])){
+  $id = $_GET['material_id'] ?? '';
+} else {
+  header('Location: results.php');
+}
 $material = fetch_material_by_id($id);
 
 $status = $_GET['status'] ?? '';
@@ -38,7 +42,15 @@ $status = $_GET['status'] ?? '';
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-* { font-family: StromaBold, 'Lucida Sans'; }
+* { font-family: StromaBold, 'Inter', sans-serif; }
+.body{
+  min-height: 100vh;       
+  display: flex;             
+  flex-direction: column;    
+  background-size: cover;    
+  background-position: center; 
+  position: relative;        
+}
 .input-field {
   width: 100%;
   background: rgba(255,255,255,0.88);
@@ -72,14 +84,126 @@ $status = $_GET['status'] ?? '';
   text-align: center;
   white-space: nowrap;
 }
+.pageWrapper {
+  display: flex;              
+  flex-grow: 1;                
+  align-items: center;        
+  justify-content: center;     
+  position: relative;        
+  z-index: 10;               
+}
+.textWrapper {
+  width: 100%;                        
+  padding: 2rem 1.5rem;              
+  display: flex;                      
+  flex-direction: column;              
+  align-items: center;                 
+  color: white;                      
+  background-color: rgba(141, 201, 247, 0.1); 
+  backdrop-filter: blur(8px);          
+  border-radius: 1rem;               
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.25); 
+  max-width: 100%;                    
+}
+
+@media (min-width: 640px) {          
+  .textWrapper {
+    width: 66.666667%;                
+    max-width: 28rem;                  
+  }
+}
+.header {
+  font-size: 1.875rem;      
+  font-weight: 700;          
+  margin-bottom: 0.5rem;     
+  text-align: center;       
+  color: white;        
+}
+ .subheading {
+  font-size: 0.875rem;   
+  color: white;           
+  margin-bottom: 0.5rem;  
+  text-align: left;            
+}
+.buttonsWrapper {
+  display: flex;                     
+  width: 100%;                       
+  margin-bottom: 1.25rem;           
+  border-radius: 1rem;               
+  overflow: hidden;                  
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);   
+}
+.checkoutOption {
+  flex: 1;                               
+  padding-top: 0.75rem;                  
+  padding-bottom: 0.75rem;               
+  font-size: 0.875rem;                    
+  font-weight: 700;                        
+  letter-spacing: 0.05em;                 
+  transition: all 0.2s ease-in-out;       
+  background-color: #0d2b8d;           
+  color: white;                          
+}
+.returnOption {
+  flex: 1;                              
+  padding-top: 0.75rem;                    
+  padding-bottom: 0.75rem;                
+  font-size: 0.875rem;                      
+  font-weight: 700;                          
+  letter-spacing: 0.05em;                  
+  transition: all 0.2s ease-in-out;         
+  background-color: rgba(255, 255, 255, 0.1); 
+  color: rgba(255, 255, 255, 0.5);        
+}
+.checkoutButton {
+  width: 100%;
+  background-color: #0d2b8d;
+  color: white;
+  font-weight: 700;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.checkoutButton:hover {
+  background-color: #0a1e61;
+}
+
+.checkoutButton:active {
+  transform: scale(0.95);
+}
+.returnButton {
+  width: 100%;
+  background-color: #9C2007;
+  color: white;
+  font-weight: 700;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.returnButton:hover {
+  background-color: #7a1905;
+}
+
+.returnButton:active {
+  transform: scale(0.95);
+}
 #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 #toast.success { background: #002D61; border-left: 5px solid #8df79d; }
 #toast.error   { background: #002D61; border-left: 5px solid #f87171; }
 #toast.warning { background: #002D61; border-left: 5px solid #fbbf24; }
 </style>
+
 <title>Seacobeck Curriculum Lab | Self Service</title>
 </head>
-<body class="min-h-screen flex flex-col bg-cover bg-center relative"
+
+<body class="body"
   style="background-image: url('images/library.jpg'); padding-top: 95px;">
 
   <?php require 'header.php'; ?>
@@ -87,18 +211,17 @@ $status = $_GET['status'] ?? '';
   <div class="absolute inset-0 bg-[#002D61]/85" style="top: 95px;"></div>
   <div id="toast"></div>
 
-  <div class="flex-grow flex items-center justify-center relative z-10">
-    <div class="w-full sm:w-2/3 sm:max-w-md px-6 py-8 flex flex-col items-center text-white bg-[#8DC9F7]/10 backdrop-blur-md rounded-xl shadow-xl">
+  <div class="pageWrapper">
+    <div class="textWrapper">
 
-      <h2 class="text-3xl font-bold mb-2 text-center"
-        style="text-shadow: 1px 1px 0 black,-1px -1px 0 black,1px -1px 0 black,-1px 1px 0 black; color:#bfe5ed;">
+      <h2 class="header">
         SELF SERVICE
       </h2>
 
-      <p class="text-sm text-white mb-2 text-left opacity-80">
-        <?php echo htmlspecialchars($material->getName()); ?>
+      <p class="subheading">
+        <?php echo $material->getName(); ?>
       </p>
-      <p class="text-xs text-white mb-5 text-left opacity-70">
+      <p class="subheading">
         Location: <?php echo htmlspecialchars($material->getLocation()); ?> | Resource Type: <?php echo htmlspecialchars($material->getResourceType()); ?><br>
         Copy Instock: <?php echo htmlspecialchars($material->getCopyInstock()); ?> | Copy Total: <?php echo htmlspecialchars($material->getCopyCapacity()); ?><br>
         <?php if ($material->getISBN()): ?>ISBN: <?php echo htmlspecialchars($material->getISBN()); ?> <?php endif; ?>
@@ -107,42 +230,59 @@ $status = $_GET['status'] ?? '';
       </p>
 
       <!-- TOGGLE -->
-      <div class="flex w-full mb-5 rounded-xl overflow-hidden border border-white/20 shadow-md">
+      <div class="buttonsWrapper">
         <button type="button" id="tab-checkout" onclick="switchMode('checkout')"
-          class="flex-1 py-3 text-sm font-bold tracking-wide transition-all duration-200 bg-[#0d2b8d] text-white">
+          class="checkoutOption">
           📤 Check Out
         </button>
         <button type="button" id="tab-return" onclick="switchMode('return')"
-          class="flex-1 py-3 text-sm font-bold tracking-wide transition-all duration-200 bg-white/10 text-white/50">
+          class="returnOption">
           📥 Return
         </button>
       </div>
 
       <!-- FORM -->
       <div class="w-full">
-        <form action="./handle_self_service.php?id=' . (<?php echo (int)$id; ?> ?? 0)" method="post">
-          <input type="text"  name="first_name" placeholder="First Name" class="input-field" required />
-          <input type="text"  name="last_name"  placeholder="Last Name"  class="input-field" required />
-          <input type="email" name="email"      placeholder="Email"      class="input-field" required />
-          <input type="hidden" name="id" value="<?php echo (int)$id; ?>" />
+  <form action="./handle_self_service.php?id=<?php echo (int)($id ?? 0); ?>" method="post">
+    <input type="text"  name="first_name" placeholder="First Name" class="input-field" required />
+    <input type="text"  name="last_name"  placeholder="Last Name"  class="input-field" required />
+    <input type="email" name="email"      placeholder="Email"      class="input-field" required />
 
-          <div id="checkout-btn">
-            <input type="submit" name="Checkout" value="Checkout"
-              class="w-full bg-[#0d2b8d] text-white font-bold py-3 rounded-lg hover:bg-[#0a1e61] active:scale-95 transition duration-300 cursor-pointer">
-          </div>
+    <!-- Disclaimer -->
+    <div style="display: flex; justify-content: center;">
+  <p style="
+      background: white;
+      color: #B50000;
+      font-size: 0.7rem;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.15);
+      display: inline-block;
+  ">
+    Make sure to check your junk folder for confirmation email(s).
+  </p>
+</div>
 
-          <div id="return-btn" style="display:none;">
-            <input type="submit" name="Return" value="Return"
-              class="w-full bg-[#9C2007] text-white font-bold py-3 rounded-lg hover:bg-[#7a1905] active:scale-95 transition duration-300 cursor-pointer">
-          </div>
-        </form>
-      </div>
+
+    <input type="hidden" name="id" value="<?php echo (int)$id; ?>" />
+
+    <div id="checkout-btn">
+      <input type="submit" name="Checkout" value="Checkout" class="checkoutButton">
+    </div>
+
+    <div id="return-btn" style="display:none;">
+      <input type="submit" name="Return" value="Return" class="returnButton">
+    </div>
+  </form>
+</div>
 
     </div>
   </div>
 
   <footer class="relative z-10 w-full text-center text-white bg-black bg-opacity-50 py-4 mt-4">
-    Questions? Contact Dr. Mellisa Wells
+    Questions? Contact Dr. Melissa Wells
     <a href="mailto:mwells@umw.edu" class="underline hover:text-blue-400">mwells@umw.edu</a>
   </footer>
 

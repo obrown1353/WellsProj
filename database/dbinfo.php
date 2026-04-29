@@ -23,11 +23,11 @@ function connect() {
     $database = "wellsdb";
     $user = "wellsdb";
     $pass = "wellsdb";
-    // if ($_SERVER['SERVER_NAME'] == 'jenniferp160.sg-host.com') {
-    //     $user = 'generated';
-    //     $database = 'generated';
-    //     $pass = 'generated';
-    // } 
+     if ($_SERVER['SERVER_NAME'] == 'jenniferp236.sg-host.com') {
+        $user = 'uw2ufweqke59i';
+        $database = 'dbjmlzxax2jcl2';
+        $pass = 'hge3dmzlut9l';
+     } 
  
     
     $con = mysqli_connect($host,$user,$pass,$database);

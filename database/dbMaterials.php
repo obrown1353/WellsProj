@@ -1,6 +1,7 @@
 <?php
 include_once('dbinfo.php');
 include_once(dirname(__FILE__).'/../domain/Materials.php');
+include_once(dirname(__FILE__).'/../database/dbstats.php');
 
 //encapsulates row information from query into a materials object for function access.
 function prepare_material_object($material){
@@ -21,6 +22,20 @@ function prepare_material_object($material){
 function fetch_all_materials(){
     $con = connect();
     $query = "SELECT * FROM dbmaterials";
+    $result = mysqli_query($con, $query);
+    $materials = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $materials[] = prepare_material_object($row);
+    }
+    mysqli_close($con);  
+    return $materials;
+}
+
+//Fetchs all materials in dbmaterials, can return empty array
+function fetch_all_materials_sorted($sort = 'material_id'){
+    $con = connect();
+    $query = "SELECT * FROM dbmaterials ORDER BY " . $sort;
     $result = mysqli_query($con, $query);
     $materials = [];
 
@@ -59,6 +74,23 @@ function fetch_material_by_name($name){
     return $materials;
 }
 
+//Fetchs a material by a given query (usually in the form of a processed search for materials)
+function fetch_materials_by_query($query, $sort = 'material_id'){
+    $materials = fetch_all_materials_sorted($sort);
+    $queried_materials = [];
+    foreach ($materials as $material) {
+	    if (
+		   str_contains(strtolower((string)$material->getName()), $query) ||
+        	   str_contains(strtolower((string)$material->getAuthor()), $query) ||
+        	   str_contains(strtolower((string)$material->getDescription()), $query) ||
+        	   str_contains(strtolower((string)$material->getISBN()), $query)
+    		) {
+        	$queried_materials[] = $material;
+	    }
+    }
+    return $queried_materials;
+}
+
 //Updates the copy_instock of a material for a self service transaction. isCheckout is true for checkout, false for return. 
 //Error checking should be prevented before this function is called. 
 function self_service_update($id, $isCheckout){
@@ -71,6 +103,55 @@ function self_service_update($id, $isCheckout){
     $result = mysqli_query($con, $query);
     mysqli_commit($con);
     mysqli_close($con);
+    return $result;
+}
+
+//Updates the information of a material based on a passed materials object. Requires a materials object
+function update_material(Materials $material){
+    $con = connect();
+    $query = "UPDATE `dbmaterials` 
+    SET `name` = '" . $material->getName() . "',
+        `location` = '" . $material->getLocation() . "',  
+        `resource_type` = '" . $material->getResourceType() . "', 
+        `isbn` = '" . $material->getISBN() . "', 
+        `author` = '" . $material->getAuthor() . "', 
+        `description` = '" . $material->getDescription() . "', 
+        `copy_capacity` = '" . $material->getCopyCapacity() . "', 
+        `copy_instock` = '" . $material->getCopyInstock() . "' 
+    WHERE `material_id` = '" . $material->getMaterialID() . "'";
+    $result = mysqli_query($con, $query);
+    mysqli_commit($con);
+    mysqli_close($con);
+    return $result;
+}
+
+//Adds a new material to database based on passed materials object. Requires a materials object
+function add_material(Materials $material){
+    $con = connect();
+    $query = "INSERT INTO `dbmaterials` (`name`, `location`, `resource_type`, `isbn`, `author`, `description`, `copy_capacity`, `copy_instock`)
+    VALUES ('" . $material->getName() . "', 
+            '" . $material->getLocation() . "',
+            '" . $material->getResourceType() . "',
+            '" . $material->getISBN() . "',
+            '" . $material->getAuthor() . "',
+            '" . $material->getDescription() . "',
+            '" . $material->getCopyCapacity() . "',
+            '" . $material->getCopyInstock() . "')";
+    $result = mysqli_query($con, $query);
+    $last_id = mysqli_insert_id($con);
+    mysqli_commit($con);
+    mysqli_close($con);
+    create_new_stats($last_id); //add corresponding stats
+    return $result;
+}
+
+function delete_materials_by_ids($ids) {
+    $con = connect();
+    $ids_str = implode(',', array_map('intval', $ids));
+    $query = "DELETE FROM dbmaterials WHERE material_id IN ($ids_str)";
+    $result = mysqli_query($con, $query);
+    mysqli_close($con);
+    delete_stats($ids_str); //delete corresponding stats
     return $result;
 }
 ?>

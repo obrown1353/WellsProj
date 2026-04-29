@@ -1,866 +1,630 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+session_cache_expire(30);
+session_start();
 
-    session_cache_expire(30);
-    session_start();
+date_default_timezone_set("America/New_York");
 
-    date_default_timezone_set("America/New_York");
+if (!isset($_SESSION['access_level'])) {
+    header('Location: login.php');
+    die();
+}
 
-    // Redirect to login if no session
-    if (!isset($_SESSION['access_level'])) {
-        header('Location: login.php');
-        die();
-    }
+include_once('database/dbPersons.php');
+include_once('database/dbMaterials.php');
+include_once('domain/Person.php');
 
-    include_once('database/dbPersons.php');
-    include_once('database/dbMaterials.php');
-    include_once('domain/Person.php');
+$accessLevel = (int) $_SESSION['access_level'];
+$isGuest  = ($accessLevel === 0);
+$isWorker = ($accessLevel === 1);
+$isAdmin  = ($accessLevel >= 2);
 
-    $accessLevel = (int) $_SESSION['access_level'];
-    $isGuest  = ($accessLevel === 0);
-    $isWorker = ($accessLevel === 1);
-    $isAdmin  = ($accessLevel >= 2);
-    $query = "";
-    $materials = fetch_all_materials();
-    $results = [];
+$query             = "";
+$sort              = $_GET['sort'] ?? 'material_id';
+$selectedLocations = $_GET['location'] ?? [];
+$selectedTypes     = $_GET['resource_type'] ?? [];
 
-    if (!$isGuest && isset($_SESSION['_id'])) {
-        $person = retrieve_person($_SESSION['_id']);
-    }
+if (!$isGuest && isset($_SESSION['_id'])) {
+    $person = retrieve_person($_SESSION['_id']);
+}
 
-    if (isset($_GET['query'])) {
-	    $query = strtolower(trim($_GET['query']));
-    }
+if (isset($_GET['query'])) {
+    $query = strtolower(trim($_GET['query']));
+}
 
-    foreach ($materials as $material) {
-	    if (
-		   str_contains(strtolower((string)$material->getName()), $query) ||
-        	   str_contains(strtolower((string)$material->getAuthor()), $query) ||
-        	   str_contains(strtolower((string)$material->getDescription()), $query) ||
-        	   str_contains(strtolower((string)$material->getISBN()), $query)
-    		) {
-        	$results[] = $material;
-	    }
-    }
+$allResults = fetch_materials_by_query($query, $sort);
 
-    $notRoot = !$isAdmin;
+$locations = [];
+$types = [];
+foreach ($allResults as $m) {
+    $loc  = $m->getLocation();
+    $type = $m->getResourceType();
+    if ($loc  && !isset($locations[$loc]))  $locations[$loc]  = $loc;
+    if ($type && !isset($types[$type]))     $types[$type]     = $type;
+}
+ksort($locations);
+ksort($types);
 
+if (!empty($selectedLocations) || !empty($selectedTypes)) {
+    $allResults = array_filter($allResults, function($material) use ($selectedLocations, $selectedTypes) {
+        $matchLocation = empty($selectedLocations) || in_array($material->getLocation(), $selectedLocations);
+        $matchType     = empty($selectedTypes)     || in_array($material->getResourceType(), $selectedTypes);
+        return $matchLocation && $matchType;
+    });
+}
+
+$allResults  = array_values($allResults);
+$perPage     = 10;
+$totalItems  = count($allResults);
+$totalPages  = max(1, ceil($totalItems / $perPage));
+$currentPage = max(1, min((int)($_GET['page'] ?? 1), $totalPages));
+$offset      = ($currentPage - 1) * $perPage;
+$results     = array_slice($allResults, $offset, $perPage);
+
+function buildUrl($page, $query, $sort, $locations, $types) {
+    $parts = [
+        'page='  . $page,
+        'query=' . urlencode($query),
+        'sort='  . urlencode($sort),
+    ];
+    foreach ($locations as $l) $parts[] = 'location[]=' . urlencode($l);
+    foreach ($types     as $t) $parts[] = 'resource_type[]=' . urlencode($t);
+    return 'results.php?' . implode('&', $parts);
+}
+
+$hasFilters  = !empty($selectedLocations) || !empty($selectedTypes);
+$filterCount = count($selectedLocations) + count($selectedTypes);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="./css/base.css" rel="stylesheet">
-    <title>Seacobeck Curriculum Lab | Dashboard</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<link href="./css/base.css" rel="stylesheet">
+<title>Seacobeck Curriculum Lab | Search Results</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
-        body {
-            font-family: Quicksand, sans-serif;
-            background-color: #002D61 !important;
-        }
+body {
+    padding-top: 95px;
+    min-height: 100vh;
+    background-image: url('images/library.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+}
 
-        h2 {
-            font-weight: normal;
-            font-size: 30px;
-        }
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(0, 45, 97, 0.88);
+    z-index: -1;
+}
 
-        .full-width-bar {
-            width: 100%;
-            background: #8DC9F7 !important;
-            padding: 17px 5%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-        .full-width-bar-sub {
-            width: 100%;
-            background: #002D61 !important;
-            padding: 17px 5%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
+.page-wrapper {
+    width: 100% !important;
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+    padding: 40px 28px 80px !important;
+    box-sizing: border-box !important;
+}
 
-        .content-box {
-            flex: 1 1 280px;
-            max-width: 375px;
-            padding: 10px 2px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-        }
+.search-card {
+    border: 3px solid #0067A2;
+    border-radius: 16px;
+    padding: 16px 18px;
+    background-color: #8DC9F7;
+    margin-bottom: 16px;
+}
 
-        .content-box-sub {
-            flex: 1 1 300px;
-            max-width: 470px;
-            padding: 10px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-        }
+.search-inner {
+    position: relative !important;
+    width: 100% !important;
+    display: block !important;
+}
 
-        .content-box img {
-            width: 100%;
-            height: auto;
-            background: white;
-            border-radius: 5px;
-            border-bottom-right-radius: 50px;
-            border: 0.5px solid #828282;
-        }
+.search-input {
+    display: block !important;
+    width: 100% !important;
+    padding: 11px 120px 11px 16px !important;
+    font-size: 15px !important;
+    border-radius: 20px !important;
+    outline: none !important;
+    color: #0067A2 !important;
+    font-weight: 600 !important;
+    font-family: 'Inter', sans-serif !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    height: auto !important;
+    background: white !important;
+}
 
-        .content-box-sub img {
-            width: 105%;
-            height: auto;
-            background: white;
-            border-radius: 5px;
-            border-bottom-right-radius: 50px;
-            border: 1px solid #828282;
-        }
+.search-btn {
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    height: 100% !important;
+    width: 110px !important;
+    border-radius: 0 20px 20px 0 !important;
+    background: #0067A2 !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important;
+    border: none !important;
+    transition: background 0.2s;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
 
-        .small-text {
-            position: absolute;
-            top: 20px;
-            left: 30px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #3A3A3A;
-        }
+.search-btn:hover { background: #005080 !important; }
 
-        .large-text {
-            position: absolute;
-            top: 40px;
-            left: 30px;
-            font-size: 22px;
-            font-weight: 700;
-            color: black;
-            max-width: 90%;
-        }
+.controls-bar {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    width: 100%;
+}
 
-        .large-text-sub {
-            position: absolute;
-            top: 60%;
-            left: 10%;
-            font-size: 22px;
-            font-weight: 700;
-            color: black;
-            max-width: 90%;
-        }
+.sort-label { font-weight: 700; font-size: 14px; white-space: nowrap; flex-shrink: 0; }
 
-        .graph-text {
-            position: absolute;
-            top: 75%;
-            left: 10%;
-            font-size: 14px;
-            font-weight: 700;
-            color: #8DC9F7;
-            max-width: 90%;
-        }
+.sort-option {
+    font-size: 13px;
+    white-space: nowrap;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px;
+    cursor: pointer;
+    color: white !important;
+    font-weight: 400;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    flex-shrink: 0;
+}
 
-        .navbar {
-            width: 100%;
-            height: 95px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: #8DC9F7;
-            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
-            z-index: 1000;
-        }
+.sort-option input[type="radio"] {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-block !important;
+    flex-shrink: 0;
+}
 
-        .left-section {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
+.divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(255,255,255,0.25);
+    flex-shrink: 0;
+}
 
-        .logo-container {
-            background: #8DC9F7;
-            padding: 10px 20px;
-            border-radius: 50px;
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) inset;
-        }
+.filter-toggle {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 7px;
+    background: transparent !important;
+    border: 2px solid #8DC9F7 !important;
+    border-radius: 20px !important;
+    color: white !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 14px !important;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+    width: auto !important;
+    flex-shrink: 0;
+    margin: 0 !important;
+}
 
-        .logo-container img {
-            width: 128px;
-            height: 52px;
-            display: block;
-        }
+.filter-toggle:hover,
+.filter-toggle.active { background: #8DC9F7 !important; color: #002D61 !important; }
 
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
+.filter-count {
+    background: #002D61;
+    color: #8DC9F7;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 7px;
+    display: none;
+}
 
-        .nav-links div {
-            font-size: 24px;
-            font-weight: 700;
-            color: black;
-            cursor: pointer;
-        }
+.filter-count.visible { display: inline-block; }
 
-        @media (max-width: 900px) { .nav-links div { font-size: 18px; } }
-        @media (max-width: 600px) { .nav-links div { font-size: 16px; } }
+.filter-arrow { font-size: 9px; transition: transform 0.2s; }
+.filter-toggle.open .filter-arrow { transform: rotate(180deg); }
 
-        .right-section {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+.filter-panel {
+    display: none;
+    background: #0067A2;
+    border: 2px solid #8DC9F7;
+    border-radius: 14px;
+    padding: 20px 20px 16px;
+    margin-bottom: 18px;
+    animation: fadeIn 0.15s ease;
+}
 
-        .date-box {
-            background: #8DC9F7;
-            padding: 10px 30px;
-            border-radius: 50px;
-            box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.25) inset;
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
-            text-align: center;
-        }
+.filter-panel.open { display: block; }
 
-        .icon { width: 47px; height: 47px; border-radius: 50%; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 
-        .arrow-button {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            background: transparent;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .arrow-button:hover { transform: translateX(5px); }
+.filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+}
 
-        .circle-arrow-button {
-            position: absolute;
-            bottom: 30px;
-            right: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: transparent;
-            border: none;
-            font-size: 20px;
-            font-family: Quicksand, sans-serif;
-            font-weight: bold;
-            color: black;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
+.filter-group-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
 
-        .circle {
-            width: 30px;
-            height: 30px;
-            background-color: #8DC9F7;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            transition: transform 0.3s ease;
-        }
+.check-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px 16px;
+}
 
-        .circle-arrow-button:hover { background-color: transparent !important; }
-        .circle-arrow-button:hover .circle { transform: translateX(5px); }
+.check-columns.single-col { grid-template-columns: 1fr; }
 
-        .colored-box {
-            display: inline-block;
-            background-color: #8DC9F7;
-            color: white;
-            padding: 1px 5px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
+.check-row { display: flex; align-items: center; gap: 8px; }
 
-        .footer {
-            width: 100%;
-            background: #8DC9F7;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 30px 50px;
-            flex-wrap: wrap;
-        }
+.check-row input[type="checkbox"] {
+    accent-color: #8DC9F7;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
 
-        .footer-left { display: flex; flex-direction: column; align-items: center; }
-        .footer-logo { width: 150px; margin-bottom: 15px; }
-        .social-icons { display: flex; gap: 15px; }
-        .social-icons a { color: white; font-size: 20px; transition: color 0.3s ease; }
-        .social-icons a:hover { color: #dcdcdc; }
-        .footer-right { display: flex; gap: 50px; flex-wrap: wrap; align-items: flex-start; }
-        .footer-section { display: flex; flex-direction: column; justify-content: center; gap: 10px; color: #8DC9F7; font-family: Inter, sans-serif; font-size: 16px; font-weight: 500; }
-        .footer-topic { font-size: 18px; font-weight: bold; }
-        .footer a { color: white; text-decoration: none; transition: background 0.2s ease, color 0.2s ease; padding: 5px 10px; border-radius: 5px; }
-        .footer a:hover { background: rgba(255, 255, 255, 0.1); color: #dcdcdc; }
+.check-row label { font-size: 13px; color: white; cursor: pointer; font-weight: 400; line-height: 1.3; }
 
-        .background-image { width: 100%; border-radius: 10px; }
+.filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
 
-        .icon-overlay {
-            position: absolute;
-            top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+.apply-btn {
+    padding: 9px 24px;
+    border-radius: 10px;
+    border: none;
+    background: #8DC9F7;
+    color: #002D61;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
 
-        .icon-overlay img { width: 40px; height: 40px; opacity: 0.9; }
+.apply-btn:hover { background: white; }
 
-        .content-box-test:hover .icon-overlay img {
-            transform: scale(1.1) rotate(5deg);
-            transition: transform 0.5s ease;
-        }
+.clear-link {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    padding: 0;
+}
 
-        .content-box-test {
-            position: relative;
-            background-color: #8DC9F7 !important;
-            border-radius: 12px;
-            padding: 20px;
-            color: black;
-            flex: 1 1 280px;
-            max-width: 375px;
-            min-height: 250px;
-        }
+.clear-link:hover { color: white; }
 
-        .content-box-test .large-text-sub,
-        .content-box-test .graph-text { color: black; }
+.results-heading {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+}
 
-        .background-image { display: none; }
-    </style>
+.result-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 20px;
+}
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const extra = document.querySelector(".extra-info");
-            if (extra) extra.style.maxHeight = "0px";
-        });
-        function toggleInfo(event) {
-            event.stopPropagation();
-            let info = event.target.nextElementSibling;
-            let isVisible = info.style.maxHeight !== "0px";
-            info.style.maxHeight = isVisible ? "0px" : "100px";
-            event.target.innerText = isVisible ? "↓" : "↑";
-        }
-    </script>
+.result-card {
+    background: white;
+    color: #0067A2;
+    padding: 20px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+}
+
+.result-card h3 a:link,
+.result-card h3 a:visited,
+.result-card h3 a:active { color: #002D61; text-decoration: none; }
+
+.result-card h3 a:hover { color: #0067A2; }
+
+.result-card h3 { font-size: 18px; margin-bottom: 8px; }
+
+.result-card p { font-size: 14px; margin-bottom: 4px; line-height: 1.5; }
+
+.available-yes { color: green; font-weight: 700; }
+.available-no  { color: red;   font-weight: 700; }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 2px solid #8DC9F7;
+    background: transparent;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s;
+}
+
+.page-btn:hover { background: #8DC9F7; color: #002D61; }
+.page-btn.active { background: #8DC9F7; color: #002D61; pointer-events: none; }
+.page-btn.disabled { opacity: 0.3; pointer-events: none; }
+
+.ellipsis { color: white; align-self: center; font-weight: 700; font-size: 16px; padding: 0 2px; }
+
+.jump-input {
+    width: 76px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 2px solid #8DC9F7;
+    background: transparent;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-align: center;
+}
+
+.jump-input::placeholder { color: rgba(255,255,255,0.45); }
+
+.no-results { color: white; font-size: 16px; margin-top: 20px; }
+
+@media (max-width: 768px) {
+    .page-wrapper { padding: 20px 14px 60px; }
+    .search-input { padding: 11px 100px 11px 14px; font-size: 14px; }
+    .search-btn { width: 90px; font-size: 13px; }
+    .filter-grid { grid-template-columns: 1fr; gap: 16px; }
+    .check-columns { grid-template-columns: 1fr 1fr; }
+    .controls-bar { gap: 10px; }
+    .divider { display: none; }
+}
+</style>
 </head>
 
-<!-- ADMIN VIEW -->
-<?php if ($isAdmin): ?>
 <body>
 <?php require 'header.php'; ?>
+<div class="overlay"></div>
 
-    <!-- MAIN TWO-COLUMN LAYOUT -->
-<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
-    <!-- LEFT SIDEBAR (Filters) -->
-    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
-        <h3>Filters</h3>
-        <hr>
+<div class="page-wrapper" style="width:100%; max-width:1280px; margin:0 auto; padding:40px 28px 80px; box-sizing:border-box;">
 
-        <!-- Location -->
-        <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
-        <input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
-        <input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
-        <input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
-        <input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
-        <input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
-        <input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
-        <input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
-        <input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
-        <input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
-        <input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
-        <input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
-        <input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
-        <input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
-        <input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
-        <input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
-        <input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
-        <input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
-        <input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
-        <input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
-        <input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
-        <input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
-        <input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
-        <input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
-        <input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
-    </details>
-
-    <br>
-
-        <!-- Material Type -->
-        <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
-        <input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
-        <input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
-        <input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
-        <input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
-        <input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
-
-        </details>
-</div>
-
-    <!-- RIGHT SIDE: MAIN CONTENT -->
-    <div style="flex: 1; max-width: 900px;">
-
-    <!--Search Bar -->
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <div style="position: relative; width:100%;">
-                <input type="text" name="query" placeholder="Search materials..."
-                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
-                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
-                Search
-            </button>
+    <div class="search-card">
+        <form action="results.php" method="GET">
+            <?php foreach ($selectedLocations as $l): ?>
+                <input type="hidden" name="location[]" value="<?php echo htmlspecialchars($l); ?>">
+            <?php endforeach; ?>
+            <?php foreach ($selectedTypes as $t): ?>
+                <input type="hidden" name="resource_type[]" value="<?php echo htmlspecialchars($t); ?>">
+            <?php endforeach; ?>
+            <input type="hidden" name="sort" value="<?php echo htmlspecialchars($sort); ?>">
+            <div class="search-inner">
+                <input type="text" name="query" class="search-input"
+                       placeholder="Search materials..."
+                       value="<?php echo htmlspecialchars($query); ?>">
+                <button type="submit" class="search-btn">Search</button>
             </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-        <form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-            <input type="radio" id="sort-title" name="sort" value="title">
-            <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
-
-            <input type="radio" id="sort-author" name="sort" value="author">
-            <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
-
-            <input type="radio" id="sort-material-type" name="sort" value="material_type">
-            <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
-
-            <input type="radio" id="sort-location" name="sort" value="location">
-            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
         </form>
-
     </div>
 
-    <!-- Search Results -->
-    <div style="margin-top: 30px; padding: 30px 20px;">
-        <h2><b>Search Results</b></h2>
-        <!-- Results from database go here -->
-        <?php
-            if (!empty($results)) {
-                    foreach ($results as $material) {
-                        echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
-                        echo "<h3>" . $material->getName() . "</h3>";
-                        echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
-                        echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
-                        echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
-                        echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
-                        echo "<p>" . $material->getDescription() . "</p>";
-                        echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
+    <form method="GET" action="results.php" id="filterSortForm" style="display:block;">
+        <input type="hidden" name="query" value="<?php echo htmlspecialchars($query); ?>">
 
-                        if ($material->canBeCheckedOut()) {
-                            echo "<p style='color:green'><b>Available for Checkout</b></p>";
-                        } else {
-                            echo "<p style='color:red'><b>Out of Stock</b></p>";
-                        }
-                        echo "</div>";
-                }
+        <div style="margin-bottom:10px;">
+            <button type="button" class="filter-toggle <?php echo $hasFilters ? 'active' : ''; ?>" id="filterToggle">
+                🔍 Filters
+                <span class="filter-count <?php echo $hasFilters ? 'visible' : ''; ?>"><?php echo $filterCount; ?></span>
+                <span class="filter-arrow">▼</span>
+            </button>
+        </div>
 
-            } else {
-                echo "<p>No materials found.</p>";
-            }
+        <div class="controls-bar">
+            <span class="sort-label">Sort by:</span>
 
+            <?php
+            $sortOpts = [
+                'material_id'   => 'Default',
+                'name'          => 'Name',
+                'author'        => 'Author',
+                'resource_type' => 'Resource Type',
+                'location'      => 'Location',
+            ];
+            foreach ($sortOpts as $val => $label):
+            ?>
+            <label class="sort-option">
+                <input type="radio" name="sort" value="<?php echo $val; ?>"
+                       onchange="this.form.submit()"
+                       <?php if ($sort === $val) echo 'checked'; ?>>
+                <?php echo $label; ?>
+            </label>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="filter-panel <?php echo $hasFilters ? 'open' : ''; ?>" id="filterPanel">
+            <div class="filter-grid">
+                <div>
+                    <div class="filter-group-title">Location</div>
+                    <div class="check-columns">
+                        <?php foreach ($locations as $val => $label):
+                            $checked = in_array($val, $selectedLocations) ? 'checked' : '';
+                        ?>
+                        <div class="check-row">
+                            <input type="checkbox" name="location[]"
+                                   value="<?php echo $val; ?>"
+                                   id="loc-<?php echo $val; ?>" <?php echo $checked; ?>>
+                            <label for="loc-<?php echo $val; ?>"><?php echo $label; ?></label>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="filter-group-title">Resource Type</div>
+                    <div class="check-columns single-col">
+                        <?php foreach ($types as $val => $label):
+                            $checked = in_array($val, $selectedTypes) ? 'checked' : '';
+                        ?>
+                        <div class="check-row">
+                            <input type="checkbox" name="resource_type[]"
+                                   value="<?php echo $val; ?>"
+                                   id="type-<?php echo $val; ?>" <?php echo $checked; ?>>
+                            <label for="type-<?php echo $val; ?>"><?php echo $label; ?></label>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="apply-btn">✓ Apply Filters</button>
+                <?php if ($hasFilters): ?>
+                    <a href="results.php?query=<?php echo urlencode($query); ?>&sort=<?php echo urlencode($sort); ?>" class="clear-link">Clear filters</a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </form>
+
+    <h2 class="results-heading">Search Results <span style="font-weight:400;">(<?php echo $totalItems; ?>)</span></h2>
+    <p class="result-meta">
+        Showing <?php echo $offset + 1; ?>–<?php echo min($offset + $perPage, $totalItems); ?> of <?php echo $totalItems; ?> materials
+    </p>
+
+    <?php if (!empty($results)): ?>
+        <?php foreach ($results as $material): ?>
+        <div class="result-card">
+            <h3><a href="self_service.php?material_id=<?php echo $material->getMaterialID(); ?>"><?php echo htmlspecialchars($material->getName()); ?></a></h3>
+            <p><b>Author:</b> <?php echo htmlspecialchars($material->getAuthor() ?: 'N/A'); ?></p>
+            <p><b>ISBN:</b> <?php echo htmlspecialchars($material->getISBN() ?: 'N/A'); ?></p>
+            <p><b>Location:</b> <?php echo htmlspecialchars($material->getLocation()); ?></p>
+            <p><b>Resource Type:</b> <?php echo htmlspecialchars($material->getResourceType()); ?></p>
+            <?php if ($material->getDescription()): ?>
+                <p><?php echo htmlspecialchars($material->getDescription()); ?></p>
+            <?php endif; ?>
+            <p><b>Available:</b> <?php echo $material->getCopyInstock(); ?> / <?php echo $material->getCopyCapacity(); ?></p>
+            <?php if ($material->canBeCheckedOut()): ?>
+                <p class="available-yes">Available for Checkout</p>
+            <?php else: ?>
+                <p class="available-no">Out of Stock</p>
+            <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
+
+        <?php if ($totalPages > 1):
+            $win = 2;
         ?>
-    </div>
-</div>
-</div>
-</div>
+        <div class="pagination">
+            <a href="<?php echo buildUrl($currentPage - 1, $query, $sort, $selectedLocations, $selectedTypes); ?>"
+               class="page-btn <?php echo $currentPage <= 1 ? 'disabled' : ''; ?>">&#8592; Prev</a>
 
-    <?php if (isset($_GET['pcSuccess'])): ?>
-        <div class="happy-toast">Password changed successfully!</div>
-    <?php elseif (isset($_GET['deleteService'])): ?>
-        <div class="happy-toast">Service successfully removed!</div>
-    <?php elseif (isset($_GET['serviceAdded'])): ?>
-        <div class="happy-toast">Service successfully added!</div>
-    <?php elseif (isset($_GET['animalRemoved'])): ?>
-        <div class="happy-toast">Animal successfully removed!</div>
-    <?php elseif (isset($_GET['locationAdded'])): ?>
-        <div class="happy-toast">Location successfully added!</div>
-    <?php elseif (isset($_GET['deleteLocation'])): ?>
-        <div class="happy-toast">Location successfully removed!</div>
-    <?php elseif (isset($_GET['registerSuccess'])): ?>
-        <div class="happy-toast">Volunteer registered successfully!</div>
-    <?php endif ?>
-
-
-    <!-- Footer -->
-    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
-
-    <footer class="footer" style="margin-top: 100px;">
-        <div class="footer-left">
-            <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
-        <div class="footer-right">
-            <div class="footer-section">
-		<div class="footer-topic">Connect</div>
-                <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
-                <a href="https://www.instagram.com/umw_coe/">Instagram</a>
-                <a href="https://education.umw.edu/">Main Website</a>
-            </div>
-            <div class="footer-section">
-                <div class="footer-topic">Contact Us</div>
-                <a href="">mwells@umw.edu</a>
-                        <a href="tel:5406541290">(540) 654-1290</a>
-            </div>
-        </div>
-    </footer>
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
-</body>
-<?php endif ?>
-
-<!-- WORKER VIEW -->
-<?php if ($isWorker): ?>
-<body>
-<?php require 'header.php'; ?>
-
-<!-- MAIN TWO-COLUMN LAYOUT -->
-<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
-    <!-- LEFT SIDEBAR (Filters) -->
-    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
-        <h3>Filters</h3>
-        <hr>
-
-        <!-- Location -->
-        <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
-        <input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
-        <input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
-        <input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
-        <input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
-        <input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
-        <input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
-        <input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
-        <input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
-        <input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
-        <input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
-        <input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
-        <input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
-        <input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
-        <input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
-        <input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
-        <input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
-        <input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
-        <input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
-        <input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
-        <input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
-        <input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
-        <input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
-        <input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
-        <input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
-    </details>
-
-    <br>
-
-        <!-- Material Type -->
-        <details>
-        <summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
-        <input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
-        <input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
-        <input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
-        <input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
-        <input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
-
-        </details>
-</div>
-
-    <!-- RIGHT SIDE: MAIN CONTENT -->
-    <div style="flex: 1; max-width: 900px;">
-
-    <!--Search Bar -->
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <div style="position: relative; width:100%;">
-                <input type="text" name="query" placeholder="Search materials..."
-                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
-                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
-                Search
-            </button>
-            </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-        <form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-            <input type="radio" id="sort-title" name="sort" value="title">
-            <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
-
-            <input type="radio" id="sort-author" name="sort" value="author">
-            <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
-
-            <input type="radio" id="sort-material-type" name="sort" value="material_type">
-            <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
-
-            <input type="radio" id="sort-location" name="sort" value="location">
-            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
-        </form>
-
-    </div>
-
-    <!-- Search Results -->
-    <div style="margin-top: 30px; padding: 30px 20px;">
-        <h2><b>Search Results</b></h2>
-        <!-- Results from database go here -->
-        <?php
-            if (!empty($results)) {
-                    foreach ($results as $material) {
-                        echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
-                        echo "<h3>" . $material->getName() . "</h3>";
-                        echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
-                        echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
-                        echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
-                        echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
-                        echo "<p>" . $material->getDescription() . "</p>";
-                        echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
-
-                        if ($material->canBeCheckedOut()) {
-                            echo "<p style='color:green'><b>Available for Checkout</b></p>";
-                        } else {
-                            echo "<p style='color:red'><b>Out of Stock</b></p>";
-                        }
-                        echo "</div>";
-                }
-
-            } else {
-                echo "<p>No materials found.</p>";
+            <?php
+            if ($currentPage > $win + 2) {
+                echo '<a href="' . buildUrl(1, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn">1</a>';
+                if ($currentPage > $win + 3) echo '<span class="ellipsis">…</span>';
             }
+            for ($p = max(1, $currentPage - $win); $p <= min($totalPages, $currentPage + $win); $p++) {
+                $cls = $p === $currentPage ? 'active' : '';
+                echo '<a href="' . buildUrl($p, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn ' . $cls . '">' . $p . '</a>';
+            }
+            if ($currentPage < $totalPages - $win - 1) {
+                if ($currentPage < $totalPages - $win - 2) echo '<span class="ellipsis">…</span>';
+                echo '<a href="' . buildUrl($totalPages, $query, $sort, $selectedLocations, $selectedTypes) . '" class="page-btn">' . $totalPages . '</a>';
+            }
+            ?>
 
-        ?>
-    </div>
-</div>
-</div>
-</div>
+            <a href="<?php echo buildUrl($currentPage + 1, $query, $sort, $selectedLocations, $selectedTypes); ?>"
+               class="page-btn <?php echo $currentPage >= $totalPages ? 'disabled' : ''; ?>">Next &#8594;</a>
 
-    <!-- Footer -->
-    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
-
-    <footer class="footer" style="margin-top: 100px;">
-        <div class="footer-left">
-            <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
-        <div class="footer-right">
-            <div class="footer-section">
-                <div class="footer-topic">Connect</div>
-                <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
-                <a href="https://www.instagram.com/umw_coe/">Instagram</a>
-                <a href="https://education.umw.edu/">Main Website</a>
-	    </div>
-            <div class="footer-section">
-                <div class="footer-topic">Contact Us</div>
-                <a href="">mwells@umw.edu</a>
-                <a href="tel:5406541290">(540) 654-1290</a>
-            </div>
-        </div>
-    </footer>
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
-</body>
-<?php endif ?>
-
-<!-- GUEST VIEW -->
-<?php if ($isGuest): ?>
-<body style="display: flex; flex-direction: column; min-height: 100vh;">
-<?php require 'header.php'; ?>
-
-<!-- MAIN TWO-COLUMN LAYOUT -->
-<div style="flex: 1; display: flex; width: 100%; gap: 40px; justify-content: center; align-items: flex-start;">
-    <!-- LEFT SIDEBAR (Filters) -->
-    <div style="flex: 0 0 25%; border: 2px solid #8DC9F7; border-radius: 12px; padding: 20px; background-color: #0067A2; position: sticky; top: 120px; height: fit-content; overflow-y: auto; max-height: 90vh;">
-	<h3>Filters</h3>
-	<hr>
-
-    	<!-- Location -->
-	<details>
-	<summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Location</summary>
-    	<input type="checkbox" id="loc-early1"> <label for="loc-early1">Early Readers 1</label><br>
-    	<input type="checkbox" id="loc-early2"> <label for="loc-early2">Early Readers 2</label><br>
-    	<input type="checkbox" id="loc-gen-a-m"> <label for="loc-gen-a-m">General Fiction A-M</label><br>
-    	<input type="checkbox" id="loc-gen-n-z"> <label for="loc-gen-n-z">General Fiction N-Z</label><br>
-    	<input type="checkbox" id="loc-nonfiction"> <label for="loc-nonfiction">General Nonfiction</label><br>
-    	<input type="checkbox" id="loc-holiday"> <label for="loc-holiday">Holiday</label><br>
-    	<input type="checkbox" id="loc-middle-grade"> <label for="loc-middle-grade">Middle Grade Novels</label><br>
-    	<input type="checkbox" id="loc-multilingual"> <label for="loc-multilingual">Multilingual</label><br>
-    	<input type="checkbox" id="loc-realistic-a-g"> <label for="loc-realistic-a-g">Realistic Fiction A-G</label><br>
-    	<input type="checkbox" id="loc-realistic-h-z"> <label for="loc-realistic-h-z">Realistic Fiction H-Z</label><br>
-    	<input type="checkbox" id="loc-science-a-f"> <label for="loc-science-a-f">Science A-F</label><br>
-    	<input type="checkbox" id="loc-science-a-m"> <label for="loc-science-a-m">Science A-M</label><br>
-    	<input type="checkbox" id="loc-science-g-q"> <label for="loc-science-g-q">Science G-Q</label><br>
-    	<input type="checkbox" id="loc-science-n-z"> <label for="loc-science-n-z">Science N-Z</label><br>
-    	<input type="checkbox" id="loc-science-r-z"> <label for="loc-science-r-z">Science R-Z</label><br>
-    	<input type="checkbox" id="loc-science-resources"> <label for="loc-science-resources">Science Resources</label><br>
-    	<input type="checkbox" id="loc-social-studies"> <label for="loc-social-studies">Social Studies</label><br>
-    	<input type="checkbox" id="loc-social-f"> <label for="loc-social-f">Social Studies Stories A-F</label><br>
-    	<input type="checkbox" id="loc-social-l"> <label for="loc-social-l">Social Studies Stories A-L</label><br>
-    	<input type="checkbox" id="loc-social-g-o"> <label for="loc-social-g-o">Social Studies Stories G-O</label><br>
-    	<input type="checkbox" id="loc-social-p-z"> <label for="loc-social-p-z">Social Studies Stories P-Z</label><br>
-    	<input type="checkbox" id="loc-trad-folk"> <label for="loc-trad-folk">Trad/Folk</label><br>
-    	<input type="checkbox" id="loc-transportation"> <label for="loc-transportation">Transportation</label><br>
-    	<input type="checkbox" id="loc-wordless"> <label for="loc-wordless">Wordless Picture Books</label><br>
-    </details>
-
-    <br>
-
-    	<!-- Material Type -->
-	<details>
-	<summary style="font-weight:bold; cursor:pointer; margin-bottom:10px;">Material Type</summary>
-    	<input type="checkbox" id="mat-child-lit"> <label for="mat-child-lit">Children’s Literature</label><br>
-    	<input type="checkbox" id="mat-math"> <label for="mat-math">Math Manipulatives</label><br>
-    	<input type="checkbox" id="mat-prof"> <label for="mat-prof">Professional Text</label><br>
-    	<input type="checkbox" id="mat-textbook"> <label for="mat-textbook">Textbook</label><br>
-	<input type="checkbox" id="mat-supplies"> <label for="mat-supplies">Supplies</label><br>
-
-	</details>
-</div>
-
-    <!-- RIGHT SIDE: MAIN CONTENT -->
-    <div style="flex: 1; max-width: 900px;">
-
-    <!--Search Bar -->
-    <div style="display: flex; justify-content: center; margin: 40px 0;">
-        <div style="width:100%; max-width: 900px; border: 3px solid #0067A2; border-radius: 16px; padding: 30px; background-color: #8DC9F7;">
-            <form action="results.php" method="GET" style="width: 100%; max-width: 900px; display: flex;">
-                <div style="position: relative; width:100%;">
-                <input type="text" name="query" placeholder="Search materials..."
-                    style="flex: 7; width: 100%; max-width: 900px; padding: 12px 16px; font-size: 16px; border: 1px solid #ccc; border-radius: 20px; outline: none; color: #0067A2;">
-                <button type="submit" style="position: absolute; right: 0; top: 0; height: 83%; width: 120px; border: 1px solid #ccc; border-radius:0 20px 20px 0; background: #0067A2; color: white; font-size: 16px; cursor: pointer;">
-                Search
-            </button>
-            </div>
+            <form method="GET" action="results.php" style="display:flex; align-items:center; gap:6px; margin-left:8px;">
+                <input type="hidden" name="query" value="<?php echo htmlspecialchars($query); ?>">
+                <input type="hidden" name="sort"  value="<?php echo htmlspecialchars($sort); ?>">
+                <?php foreach ($selectedLocations as $l): ?>
+                    <input type="hidden" name="location[]" value="<?php echo htmlspecialchars($l); ?>">
+                <?php endforeach; ?>
+                <?php foreach ($selectedTypes as $t): ?>
+                    <input type="hidden" name="resource_type[]" value="<?php echo htmlspecialchars($t); ?>">
+                <?php endforeach; ?>
+                <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>"
+                       class="jump-input" placeholder="Go to…">
+                <button type="submit" class="page-btn" style="padding:0 14px;">Go</button>
             </form>
         </div>
-    </div>
+        <?php endif; ?>
 
+    <?php else: ?>
+        <p class="no-results">No materials found.</p>
+    <?php endif; ?>
 
-    <!-- Sort by -->
-    <div style="display: flex; justify-content: center; margin-top: -20px;">
-        <form style="display: flex; gap: 20px; align-items: center; max-width: 900px;">
-            <span style="font-weight: bold; white-space: nowrap;">Sort by: </span>
-
-            <input type="radio" id="sort-title" name="sort" value="title">
-            <label for="sort-title" style="color: white; white-space: nowrap;">Title</label>
-
-            <input type="radio" id="sort-author" name="sort" value="author">
-            <label for="sort-author" style="color: white; white-space: nowrap;">Author</label>
-
-            <input type="radio" id="sort-material-type" name="sort" value="material_type">
-            <label for="sort-material-type" style="color: white; white-space: nowrap;">Material Type</label>
-
-            <input type="radio" id="sort-location" name="sort" value="location">
-            <label for="sort-location" style="color: white; white-space: nowrap;">Location</label>
-        </form>
-
-    </div>
-
-    <!-- Search Results -->
-    <div style="margin-top: 30px; padding: 30px 20px;">
-	<h2><b>Search Results</b></h2>
-	<!-- Results from database go here -->
-	<?php
-	    if (!empty($results)) {
-		    foreach ($results as $material) {
-			echo "<div style='background:white; color:#0067A2; padding:20px; margin-bottom:15px; border-radius:12px;'>";
-			echo "<h3>" . $material->getName() . "</h3>";
-        		echo "<p><b>Author:</b> " . $material->getAuthor() . "</p>";
-        		echo "<p><b>ISBN:</b> " . $material->getISBN() . "</p>";
-        		echo "<p><b>Location:</b> " . $material->getLocation() . "</p>";
-        		echo "<p><b>Material Type:</b> " . $material->getResourceType() . "</p>";
-        		echo "<p>" . $material->getDescription() . "</p>";
-        		echo "<p><b>Available:</b> " . $material->getCopyInstock() . " / " . $material->getCopyCapacity() . "</p>";
-
-			if ($material->canBeCheckedOut()) {
-        		    echo "<p style='color:green'><b>Available for Checkout</b></p>";
-    			} else {
-        		    echo "<p style='color:red'><b>Out of Stock</b></p>";
-			}
-			echo "</div>";
-    		}
-
-	    } else {
-    		echo "<p>No materials found.</p>";
-	    }
-
-    	?>
-    </div>
-</div>
-</div>
 </div>
 
-    <!-- Footer -->
-    <div style="width: 90%; height: 100%; outline: 1px #8DC9F7 solid; outline-offset: -0.5px; margin: 70px auto; padding: 1px 0;"></div>
+<?php require 'footer.php'; ?>
 
-    <footer class="footer" style="margin-top: 100px;">
-        <div class="footer-left">
-            <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
-        <div class="footer-right">
-            <div class="footer-section">
-                <div class="footer-topic">Connect</div>
-                <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
-                <a href="https://www.instagram.com/umw_coe/">Instagram</a>
-                <a href="https://education.umw.edu/">Main Website</a>
-            </div>
-            <div class="footer-section">
-                <div class="footer-topic">Contact Us</div>
-                 <a href="mailto:mwells@umw.edu">mwells@umw.edu</a>
-                <a href="tel:5406541290">(540) 654-1290</a>
-            </div>
-        </div>
-    </footer>
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+<script>
+const filterToggle = document.getElementById('filterToggle');
+const filterPanel  = document.getElementById('filterPanel');
+
+if (filterPanel.classList.contains('open')) {
+    filterToggle.classList.add('open');
+}
+
+filterToggle.addEventListener('click', function () {
+    const isOpen = filterPanel.classList.toggle('open');
+    filterToggle.classList.toggle('open', isOpen);
+});
+</script>
+
 </body>
-<?php endif ?>
-
 </html>
-

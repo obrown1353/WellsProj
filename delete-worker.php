@@ -10,31 +10,36 @@ if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
     die();
 }
 
-require_once('database/db.php'); // $pdo connection
+require_once('database/dbPersons.php');
+require_once('domain/Person.php');
+include_once "database/dbLogs.php";
 
 $success      = false;
 $error        = '';
 $deleted_name = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete'])) {
-    $staff_id = strtolower(trim($_POST['staff_id'] ?? ''));
+    $username = strtolower(trim($_POST['username'] ?? ''));
 
-    if (!$staff_id) {
+    if (!$username) {
         $error = 'No username provided.';
-    } elseif ($staff_id === 'vmsroot') {
+    } elseif ($username === 'vmsroot') {
         $error = 'That account cannot be deleted.';
     } else {
-        $stmt = $pdo->prepare('SELECT * FROM `dbstaff` WHERE staff_id = ?');
-        $stmt->execute([$staff_id]);
-        $person = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        $person = retrieve_person($username);
         if (!$person) {
-            $error = "No account found with username \"$staff_id\".";
+            $error = "No account found with username \"$username\".";
         } else {
-            $deleted_name = $person['first_name'] . ' ' . $person['last_name'];
-            $del = $pdo->prepare('DELETE FROM `dbstaff` WHERE staff_id = ?');
-            if ($del->execute([$staff_id])) {
+            $deleted_name = $person->get_first_name() . ' ' . $person->get_last_name();
+            if (remove_person($username)) {
                 $success = true;
+                $log = new Log(
+                    null,
+                    $log_type = "system",
+                    $message = $username . " has been been removed from staff",
+                    $log_time = date('Y-m-d H:i:s')
+                );
+                new_log($log);
             } else {
                 $error = 'Could not delete the account. Please try again.';
             }
@@ -42,16 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete'])) {
     }
 }
 
-// Search for a user before confirming delete
 $search_result = null;
 $search_error  = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
-    $q = strtolower(trim($_POST['staff_id'] ?? ''));
+    $q = strtolower(trim($_POST['username'] ?? ''));
     if ($q) {
-        $stmt = $pdo->prepare('SELECT * FROM `dbstaff` WHERE staff_id = ?');
-        $stmt->execute([$q]);
-        $found = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($found && $found['staff_id'] !== 'vmsroot') {
+        $found = retrieve_person($q);
+        if ($found && $found->get_id() !== 'vmsroot') {
             $search_result = $found;
         } else {
             $search_error = "No account found with username \"$q\".";
@@ -64,80 +66,208 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seacobeck Library | Delete Account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <title>Seacobeck Curriculum Lab | Delete Account</title>
 </head>
 <body>
 <?php require 'header.php'; ?>
+
 <style>
-    body { background-color: #002654; } 
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
-    .page-wrap {
-        max-width: 560px;
-        margin: 40px auto;
-        padding: 0 20px 60px;
-        color: white;
-    }
-    .page-title { margin-bottom: 6px; font-size: 28px; font-weight: 700; color: white; }
-    .subtitle { color: #8DC9F7; font-size: 14px; margin-bottom: 30px; }
+body {
+    min-height: 100vh;
+    padding-top: 95px;
+    color: white;
+    background-image: url('images/library.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
 
-    .card {
-        background: rgba(0, 20, 60, 0.85);
-        border-radius: 14px;
-        padding: 32px;
-        border: 1px solid rgba(141, 201, 247, .25);
-    }
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 45, 97, 0.88);
+    z-index: -1;
+}
 
-    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
-    .form-label {
-        font-size: 12px; font-weight: 700; text-transform: uppercase;
-        letter-spacing: .06em; color: #8DC9F7;
-    }
-    .form-input {
-        width: 100%; padding: 11px 14px; font-size: 15px; font-family: inherit;
-        background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.15);
-        border-radius: 8px; color: white; outline: none; transition: border-color .2s;
-        box-sizing: border-box;
-    }
-    .form-input:focus { border-color: #8DC9F7; }
-    .form-input::placeholder { color: rgba(255,255,255,.3); }
+.page-wrapper {
+    max-width: 580px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
 
-    .btn { width: 100%; padding: 13px; font-size: 15px; font-family: inherit; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; transition: background .2s, transform .1s; margin-top: 4px; }
-    .btn:active { transform: scale(.97); }
-    .btn-search { background: #7b95e9; color: white; }
-    .btn-search:hover { background: #0a1e61; }
-    .btn-delete { background: #b91c1c; color: white; }
-    .btn-delete:hover { background: #7f1d1d; }
+.page-heading {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: white;
+}
+.page-subheading {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 32px;
+}
 
-    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 600; }
-    .alert-error   { background: rgba(180,30,30,.85); color: white; }
-    .alert-success { background: rgba(22,163,74,.85);  color: white; }
-    .alert-warn    { background: rgba(180,100,0,.85);  color: white; }
+.alert {
+    padding: 13px 18px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.alert-error   { background: rgba(180,30,30,0.85); color: white; }
+.alert-success { background: rgba(22,163,74,0.85);  color: white; }
 
-    .user-card {
-        background: rgba(141,201,247,.1);
-        border: 1px solid rgba(141,201,247,.3);
-        border-radius: 10px;
-        padding: 16px 20px;
-        margin-bottom: 20px;
-    }
-    .user-card .name  { font-size: 18px; font-weight: 700; color: white; }
-    .user-card .uname { font-size: 13px; color: #8DC9F7; margin-top: 2px; }
-    .user-card .role  { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 4px; text-transform: uppercase; letter-spacing: .05em; }
+/* Card — exact same as table-wrapper from view-worker */
+.card {
+    background: rgba(141,201,247,0.08);
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    overflow: hidden;
+}
 
-    .form-divider { border: none; border-top: 1px solid rgba(255,255,255,.1); margin: 20px 0; }
+.form-inner {
+    padding: 32px;
+}
 
-    .back-link { display: inline-block; margin-top: 16px; color: #8DC9F7; font-size: 14px; text-decoration: none; }
-    .back-link:hover { text-decoration: underline; }
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.form-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #8DC9F7;
+}
+
+.form-input {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    background: rgba(141,201,247,0.07);
+    border: 1.5px solid rgba(141,201,247,0.2);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    transition: border-color .2s;
+    box-sizing: border-box;
+}
+.form-input:focus { border-color: #8DC9F7; }
+.form-input::placeholder { color: rgba(255,255,255,.3); }
+
+.form-divider {
+    border: none;
+    border-top: 1px solid rgba(141,201,247,0.15);
+    margin: 22px 0;
+}
+
+/* Search button — same as thead bg */
+.btn-search {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    background: #8DC9F7;
+    color: #002D61;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background .2s;
+    display: block;
+    margin-top: 0;
+}
+.btn-search:hover { background: #0067A2; color: white; }
+
+/* Delete button */
+.btn-delete {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    background: rgba(185,28,28,0.85);
+    color: white;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background .2s;
+    display: block;
+}
+.btn-delete:hover { background: #dc2626; }
+
+/* Found user preview — styled like a tbody row */
+.user-card {
+    background: rgba(141,201,247,0.1);
+    border-bottom: 1px solid rgba(141,201,247,0.15);
+    padding: 16px 32px;
+}
+.user-card .uname { font-size: 17px; font-weight: 700; color: white; }
+.user-card .uid   { font-size: 13px; color: #8DC9F7; margin-top: 3px; }
+.user-card .role  {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+.role-admin  { background: rgba(251,191,36,.15); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
+.role-worker { background: rgba(141,201,247,.12); color: #8DC9F7; border: 1px solid rgba(141,201,247,.25); }
+
+/* Warning */
+.warn-notice {
+    background: rgba(185,28,28,.15);
+    border-bottom: 1px solid rgba(141,201,247,0.1);
+    padding: 12px 32px;
+    font-size: 13px;
+    color: #fca5a5;
+    font-weight: 600;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: #8DC9F7;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 600;
+}
+.back-link:hover { text-decoration: underline; color: white; }
+
+/* Mobile */
+@media (max-width: 600px) {
+    body { padding-top: 70px; }
+    .page-wrapper { padding: 24px 16px 60px; }
+    .page-heading { font-size: 22px; }
+    .form-inner { padding: 24px 18px; }
+    .user-card { padding: 16px 18px; }
+    .warn-notice { padding: 12px 18px; }
+}
 </style>
 
-<div class="page-wrap">
-    <div class="page-title">Delete Account</div>
-    <p class="subtitle">Admin panel &rsaquo; Delete account</p>
+<div class="overlay"></div>
+
+<div class="page-wrapper">
+    <h1 class="page-heading">Delete Account</h1>
+    <p class="page-subheading">Admin panel &rsaquo; Delete account</p>
 
     <?php if ($success): ?>
         <div class="alert alert-success">✓ Account for <b><?php echo htmlspecialchars($deleted_name); ?></b> has been deleted.</div>
-        <a href="delete-worker.php" class="back-link">Delete another account</a><br>
-        <a href="index.php" class="back-link">← Back to dashboard</a>
+        <a href="delete-worker.php" class="back-link" style="display:block">Delete another account</a>
+        <a href="staffPage.php" class="back-link">← Back to dashboard</a>
 
     <?php else: ?>
         <?php if ($error): ?>
@@ -147,39 +277,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
             <div class="alert alert-error">⚠ <?php echo htmlspecialchars($search_error); ?></div>
         <?php endif; ?>
 
+        <!-- Step 1: Search -->
         <div class="card">
-
-            <!-- Step 1: Search -->
             <form method="POST" action="delete-worker.php">
-                <div class="form-group">
-                    <label class="form-label" for="staff_id">Username</label>
-                    <input class="form-input" type="text" id="staff_id" name="staff_id"
-                           placeholder="e.g. jsmith"
-                           value="<?php echo htmlspecialchars($_POST['staff_id'] ?? ''); ?>"
-                           required>
+                <div class="form-inner">
+                    <div class="form-group" style="margin-bottom:0">
+                        <label class="form-label" for="username">Search by Username</label>
+                        <input class="form-input" type="text" id="username" name="username"
+                               placeholder="e.g. jsmith"
+                               value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
+                               required>
+                    </div>
                 </div>
-                <button type="submit" name="search" value="1" class="btn btn-search">Look Up Account</button>
+                <button type="submit" name="search" class="btn-search">Search</button>
             </form>
-
-            <!-- Step 2: Confirm delete if found -->
-            <?php if ($search_result): ?>
-                <hr class="form-divider">
-                <div class="user-card">
-                    <div class="name"><?php echo htmlspecialchars($search_result['first_name'] . ' ' . $search_result['last_name']); ?></div>
-                    <div class="uname">@<?php echo htmlspecialchars($search_result['staff_id']); ?></div>
-                    <div class="role"><?php echo $search_result['is_admin'] ? '🔑 Admin' : '👤 Student Worker'; ?></div>
-                </div>
-                <div class="alert alert-warn">⚠ This will permanently delete the account. This cannot be undone.</div>
-                <form method="POST" action="delete-worker.php">
-                    <input type="hidden" name="staff_id" value="<?php echo htmlspecialchars($search_result['staff_id']); ?>">
-                    <button type="submit" name="confirm_delete" value="1" class="btn btn-delete">Delete This Account</button>
-                </form>
-            <?php endif; ?>
-
         </div>
 
-        <a href="index.php" class="back-link">← Back to dashboard</a>
+        <?php if ($search_result): ?>
+            <!-- Step 2: Confirm delete -->
+            <div class="card" style="margin-top:20px">
+                <div class="user-card">
+                    <div class="uname"><?php echo htmlspecialchars($search_result->get_first_name() . ' ' . $search_result->get_last_name()); ?></div>
+                    <div class="uid">@<?php echo htmlspecialchars($search_result->get_id()); ?></div>
+                    <span class="role <?php echo $search_result->get_type() === 'admin' ? 'role-admin' : 'role-worker'; ?>">
+                        <?php echo $search_result->get_type() === 'admin' ? '🔑 Admin' : '👤 Worker'; ?>
+                    </span>
+                </div>
+                <div class="warn-notice">⚠ This action is permanent and cannot be undone.</div>
+                <form method="POST" action="delete-worker.php">
+                    <input type="hidden" name="username" value="<?php echo htmlspecialchars($search_result->get_id()); ?>">
+                    <button type="submit" name="confirm_delete" class="btn-delete">Delete Account</button>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <a href="staffPage.php" class="back-link">← Back to dashboard</a>
     <?php endif; ?>
 </div>
+
+<?php require 'footer.php'; ?>
 </body>
 </html>

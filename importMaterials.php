@@ -4,124 +4,106 @@ error_reporting(E_ALL);
 
 session_start();
 
-// Admin-only access
-if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 2) {
+if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 1) {
     header('Location: index.php');
     die();
 }
 
-
 include_once('database/dbinfo.php');
-
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 $message = "";
 $details = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
-
     $file = $_FILES['file'];
     $fileName = $file['name'];
     $fileTmpPath = $file['tmp_name'];
 
-    // Validate file type
     $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $allowed = ['xlsx', 'csv'];
-
-    if (!in_array($ext, $allowed)) {
-        $message = "❌ Only .xlsx or .csv files are allowed.";
+    if ($ext !== 'csv') {
+        $message = "Only CSV files are allowed.";
     } else {
-
         try {
-            $spreadsheet = IOFactory::load($fileTmpPath);
-            $sheet = $spreadsheet->getActiveSheet();
-            $rows = $sheet->toArray();
+            $handle = fopen($fileTmpPath, "r");
+            if (!$handle) throw new Exception("Could not open CSV file.");
 
             $con = connect();
-
             $inserted = 0;
             $skipped  = 0;
+            $header = fgetcsv($handle);
 
-            // Skip header row
-            for ($i = 1; $i < count($rows); $i++) {
+            while (($row = fgetcsv($handle)) !== false) {
+                $row = array_map("trim", $row);
+                $name = mysqli_real_escape_string($con, $row[0] ?? '');
 
-                $row = $rows[$i];
+                $new_material = new materials(
+                    0, 
+                    mysqli_real_escape_string($con, $row[0] ?? ''), //name
+                    mysqli_real_escape_string($con, $row[1] ?? ''), //location 
+                    mysqli_real_escape_string($con, $row[2] ?? ''), //type
+                    mysqli_real_escape_string($con, $row[3] ?? null), //isbn
+                    mysqli_real_escape_string($con, $row[4] ?? null), //author
+                    mysqli_real_escape_string($con, $row[5] ?? null), //description
+                    (int)($row[6] ?? 0), //capacity
+                    (int)($row[7] ?? 0), //instock
+                );
+        
+                if (!$name || $capacity < 0 || $instock < 0) { $skipped++; continue; }
 
-                // Extract columns
-                $name        = mysqli_real_escape_string($con, $row[0] ?? '');
-                $location    = mysqli_real_escape_string($con, $row[1] ?? '');
-                $type        = mysqli_real_escape_string($con, $row[2] ?? '');
-                $isbn        = mysqli_real_escape_string($con, $row[3] ?? '');
-                $author      = mysqli_real_escape_string($con, $row[4] ?? '');
-                $description = mysqli_real_escape_string($con, $row[5] ?? '');
-                $capacity    = (int)($row[6] ?? 0);
-                $instock     = (int)($row[7] ?? 0);
-
-                // Basic validation
-                if (!$name || $capacity < 0 || $instock < 0) {
-                    $skipped++;
-                    continue;
-                }
-
-                // Prevent duplicates (by name)
                 $check = mysqli_query($con, "SELECT material_id FROM dbmaterials WHERE name='$name'");
-                if (mysqli_num_rows($check) > 0) {
-                    $skipped++;
-                    continue;
-                }
-
-                $query = "
-                    INSERT INTO dbmaterials 
-                    (name, location, resource_type, isbn, author, description, copy_capacity, copy_instock)
-                    VALUES 
-                    ('$name', '$location', '$type', '$isbn', '$author', '$description', $capacity, $instock)
-                ";
-
-                if (mysqli_query($con, $query)) {
-                    $inserted++;
-                } else {
-                    $skipped++;
-                }
+                if (mysqli_num_rows($check) > 0) { $skipped++; continue; }
+                
+                if (add_material($new_material)) { $inserted++; } else { $skipped++; }
             }
 
+            fclose($handle);
             mysqli_close($con);
-
-            $message = "✅ Import complete!";
-            $details = [
-                "Inserted: $inserted",
-                "Skipped: $skipped"
-            ];
+            $message = "CSV import complete!";
+            $details = ["Inserted: $inserted", "Skipped: $skipped"];
 
         } catch (Exception $e) {
-            $message = "❌ Error: " . $e->getMessage();
+            $message = "Error: " . $e->getMessage();
         }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Import Materials</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
-
+<title>Seacobeck Curriculum Lab | Import Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body {
-    background-color: #002D61;
     min-height: 100vh;
     padding-top: 95px;
     color: white;
+    display: flex;
+    flex-direction: column;
+    background-image: url('images/library.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(0, 45, 97, 0.88);
+    z-index: -1;
 }
 
 .page-wrapper {
     max-width: 900px;
+    width: 100%;
     margin: 0 auto;
     padding: 40px 24px 80px;
+    flex: 1;
 }
 
 .page-heading {
@@ -136,18 +118,8 @@ body {
     margin-bottom: 32px;
 }
 
-.upload-box {
-    background: #8DC9F7;
-    border-radius: 16px;
-    padding: 30px;
-    text-align: center;
-}
-
-input[type="file"] {
-    margin-bottom: 15px;
-}
-
-button {
+.download-btn {
+    display: inline-block;
     background: #0067A2;
     color: white;
     border: none;
@@ -155,60 +127,72 @@ button {
     border-radius: 8px;
     font-weight: 700;
     cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    margin-bottom: 24px;
+    transition: background 0.2s;
+}
+.download-btn:hover { background: #004f80; }
+
+.upload-box {
+    background: #8DC9F7;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    width: 100%;
 }
 
-button:hover {
-    background: #004f80;
+.upload-box input[type="file"] {
+    margin-bottom: 15px;
+    color: #002D61;
+    font-weight: 600;
 }
+
+.upload-btn {
+    background: #0067A2;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    transition: background 0.2s;
+}
+.upload-btn:hover { background: #004f80; }
 
 .message {
     margin-top: 20px;
     font-weight: 600;
+    color: #002D61;
 }
 
 .details {
     margin-top: 10px;
     font-size: 14px;
-}
-
-.divider {
-    width: 90%;
-    height: 1px;
-    background: rgba(141,201,247,0.25);
-    margin: 40px auto;
-}
-
-.footer {
-    width: 100%;
-    background: #8DC9F7;
-    display: flex;
-    justify-content: space-between;
-    padding: 30px 50px;
-    flex-wrap: wrap;
-}
-
-.footer-section {
-    color: white;
+    color: #002D61;
 }
 </style>
 </head>
-
 <body>
 
 <?php require 'header.php'; ?>
+<div class="overlay"></div>
 
 <div class="page-wrapper">
-
     <h1 class="page-heading">Import Materials</h1>
-    <p class="page-subheading">
-        Upload an Excel (.xlsx) or CSV file to add materials to the catalog.
-    </p>
+    <p class="page-subheading">Upload a CSV file to add materials to the catalog.</p>
+
+    <form method="GET" action="download_template.php" style="display:inline-block;">
+        <button type="submit" class="download-btn">Download CSV Template</button>
+    </form>
 
     <div class="upload-box">
         <form method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <br>
-            <button type="submit">Upload & Import</button>
+            <input type="file" name="file" accept=".csv" required>
+            <br><br>
+            <button type="submit" class="upload-btn">Upload & Import</button>
         </form>
 
         <?php if ($message): ?>
@@ -221,28 +205,8 @@ button:hover {
             </div>
         <?php endif; ?>
     </div>
-
 </div>
 
-<div class="divider"></div>
-
-<footer class="footer">
-    <div>
-        <img src="images/UMW_Eagles-logo.png" width="150">
-    </div>
-
-    <div class="footer-section">
-        <div><strong>Connect</strong></div>
-        <a href="https://www.instagram.com/umw_coe/">Instagram</a><br>
-        <a href="https://education.umw.edu/">Website</a>
-    </div>
-
-    <div class="footer-section">
-        <div><strong>Contact</strong></div>
-        <div>mwells@umw.edu</div>
-        <div>(540) 654-1290</div>
-    </div>
-</footer>
-
+<?php require 'footer.php'; ?>
 </body>
 </html>

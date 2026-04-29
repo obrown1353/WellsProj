@@ -16,7 +16,6 @@ if (!isset($_SESSION['access_level'])) {
 include_once('database/dbPersons.php');
 include_once('domain/Person.php');
 include_once('database/dbCheckout.php');
-include_once('database/dbReturns.php');
 include_once('database/dbMaterials.php');
 
 $accessLevel = (int) $_SESSION['access_level'];
@@ -38,13 +37,12 @@ if (!$isGuest && isset($_SESSION['_id'])) {
 $allCheckouts = fetch_all_checkouts();
 $allMaterials = fetch_all_materials();
 
-
 $materialMap = [];
 foreach ($allMaterials as $mat) {
     $materialMap[$mat->getMaterialId()] = $mat->getName();
 }
 
-// Search 
+// Search
 $searchQuery = isset($_GET['query']) ? strtolower(trim($_GET['query'])) : '';
 
 function matchesSearch($checkout, $materialMap, $query) {
@@ -61,7 +59,7 @@ function matchesSearch($checkout, $materialMap, $query) {
 
 $filteredCheckouts = array_filter($allCheckouts, fn($c) => matchesSearch($c, $materialMap, $searchQuery));
 
-$today = new DateTime();
+$today      = new DateTime();
 $checkedOut = [];
 $overdue    = [];
 
@@ -73,25 +71,40 @@ foreach ($filteredCheckouts as $checkout) {
         $checkedOut[] = $checkout;
     }
 }
-
-$allReturns = function_exists('fetch_all_returns') ? fetch_all_returns() : [];
-$filteredReturns = array_filter($allReturns, fn($r) => matchesSearch($r, $materialMap, $searchQuery));
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
 <title>Seacobeck Curriculum Lab | View Checkouts</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body {
-    background-color: #002D61;
+/*   background-color: #002D61; */
     min-height: 100vh;
     padding-top: 95px;
     color: white;
+/*    display: flex; */
+/*    flex-direction: column; */
+    justify-content: space-between;
+    background-image: url('images/library.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(0, 45, 97, 0.88);
+    z-index: -1;
 }
 
 .page-wrapper {
@@ -139,7 +152,7 @@ body {
     border-radius: 20px;
     outline: none;
     color: #0067A2;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
 }
 .search-input::placeholder { color: #5aa5d4; }
@@ -153,7 +166,7 @@ body {
     background: #0067A2;
     color: white;
     font-size: 15px;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     cursor: pointer;
     transition: background 0.2s;
@@ -232,12 +245,6 @@ tbody td {
 }
 .due-badge.ok { background: rgba(141,201,247,0.2); color: #8DC9F7; }
 .due-badge.overdue { background: rgba(248,113,113,0.2); color: #f87171; }
-.due-badge.returned-pill { background: rgba(74,222,128,0.15); color: #4ade80; }
-
-.section-heading.returned-heading { color: #4ade80; }
-.section-heading .returned-badge { background: #4ade80; color: #002D61; }
-.returned-row td { color: rgba(255,255,255,0.75); }
-.returned-material { color: #4ade80 !important; }
 
 .empty-state {
     text-align: center;
@@ -289,7 +296,7 @@ tbody td {
 <body>
 
 <?php require 'header.php'; ?>
-
+<div class="overlay"></div>
 <div class="page-wrapper">
 
     <h1 class="page-heading">View Checkouts</h1>
@@ -313,8 +320,15 @@ tbody td {
         </div>
     </div>
 
+    <h2 class="section-heading">
+        <form action="export-checkout.php" method="POST";>
+            Export Checkout Data: 
+            <button type="submit" class="badge" name="export-type" value="csv">CSV</button>
+            <button type="submit" class="badge" name="export-type" value="excel">Excel</button>
+        </form>
+    </h2>
+
     <!-- Overdue -->
-    <?php if (!empty($overdue)): ?>
     <h2 class="section-heading overdue-heading">
         ⚠ Overdue
         <span class="badge"><?php echo count($overdue); ?></span>
@@ -332,23 +346,35 @@ tbody td {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($overdue as $co): ?>
-                <tr class="overdue-row">
-                    <td class="material-name"><?php echo htmlspecialchars($materialMap[$co->getMaterialId()] ?? 'Unknown (#' . $co->getMaterialId() . ')'); ?></td>
-                    <td><?php echo htmlspecialchars($co->getFirstName()); ?></td>
-                    <td><?php echo htmlspecialchars($co->getLastName()); ?></td>
-                    <td><?php echo htmlspecialchars($co->getEmail()); ?></td>
-                    <td><?php echo htmlspecialchars($co->getCheckoutDate()); ?></td>
-                    <td>
-                        <?php echo htmlspecialchars($co->getDueDate()); ?>
-                        <span class="due-badge overdue">Overdue</span>
+                <?php if (empty($overdue)): ?>
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p>No overdue items<?php echo $searchQuery ? ' matching your search' : ''; ?>.</p>
+                        </div>
                     </td>
                 </tr>
-                <?php endforeach; ?>
+                <?php else: ?>
+                    <?php foreach ($overdue as $co): ?>
+                    <tr class="overdue-row">
+                        <td class="material-name"><?php echo htmlspecialchars($materialMap[$co->getMaterialId()] ?? 'Unknown (#' . $co->getMaterialId() . ')'); ?></td>
+                        <td><?php echo htmlspecialchars($co->getFirstName()); ?></td>
+                        <td><?php echo htmlspecialchars($co->getLastName()); ?></td>
+                        <td><?php echo htmlspecialchars($co->getEmail()); ?></td>
+                        <td><?php echo htmlspecialchars($co->getCheckoutDate()); ?></td>
+                        <td>
+                            <?php echo htmlspecialchars($co->getDueDate()); ?>
+                            <span class="due-badge overdue">Overdue</span>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
-    <?php endif; ?>
 
     <!-- Checked Out -->
     <h2 class="section-heading">
@@ -398,81 +424,11 @@ tbody td {
         </table>
     </div>
 
-    <!-- Returned -->
-    <h2 class="section-heading returned-heading">
-        ✅ Returned
-        <span class="badge returned-badge"><?php echo count($filteredReturns); ?></span>
-    </h2>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Material</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Date Checked Out</th>
-                    <th>Date Returned</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($filteredReturns)): ?>
-                <tr>
-                    <td colspan="6">
-                        <div class="empty-state">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <p>No returned items<?php echo $searchQuery ? ' matching your search' : ''; ?>.</p>
-                        </div>
-                    </td>
-                </tr>
-                <?php else: ?>
-                    <?php foreach ($filteredReturns as $ret): ?>
-                    <tr class="returned-row">
-                        <td class="material-name returned-material"><?php echo htmlspecialchars($materialMap[$ret->getMaterialId()] ?? 'Unknown (#' . $ret->getMaterialId() . ')'); ?></td>
-                        <td><?php echo htmlspecialchars($ret->getFirstName()); ?></td>
-                        <td><?php echo htmlspecialchars($ret->getLastName()); ?></td>
-                        <td><?php echo htmlspecialchars($ret->getEmail()); ?></td>
-                        <td><?php echo htmlspecialchars($ret->getCheckoutDate()); ?></td>
-                        <td>
-                            <?php echo htmlspecialchars($ret->getReturnDate()); ?>
-                            <span class="due-badge returned-pill">Returned</span>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
-
 </div>
 
 <div class="divider"></div>
 
-<footer class="footer">
-    <div class="footer-left">
-        <img src="images/UMW_Eagles-logo.png" alt="Logo" class="footer-logo">
-        <div class="social-icons">
-            <a href="https://www.facebook.com/profile.php?id=100086673730177#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-            <a href="https://www.instagram.com/umw_coe/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://education.umw.edu/" aria-label="Website"><i class="fas fa-globe"></i></a>
-        </div>
-    </div>
-    <div class="footer-right">
-        <div class="footer-section">
-            <div class="footer-topic">Connect</div>
-            <a href="https://www.facebook.com/profile.php?id=100086673730177#">Facebook</a>
-            <a href="https://www.instagram.com/umw_coe/">Instagram</a>
-            <a href="https://education.umw.edu/">Main Website</a>
-        </div>
-        <div class="footer-section">
-            <div class="footer-topic">Contact Us</div>
-            <a href="mailto:mwells@umw.edu">mwells@umw.edu</a>
-            <a href="tel:5406541290">(540) 654-1290</a>
-        </div>
-    </div>
-</footer>
+<?php require 'footer.php'; ?>
 <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
 </body>
 </html>
