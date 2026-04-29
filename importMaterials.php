@@ -10,6 +10,9 @@ if (!isset($_SESSION['access_level']) || $_SESSION['access_level'] < 1) {
 }
 
 include_once('database/dbinfo.php');
+include_once "database/dbMaterials.php";
+include_once "database/dbstats.php";
+
 
 $message = "";
 $details = [];
@@ -35,6 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
             while (($row = fgetcsv($handle)) !== false) {
                 $row = array_map("trim", $row);
                 $name = mysqli_real_escape_string($con, $row[0] ?? '');
+                $capacity = (int)($row[6] ?? 0);
+                $instock = (int)($row[7] ?? 0);
 
                 $new_material = new materials(
                     0, 
