@@ -1,7 +1,7 @@
 # Student Names
 Oliver Brown
 Fernando Ortega
-Madison Hinston 
+Madison Hinton 
 Crook Campbell
 Hugo Manrique-Pinell
 Hannah Lydell
@@ -12,7 +12,7 @@ Hannah Lydell
 The Seacobeck Curriculum Lab Web Application works to improve the checkout and record keeping process for the Seacobeck Curriculum Lab team, moving them away from their previous Google Sheet/Forms system. This web application allows for borrowers to independently search for and checkout/return materials. Staff members (Admins and Student Workers) are able to keep track of checkouts, materials and their stats, logs and staff accounts. 
 
 ## Authors
-The Seacobeck Curriculum lab system code was modified during the Spring 2026 semester, and works off the foundation of multiple semesters of work. The codebase's previous authors and contributions are listed unchanged below, with additional mention to the Whisky Valor team. The Seacobeck Curriculum lab's current implementation is mostly rewritten, but some foundational work remains such as the dbpersons database, login/logout systems, base CSS, etc. The team responsible for the Spring 2026 work includes Oliver Brown, Fernando Ortega, Madison Hinston, Crook Campbell, Hugo Manrique-Pinell, and Hannah Lydell.
+The Seacobeck Curriculum lab system code was modified during the Spring 2026 semester, and works off the foundation of multiple semesters of work. The codebase's previous authors and contributions are listed unchanged below, with additional mention to the Whisky Valor team. The Seacobeck Curriculum lab's current implementation is mostly rewritten, but some foundational work remains such as the dbpersons database, login/logout systems, base CSS, etc. The team responsible for the Spring 2026 work includes Oliver Brown, Fernando Ortega, Madison Hinton, Crook Campbell, Hugo Manrique-Pinell, and Hannah Lydell.
 
 ## Previous Semester's Authors
 The ODHS Medicine Tracker is based on an old open source project named "Homebase". [Homebase](https://a.link.will.go.here/) was originally developed for the Ronald McDonald Houses in Maine and Rhode Island by Oliver Radwan, Maxwell Palmer, Nolan McNair, Taylor Talmage, and Allen Tucker.
